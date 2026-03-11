@@ -22,3 +22,23 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Variables d'environnement
+.env
+.env.local
+.env.production
+
+# Python venv
+backend/venv/
+venv/
+__pycache__/
+*.pyc
+```
+
+**2. Sauvegarde (Ctrl+S)**
+
+**3. Dans le terminal :**
+```
+git add .gitignore
+git status
+```
