@@ -12,8 +12,13 @@ BLOG_PERSONNEL/
 ├── backend/                  # 🐍 Flask — Modèle + Contrôleur
 │   ├── controllers/          # Routes Flask (Blueprint)
 │   ├── database/             # Connexion MongoDB
-│   │   └── db.py
+│   │   ├── db.py             # Connexion à MongoDB
+│   │   └── init_db.py        # Script d'initialisation de la base
 │   ├── models/               # Schémas des collections
+│   │   ├── user_model.py
+│   │   ├── article_model.py
+│   │   ├── friendship_model.py
+│   │   └── comment_model.py
 │   ├── venv/                 # Environnement virtuel Python (ne pas modifier)
 │   ├── .env                  # Variables d'environnement (à créer manuellement)
 │   ├── app.py                # Point d'entrée Flask
@@ -39,6 +44,7 @@ Assure-toi d'avoir installé ces logiciels avant de commencer :
 | Node.js | 18 ou + | [nodejs.org](https://nodejs.org) |
 | Git | Dernière version | [git-scm.com](https://git-scm.com) |
 | MongoDB | 7.0 | [mongodb.com](https://www.mongodb.com/try/download/community) |
+| MongoDB Compass | Dernière version | [mongodb.com/compass](https://www.mongodb.com/try/download/compass) |
 | VSCode | Dernière version | [code.visualstudio.com](https://code.visualstudio.com) |
 
 ---
@@ -111,7 +117,46 @@ FLASK_ENV=development
 
 ---
 
-### Étape 5 — Configurer l'interpréteur Python dans VSCode
+### Étape 5 — Initialiser la base de données
+
+> ⚠️ **MongoDB doit être installé et en cours d'exécution** avant cette étape.  
+> Si MongoDB n'est pas démarré : **Windows + R** → `services.msc` → cherche **MongoDB** → Démarrer
+
+```bash
+# Dans backend/ avec le venv activé
+cd backend
+venv\Scripts\activate
+
+# Lancer le script d'initialisation (une seule fois suffit)
+python database/init_db.py
+```
+
+Tu dois voir :
+
+```
+✅ Collection 'users' créée
+✅ Collection 'articles' créée
+✅ Collection 'friendships' créée
+✅ Collection 'comments' créée
+✅ Index users créés
+✅ Index articles créés
+✅ Index friendships créés
+✅ Index comments créés
+
+📊 Collections disponibles :
+   • users (0 documents)
+   • articles (0 documents)
+   • friendships (0 documents)
+   • comments (0 documents)
+
+🎉 Base de données prête !
+```
+
+> 💡 Ce script est **idempotent** — si tu le relances il ne recrée pas les collections existantes.
+
+---
+
+### Étape 6 — Configurer l'interpréteur Python dans VSCode
 
 1. Appuie sur **Ctrl + Shift + P**
 2. Tape `Python: Select Interpreter`
@@ -123,7 +168,7 @@ FLASK_ENV=development
 
 ---
 
-### Étape 6 — Lancer le projet
+### Étape 7 — Lancer le projet
 
 Ouvre **2 terminaux** dans VSCode (`Ctrl + Shift + 5`) :
 
@@ -140,6 +185,10 @@ python app.py
 npm run dev
 # → http://localhost:5174
 ```
+
+**Tester que Flask fonctionne :**  
+Ouvre ton navigateur sur `http://localhost:5000/api/ping`  
+Tu dois voir : `{"message": "✅ Flask fonctionne !"}`
 
 ---
 
@@ -168,18 +217,79 @@ npm run dev
 
 ## 🗄️ Base de données MongoDB
 
-Le projet utilise **MongoDB en local**.  
-La base de données `blog_personnel` contient 4 collections :
+Le projet utilise **MongoDB en local** sur le port `27017`.  
+La base de données s'appelle `blog_personnel` et contient **4 collections**.
 
-| Collection | Rôle |
-|---|---|
-| `users` | Utilisateurs (statut en ligne, groupes d'amis) |
-| `articles` | Articles du blog (réactions embarquées) |
-| `friendships` | Relations entre utilisateurs |
-| `comments` | Commentaires des articles |
+### Collections et attributs
 
-> 💡 La base de données est créée **automatiquement** par MongoDB lors du premier `insert`.  
-> Pas besoin de la créer manuellement !
+**👤 users** — Utilisateurs inscrits sur la plateforme
+
+| Attribut | Type | Requis | Description |
+|---|---|---|---|
+| `_id` | ObjectId | Auto | ID unique généré par MongoDB |
+| `full_name` | String | ✅ | Nom complet de l'utilisateur |
+| `username` | String | ✅ | Identifiant unique de connexion |
+| `password_hash` | String | ✅ | Mot de passe chiffré avec bcrypt |
+| `is_online` | Boolean | ❌ | true si l'utilisateur est connecté |
+| `last_seen` | Date | ❌ | Date de la dernière activité |
+| `friend_groups` | Array | ❌ | Groupes d'amis embarqués `{name, member_ids}` |
+| `created_at` | Date | ✅ | Date d'inscription |
+| `updated_at` | Date | ✅ | Date de modification |
+
+**📝 articles** — Articles créés par les utilisateurs
+
+| Attribut | Type | Requis | Description |
+|---|---|---|---|
+| `_id` | ObjectId | Auto | ID unique de l'article |
+| `author_id` | ObjectId | ✅ | Référence → users._id |
+| `title` | String | ✅ | Titre de l'article |
+| `content` | String | ✅ | Contenu de l'article |
+| `is_public` | Boolean | ✅ | true = visible par les amis non bloqués |
+| `allow_comments` | Boolean | ✅ | true = commentaires activés |
+| `reactions` | Array | ❌ | Réactions embarquées `{user_id, type, created_at}` |
+| `reactions_count` | Object | ❌ | Compteurs `{like, love, haha, wow, sad}` |
+| `created_at` | Date | ✅ | Date de création |
+| `updated_at` | Date | ✅ | Date de modification |
+
+**🤝 friendships** — Relations entre utilisateurs
+
+| Attribut | Type | Requis | Description |
+|---|---|---|---|
+| `_id` | ObjectId | Auto | ID unique de la relation |
+| `sender_id` | ObjectId | ✅ | Référence → users._id (qui envoie) |
+| `receiver_id` | ObjectId | ✅ | Référence → users._id (qui reçoit) |
+| `status` | String | ✅ | `pending` / `accepted` / `blocked` |
+| `seen_by_recipient` | Boolean | ✅ | false = badge notification non vu |
+| `created_at` | Date | ✅ | Date de la demande |
+| `updated_at` | Date | ✅ | Date du dernier changement |
+
+**💬 comments** — Commentaires des articles
+
+| Attribut | Type | Requis | Description |
+|---|---|---|---|
+| `_id` | ObjectId | Auto | ID unique du commentaire |
+| `article_id` | ObjectId | ✅ | Référence → articles._id |
+| `author_id` | ObjectId | ✅ | Référence → users._id |
+| `content` | String | ✅ | Texte du commentaire |
+| `created_at` | Date | ✅ | Date du commentaire |
+| `updated_at` | Date | ✅ | Date de modification |
+
+### Voir la base de données — MongoDB Compass
+
+1. Ouvre **MongoDB Compass**
+2. Connecte-toi sur `mongodb://localhost:27017`
+3. Clique sur **Connect**
+4. Tu verras la base `blog_personnel` avec les 4 collections
+
+### Démarrer MongoDB si nécessaire
+
+```bash
+# Windows — démarrer le service MongoDB
+net start MongoDB
+
+# Vérifier que MongoDB tourne
+mongod --version
+```
 
 ---
 
@@ -187,7 +297,8 @@ La base de données `blog_personnel` contient 4 collections :
 
 ```bash
 # Activer le venv (à faire à chaque session)
-cd backend && venv\Scripts\activate
+cd backend
+venv\Scripts\activate
 
 # Lancer Flask
 python app.py
@@ -195,16 +306,19 @@ python app.py
 # Lancer React
 npm run dev
 
+# Initialiser la base de données (une seule fois)
+python database/init_db.py
+
 # Après avoir ajouté un nouveau package Python
 pip freeze > requirements.txt
 
 # Récupérer les dernières modifications du binôme
-git pull origin develop
+git pull origin main
 
 # Envoyer ses modifications
 git add .
 git commit -m "feat: description de ce que tu as fait"
-git push origin feature/nom-de-ta-branche
+git push origin main
 ```
 
 ---
