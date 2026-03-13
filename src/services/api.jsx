@@ -73,8 +73,17 @@ export const articlesAPI = {
   getOne: (articleId) => api.get(`/articles/${articleId}`),
 
   // POST /api/articles — Créer un article
-  create: (data) => api.post("/articles", data),
-
+ // create accepte maintenant un FormData (avec fichiers) ou un objet JSON
+  create: (data) => {
+    if (data instanceof FormData) {
+      // FormData = envoi avec fichiers
+      // On ne met PAS le header Content-Type, Axios le détecte automatiquement
+      return api.post("/articles", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+    }
+    return api.post("/articles", data)
+  },
   // PUT /api/articles/:id — Modifier un article
   update: (articleId, data) => api.put(`/articles/${articleId}`, data),
 

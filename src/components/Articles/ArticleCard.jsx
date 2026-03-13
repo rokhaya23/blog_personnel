@@ -60,6 +60,31 @@ function ArticleCard({ article, isOwner, onEdit, onDelete }) {
         </div>
       </div>
 
+{/* ── MÉDIAS (IMAGES ET VIDÉOS) ── */}
+      {article.media && article.media.length > 0 && (
+        <div className={`grid gap-2 mb-4 ${
+          article.media.length === 1 ? "grid-cols-1" : "grid-cols-2"
+        }`}>
+          {article.media.map((media, index) => (
+            <div key={index} className="rounded-lg overflow-hidden">
+              {media.type === "image" ? (
+                <img
+                  src={`http://localhost:5000/api/articles/media/${media.filename}`}
+                  alt={media.original_name || "Image"}
+                  className="w-full h-64 object-cover rounded-lg hover:scale-105 transition duration-300"
+                />
+              ) : (
+                <video
+                  src={`http://localhost:5000/api/articles/media/${media.filename}`}
+                  controls
+                  className="w-full h-64 object-cover rounded-lg"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* CONTENU */}
       <p className="text-purple-200/80 mb-4 leading-relaxed">
         {article.content.length > 150

@@ -2,8 +2,8 @@
 # article_controller.py
 # CONTROLLER ARTICLES — Routes /api/articles/*
 #
-# Gère le CRUD des articles et les réactions emoji.
-# Toutes les routes nécessitent un token JWT.
+# Gère le CRUD des articles, les réactions emoji et les médias.
+# Toutes les routes nécessitent un token JWT (sauf serve_media).
 # ============================================================
 
 from flask import Blueprint, request, jsonify
@@ -18,23 +18,52 @@ from models.article_model import (
     toggle_reaction,
 )
 from models.comment_model import get_comment_count
+import os
+import uuid
+from werkzeug.utils import secure_filename
 
 article_bp = Blueprint("articles", __name__, url_prefix="/api/articles")
 
+# ── Configuration des uploads ──
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads")
+ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
+ALLOWED_VIDEO_EXTENSIONS = {"mp4", "webm", "mov"}
+ALLOWED_EXTENSIONS = ALLOWED_IMAGE_EXTENSIONS | ALLOWED_VIDEO_EXTENSIONS
+MAX_FILE_SIZE = 50 * 1024 * 1024
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def get_file_type(filename):
+    ext = filename.rsplit(".", 1)[1].lower()
+    if ext in ALLOWED_IMAGE_EXTENSIONS:
+        return "image"
+    return "video"
+
 
 # ========================
-# POST /api/articles — Créer un article
+# POST /api/articles — Créer un article (avec médias optionnels)
 # ========================
 @article_bp.route("", methods=["POST"])
 @jwt_required()
 def create():
     user_id = get_jwt_identity()
-    data = request.get_json()
 
-    title = data.get("title")
-    content = data.get("content")
-    is_public = data.get("is_public", True)
-    allow_comments = data.get("allow_comments", True)
+    if request.content_type and "multipart/form-data" in request.content_type:
+        title = request.form.get("title")
+        content = request.form.get("content")
+        is_public = request.form.get("is_public", "true") == "true"
+        allow_comments = request.form.get("allow_comments", "true") == "true"
+        files = request.files.getlist("media")
+    else:
+        data = request.get_json()
+        title = data.get("title")
+        content = data.get("content")
+        is_public = data.get("is_public", True)
+        allow_comments = data.get("allow_comments", True)
+        files = []
 
     if not title or not content:
         return jsonify({"message": "Le titre et le contenu sont obligatoires"}), 400
@@ -42,7 +71,31 @@ def create():
     if len(title.strip()) < 3:
         return jsonify({"message": "Le titre doit contenir au moins 3 caracteres"}), 400
 
-    article_id = create_article(user_id, title.strip(), content.strip(), is_public, allow_comments)
+    media_list = []
+    for file in files:
+        if file and file.filename:
+            if not allowed_file(file.filename):
+                return jsonify({
+                    "message": f"Type de fichier non autorise: {file.filename}"
+                }), 400
+
+            ext = file.filename.rsplit(".", 1)[1].lower()
+            unique_filename = f"{uuid.uuid4().hex}.{ext}"
+
+            filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            file.save(filepath)
+
+            media_list.append({
+                "filename": unique_filename,
+                "original_name": secure_filename(file.filename),
+                "type": get_file_type(file.filename),
+            })
+
+    article_id = create_article(
+        user_id, title.strip(), content.strip(),
+        is_public, allow_comments, media_list
+    )
 
     return jsonify({
         "message": "Article cree avec succes",
@@ -59,7 +112,6 @@ def get_mine():
     user_id = get_jwt_identity()
     articles = get_user_articles(user_id)
 
-    # Formater chaque article pour l'envoyer à React
     result = []
     for a in articles:
         result.append(format_article(a))
@@ -75,15 +127,11 @@ def get_mine():
 def get_feed():
     user_id = get_jwt_identity()
 
-    # Récupérer les ids des amis confirmés
-    # Pour l'instant on importe la logique ici
-    # Quand Rokhaye aura fait le friendship_model, on utilisera sa fonction
     from database.db import get_db
     from bson.objectid import ObjectId
 
     db = get_db()
 
-    # Trouver les amis confirmés (accepted)
     friendships = db.friendships.find({
         "$or": [
             {"sender_id": ObjectId(user_id), "status": "accepted"},
@@ -98,7 +146,6 @@ def get_feed():
         else:
             friend_ids.append(str(f["sender_id"]))
 
-    # Trouver les utilisateurs bloqués
     blocked = db.friendships.find({
         "$or": [
             {"sender_id": ObjectId(user_id), "status": "blocked"},
@@ -113,14 +160,11 @@ def get_feed():
         else:
             blocked_ids.append(str(b["sender_id"]))
 
-    # Récupérer les articles du feed
     articles = get_feed_articles(friend_ids, blocked_ids, user_id)
 
-    # Ajouter les infos de l'auteur à chaque article
     result = []
     for a in articles:
         formatted = format_article(a)
-        # Ajouter le nom de l'auteur
         author = db.users.find_one({"_id": a["author_id"]})
         if author:
             formatted["author_name"] = author["full_name"]
@@ -130,6 +174,15 @@ def get_feed():
         result.append(formatted)
 
     return jsonify(result), 200
+
+
+# ========================
+# GET /api/articles/media/<filename> — Servir un fichier uploadé
+# ========================
+@article_bp.route("/media/<filename>", methods=["GET"])
+def serve_media(filename):
+    from flask import send_from_directory
+    return send_from_directory(UPLOAD_FOLDER, filename)
 
 
 # ========================
@@ -155,7 +208,6 @@ def update(article_id):
     user_id = get_jwt_identity()
     data = request.get_json()
 
-    # Construire le dictionnaire des modifications
     updates = {}
     if "title" in data:
         if len(data["title"].strip()) < 3:
@@ -206,7 +258,6 @@ def react(article_id):
 
     emoji_type = data.get("type")
 
-    # Vérifier que l'emoji est valide
     valid_emojis = ["like", "love", "haha", "wow", "sad", "angry"]
     if emoji_type not in valid_emojis:
         return jsonify({"message": "Type de reaction invalide"}), 400
@@ -226,11 +277,6 @@ def react(article_id):
 # FONCTION UTILITAIRE — Formater un article pour React
 # ============================================================
 def format_article(article):
-    """
-    Convertit un document MongoDB en dictionnaire JSON propre.
-    MongoDB utilise des ObjectId et des dates qu'il faut convertir
-    en texte pour que React puisse les lire.
-    """
     return {
         "id": str(article["_id"]),
         "author_id": str(article["author_id"]),
@@ -238,6 +284,7 @@ def format_article(article):
         "content": article["content"],
         "is_public": article["is_public"],
         "allow_comments": article["allow_comments"],
+        "media": article.get("media", []),
         "reactions_count": article.get("reactions_count", {}),
         "comment_count": get_comment_count(str(article["_id"])),
         "created_at": article["created_at"].isoformat(),

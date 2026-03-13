@@ -12,11 +12,12 @@ from database.db import get_db
 from bson.objectid import ObjectId
 from datetime import datetime
 
-
-def create_article(author_id, title, content, is_public, allow_comments):
+def create_article(author_id, title, content, is_public, allow_comments, media=None):
     """
     Crée un nouvel article dans la base de données.
-    Les réactions sont initialisées à vide.
+    media est une liste optionnelle de fichiers (images/vidéos)
+    stockés sous forme de chemins vers les fichiers uploadés.
+    Chaque élément de media est un dict : { "filename": "...", "type": "image" ou "video" }
     """
     db = get_db()
 
@@ -26,8 +27,9 @@ def create_article(author_id, title, content, is_public, allow_comments):
         "content": content,
         "is_public": is_public,
         "allow_comments": allow_comments,
-        "reactions": [],           # Liste vide, sera remplie par les réactions
-        "reactions_count": {       # Compteurs initialisés à 0
+        "media": media or [],        # Liste des fichiers attachés
+        "reactions": [],
+        "reactions_count": {
             "like": 0,
             "love": 0,
             "haha": 0,
