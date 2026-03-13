@@ -4,6 +4,11 @@ from flask_jwt_extended import JWTManager
 from config import JWT_SECRET_KEY
 from database.db import init_db
 
+# Importer les controllers
+from controllers.auth_controller import auth_bp
+from controllers.article_controller import article_bp
+from controllers.comment_controller import comment_bp
+
 # ── Créer l'application Flask ──
 app = Flask(__name__)
 
@@ -18,6 +23,11 @@ JWTManager(app)
 
 # ── Connecter MongoDB ──
 init_db(app)
+
+# ── Enregistrer les Blueprints (controllers) ──
+app.register_blueprint(auth_bp)       # /api/auth/*
+app.register_blueprint(article_bp)    # /api/articles/*
+app.register_blueprint(comment_bp)    # /api/comments/*
 
 # ── Route de test ──
 @app.route("/api/ping")
