@@ -1,29 +1,14 @@
 import { useState } from "react"
-import { useAuth } from "../../context/AuthContext"
-import { useArticles } from "../../context/ArticleContext"
-import { useComments } from "../../context/CommentContext"
-import { useStatus } from "../../context/StatusContext"
 import CommentSection from "./CommentSection"
 import ReactionBar from "./ReactionBar"
 
-function ArticleCard({ article, onEdit }) {
-  const { currentUser, users } = useAuth()
-  const { deleteArticle } = useArticles()
-  const { getCommentCount } = useComments()
-  const { getStatus, getLastSeenText } = useStatus()
-
+function ArticleCard({ article, isOwner, onEdit, onDelete }) {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
   const [showComments, setShowComments] = useState(false)
 
-  const isAuthor = currentUser.id === article.authorId
-  const commentCount = getCommentCount(article.id)
-
-  // Trouver l'auteur de l'article
-  const articleAuthor = users.find((u) => u.id === article.authorId)
-  const authorStatus = getStatus(article.authorId)
 
   const handleDelete = () => {
-    deleteArticle(article.id)
+    onDelete(article.id)
     setShowConfirmDelete(false)
   }
 
@@ -38,35 +23,27 @@ function ArticleCard({ article, onEdit }) {
 
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/10 hover:border-purple-500/30 transition duration-300">
-
-      {/* --- EN-TETE --- */}
+      {/* EN-TÊTE */}
       <div className="flex justify-between items-start mb-3">
         <div className="flex-1 mr-4">
-          <h3 className="text-xl font-bold text-white">
-            {article.title}
-          </h3>
-          {/* Nom de l'auteur + statut en ligne (uniquement pour les articles des autres) */}
-          {!isAuthor && articleAuthor && (
+          <h3 className="text-xl font-bold text-white">{article.title}</h3>
+          {/* Nom de l'auteur pour les articles du feed */}
+          {!isOwner && article.author_name && (
             <div className="flex items-center gap-2 mt-1">
               <span
                 className={`w-2 h-2 rounded-full ${
-                  authorStatus.isOnline
-                    ? "bg-green-400"
-                    : "bg-gray-500"
+                  article.author_is_online ? "bg-green-400" : "bg-gray-500"
                 }`}
               />
               <span className="text-sm text-purple-300/70">
-                {articleAuthor.fullName}
-              </span>
-              <span className="text-xs text-purple-300/40">
-                — {getLastSeenText(article.authorId)}
+                {article.author_name}
               </span>
             </div>
           )}
         </div>
 
         <div className="flex gap-2 flex-shrink-0">
-          {article.isPublic ? (
+          {article.is_public ? (
             <span className="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-300 border border-green-500/30">
               Public
             </span>
@@ -75,7 +52,7 @@ function ArticleCard({ article, onEdit }) {
               Prive
             </span>
           )}
-          {article.allowComments && (
+          {article.allow_comments && (
             <span className="px-2 py-1 text-xs rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
               Commentaires
             </span>
@@ -83,40 +60,36 @@ function ArticleCard({ article, onEdit }) {
         </div>
       </div>
 
-      {/* --- CONTENU --- */}
+      {/* CONTENU */}
       <p className="text-purple-200/80 mb-4 leading-relaxed">
         {article.content.length > 150
           ? article.content.slice(0, 150) + "..."
           : article.content}
       </p>
 
-      {/* --- REACTIONS EMOJI --- */}
+      {/* RÉACTIONS */}
       <div className="mb-4">
-        <ReactionBar targetType="article" targetId={article.id} />
+        <ReactionBar articleId={article.id} reactionsCount={article.reactions_count} />
       </div>
 
-      {/* --- DATE + COMPTEUR COMMENTAIRES --- */}
+      {/* DATE + COMMENTAIRES */}
       <div className="flex justify-between items-center mb-4">
         <p className="text-sm text-purple-300/50">
-          Publie le {formatDate(article.createdAt)}
-          {article.updatedAt !== article.createdAt && (
-            <span> · Modifie le {formatDate(article.updatedAt)}</span>
-          )}
+          Publie le {formatDate(article.created_at)}
         </p>
-
-        {article.allowComments && (
+        {article.allow_comments && (
           <button
             onClick={() => setShowComments(!showComments)}
             className="text-sm text-purple-400 hover:text-purple-300 transition"
           >
-            {commentCount} commentaire{commentCount !== 1 ? "s" : ""}
+            {article.comment_count || 0} commentaire{(article.comment_count || 0) !== 1 ? "s" : ""}
             <span className="ml-1">{showComments ? "▲" : "▼"}</span>
           </button>
         )}
       </div>
 
-      {/* --- BOUTONS MODIFIER / SUPPRIMER --- */}
-      {isAuthor && (
+      {/* BOUTONS MODIFIER / SUPPRIMER */}
+      {isOwner && (
         <div className="flex gap-3 pt-3 border-t border-white/10">
           <button
             onClick={() => onEdit(article)}
@@ -124,7 +97,6 @@ function ArticleCard({ article, onEdit }) {
           >
             Modifier
           </button>
-
           {showConfirmDelete ? (
             <div className="flex gap-2">
               <button
@@ -151,9 +123,9 @@ function ArticleCard({ article, onEdit }) {
         </div>
       )}
 
-      {/* --- SECTION COMMENTAIRES --- */}
-      {article.allowComments && showComments && (
-        <CommentSection article={article} />
+      {/* COMMENTAIRES */}
+      {article.allow_comments && showComments && (
+        <CommentSection articleId={article.id} />
       )}
     </div>
   )

@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
-import { useStatus } from "../../context/StatusContext"
 
 function Register() {
   const [fullName, setFullName] = useState("")
@@ -9,12 +8,12 @@ function Register() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   const { register } = useAuth()
-  const { setOnline } = useStatus()
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
 
@@ -38,10 +37,13 @@ function Register() {
       return
     }
 
-    const result = register(fullName, username, password)
+    setIsLoading(true)
+
+    const result = await register(fullName, username, password)
+
+    setIsLoading(false)
 
     if (result.success) {
-      setOnline(result.user.id)
       navigate("/dashboard")
     } else {
       setError(result.message)
@@ -119,9 +121,10 @@ function Register() {
 
           <button
             type="submit"
-            className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition duration-200 shadow-lg hover:shadow-purple-500/25"
+            disabled={isLoading}
+            className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition duration-200 shadow-lg hover:shadow-purple-500/25 disabled:opacity-50"
           >
-            S'inscrire
+            {isLoading ? "Inscription en cours..." : "S'inscrire"}
           </button>
         </form>
 
