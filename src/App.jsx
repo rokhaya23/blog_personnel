@@ -8,6 +8,7 @@ import Login from "./components/Auth/Login"
 import Register from "./components/Auth/Register"
 import Dashboard from "./components/Dashboard/Dashboard"
 import ProtectedRoute from "./components/Layout/ProtectedRoute"
+import { FriendProvider } from "./context/FriendContext"
 
 function App() {
   return (
@@ -16,21 +17,23 @@ function App() {
         <ArticleProvider>
           <CommentProvider>
             <ReactionProvider>
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <ProtectedRoute>
-                        <Dashboard />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route path="*" element={<Navigate to="/login" replace />} />
-                </Routes>
-              </BrowserRouter>
+              <FriendProvider>
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <ProtectedRoute>
+                          <Dashboard />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route path="*" element={<Navigate to="/login" replace />} />
+                  </Routes>
+                </BrowserRouter>
+              </FriendProvider>
             </ReactionProvider>
           </CommentProvider>
         </ArticleProvider>
