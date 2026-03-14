@@ -8,6 +8,8 @@ import ArticleForm             from "../Articles/ArticleForm"
 import FriendSearch            from "../Friends/FriendSearch"
 import FriendsList             from "../Friends/FriendsList"
 import FriendRequests          from "../Friends/FriendRequests"
+import { useFriends } from "../../context/FriendContext"
+
 
 function Dashboard() {
   const { currentUser, logout } = useAuth()
@@ -29,6 +31,9 @@ function Dashboard() {
   const [searchQuery,  setSearchQuery]  = useState("")
   const [currentPage,  setCurrentPage]  = useState(1)
   const ARTICLES_PER_PAGE = 10
+
+  // ── Amis et demandes ──
+  const { demandes } = useFriends()
 
   // Initiales pour l'avatar (ex: "Rokhaya Diallo" → "RD")
   const initiales = currentUser?.full_name
@@ -224,7 +229,7 @@ function Dashboard() {
                 {[
                   { label: "Mes articles",    valeur: myArticles.length    },
                   { label: "Fil d'actualité", valeur: feedArticles.length  },
-                  { label: "Demandes reçues", valeur: 0, violet: true      },
+                  { label: "Demandes reçues", valeur: demandes.length, violet: true },
                 ].map(stat => (
                   <div key={stat.label} className="bg-white/5 rounded-xl p-4 border border-white/10">
                     <div className="text-xs text-purple-300/60 mb-2">{stat.label}</div>

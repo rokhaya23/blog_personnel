@@ -2,6 +2,9 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson import ObjectId
 from database.db import get_db
+from controllers.article_controller import format_article
+from models.article_model import get_user_articles as fetch_articles
+
 
 friend_bp = Blueprint("friends", __name__)
 
@@ -274,3 +277,81 @@ def block_user(user_id):
         })
 
     return jsonify({"message": "Utilisateur bloqué"}), 200
+
+# GET /api/users/<user_id> — Profil public d'un utilisateur
+@friend_bp.route("/api/users/<user_id>", methods=["GET"])
+@jwt_required()
+def get_user_profile(user_id):
+    db = get_db()
+    user = db.users.find_one(
+        {"_id": ObjectId(user_id)},
+        {"password_hash": 0}
+    )
+    if not user:
+        return jsonify({"message": "Utilisateur introuvable"}), 404
+
+    user["_id"] = str(user["_id"])
+    # Convertir les dates en string pour JSON
+    if user.get("last_seen"):
+        user["last_seen"] = user["last_seen"].isoformat()
+    if user.get("created_at"):
+        user["created_at"] = user["created_at"].isoformat()
+
+    return jsonify(user), 200
+
+
+# GET /api/users/<user_id>/articles — Articles publics d'un utilisateur
+@friend_bp.route("/api/users/<user_id>/articles", methods=["GET"])
+@jwt_required()
+def get_user_articles(user_id):
+    
+    try:
+        # Récupérer tous les articles de l'utilisateur (publics ET privés)
+        articles = fetch_articles(user_id)
+
+        # Filtrer uniquement les articles publics
+        # car on consulte le profil d'un AUTRE utilisateur —
+        # il ne doit pas voir les articles privés
+        result = [
+            format_article(a)
+            for a in articles
+            if a.get("is_public")
+        ]
+
+        return jsonify({"articles": result}), 200
+
+    except Exception as e:
+        # En cas d'erreur on retourne une liste vide
+        # plutôt qu'un 500 qui bloquerait l'affichage du profil
+        print(f"Erreur get_user_articles: {e}")
+        return jsonify({"articles": []}), 200
+
+# GET /api/users/<user_id>/friends — Amis visibles d'un utilisateur
+@friend_bp.route("/api/users/<user_id>/friends", methods=["GET"])
+@jwt_required()
+def get_user_friends(user_id):
+    db = get_db()
+
+    relations = list(db.friendships.find({
+        "$or": [
+            {"sender_id":   ObjectId(user_id), "status": "accepted"},
+            {"receiver_id": ObjectId(user_id), "status": "accepted"}
+        ]
+    }))
+
+    amis = []
+    for r in relations:
+        ami_id = r["receiver_id"] if str(r["sender_id"]) == user_id else r["sender_id"]
+        ami = db.users.find_one(
+            {"_id": ami_id},
+            {"password_hash": 0}
+        )
+        if ami:
+            amis.append({
+                "_id":       str(ami["_id"]),
+                "full_name": ami["full_name"],
+                "username":  ami["username"],
+                "is_online": ami.get("is_online", False)
+            })
+
+    return jsonify({"amis": amis}), 200

@@ -1,8 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react"
-import axios from "axios"
+import api from "../services/api"
 import { useAuth } from "./AuthContext"
 
-const API = "http://localhost:5000/api"
 const FriendContext = createContext(null)
 
 export function FriendProvider({ children }) {
@@ -11,23 +10,15 @@ export function FriendProvider({ children }) {
   const [amis,     setAmis]     = useState([])
   const [demandes, setDemandes] = useState([])
 
-  const getHeaders = () => ({
-    Authorization: `Bearer ${localStorage.getItem("token")}`
-  })
-
   // ════════════════════════════════
   // CHARGER AU DÉMARRAGE
-  // On définit les fonctions async DANS le useEffect
-  // pour éviter l'erreur set-state-in-effect
   // ════════════════════════════════
   useEffect(() => {
     if (!currentUser) return
 
     const fetchAmis = async () => {
       try {
-        const res = await axios.get(`${API}/friends`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-        })
+        const res = await api.get("/friends")
         setAmis(res.data.amis || [])
       } catch (err) {
         console.error("Erreur chargement amis :", err)
@@ -36,9 +27,7 @@ export function FriendProvider({ children }) {
 
     const fetchDemandes = async () => {
       try {
-        const res = await axios.get(`${API}/friends/requests`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-        })
+        const res = await api.get("/friends/requests")
         setDemandes(res.data.demandes || [])
       } catch (err) {
         console.error("Erreur chargement demandes :", err)
@@ -49,19 +38,13 @@ export function FriendProvider({ children }) {
     fetchDemandes()
 
   }, [currentUser])
-  // ↑ se relance uniquement quand currentUser change
-  // (connexion / déconnexion)
 
   // ════════════════════════════════
   // RECHARGER MANUELLEMENT
-  // Ces fonctions sont appelées après une action
-  // ex: après accepter une demande → recharger les amis
   // ════════════════════════════════
   const chargerAmis = async () => {
     try {
-      const res = await axios.get(`${API}/friends`, {
-        headers: getHeaders()
-      })
+      const res = await api.get("/friends")
       setAmis(res.data.amis || [])
     } catch (err) {
       console.error("Erreur chargement amis :", err)
@@ -70,9 +53,7 @@ export function FriendProvider({ children }) {
 
   const chargerDemandes = async () => {
     try {
-      const res = await axios.get(`${API}/friends/requests`, {
-        headers: getHeaders()
-      })
+      const res = await api.get("/friends/requests")
       setDemandes(res.data.demandes || [])
     } catch (err) {
       console.error("Erreur chargement demandes :", err)
@@ -84,9 +65,7 @@ export function FriendProvider({ children }) {
   // ════════════════════════════════
   const rechercherUsers = async (query) => {
     try {
-      const res = await axios.get(`${API}/users/search?q=${query}`, {
-        headers: getHeaders()
-      })
+      const res = await api.get(`/users/search?q=${query}`)
       return res.data.users || []
     } catch (err) {
       console.error("Erreur recherche :", err)
@@ -99,11 +78,7 @@ export function FriendProvider({ children }) {
   // ════════════════════════════════
   const envoyerDemande = async (receiverId) => {
     try {
-      await axios.post(
-        `${API}/friends/request`,
-        { receiver_id: receiverId },
-        { headers: getHeaders() }
-      )
+      await api.post("/friends/request", { receiver_id: receiverId })
       return { success: true }
     } catch (err) {
       return {
@@ -118,14 +93,8 @@ export function FriendProvider({ children }) {
   // ════════════════════════════════
   const accepterDemande = async (senderId) => {
     try {
-      await axios.put(
-        `${API}/friends/accept`,
-        { sender_id: senderId },
-        { headers: getHeaders() }
-      )
-      // Retirer la demande de la liste localement
+      await api.put("/friends/accept", { sender_id: senderId })
       setDemandes(prev => prev.filter(d => d.sender_id !== senderId))
-      // Recharger les amis pour avoir le nouveau
       await chargerAmis()
       return { success: true }
     } catch (err) {
@@ -141,11 +110,7 @@ export function FriendProvider({ children }) {
   // ════════════════════════════════
   const refuserDemande = async (senderId) => {
     try {
-      await axios.put(
-        `${API}/friends/decline`,
-        { sender_id: senderId },
-        { headers: getHeaders() }
-      )
+      await api.put("/friends/decline", { sender_id: senderId })
       setDemandes(prev => prev.filter(d => d.sender_id !== senderId))
       return { success: true }
     } catch (err) {
@@ -161,9 +126,7 @@ export function FriendProvider({ children }) {
   // ════════════════════════════════
   const supprimerAmi = async (amiId) => {
     try {
-      await axios.delete(`${API}/friends/${amiId}`, {
-        headers: getHeaders()
-      })
+      await api.delete(`/friends/${amiId}`)
       setAmis(prev => prev.filter(a => a._id !== amiId))
       return { success: true }
     } catch (err) {
@@ -179,11 +142,7 @@ export function FriendProvider({ children }) {
   // ════════════════════════════════
   const bloquerUser = async (userId) => {
     try {
-      await axios.put(
-        `${API}/friends/${userId}/block`,
-        {},
-        { headers: getHeaders() }
-      )
+      await api.put(`/friends/${userId}/block`)
       setAmis(prev => prev.filter(a => a._id !== userId))
       return { success: true }
     } catch (err) {
@@ -194,7 +153,6 @@ export function FriendProvider({ children }) {
     }
   }
 
-  // ── Ce qu'on partage avec tous les composants enfants ──
   const value = {
     amis,
     demandes,

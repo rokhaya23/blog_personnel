@@ -10,6 +10,8 @@ import Register from "./components/Auth/Register"
 import Dashboard from "./components/Dashboard/Dashboard"
 import ProtectedRoute from "./components/Layout/ProtectedRoute"
 import { FriendProvider } from "./context/FriendContext"
+import UserProfile from "./components/Profile/UserProfile"
+import LandingPage from "./components/Landing/LandingPage"
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
         <FriendProvider>
           <BrowserRouter>
             <Routes>
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route
@@ -28,7 +31,15 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="*" element={<Navigate to="/login" replace />} />
+              <Route
+                path="/profile/:userId"
+                element={
+                  <ProtectedRoute>
+                    <UserProfile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </BrowserRouter>
         </FriendProvider>
