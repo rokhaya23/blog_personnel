@@ -1,18 +1,18 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
-import { useStatus } from "../../context/StatusContext"
 
 function Login() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   const { login } = useAuth()
-  const { setOnline } = useStatus()
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  // handleSubmit est maintenant async car login() fait un appel API
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
 
@@ -21,10 +21,13 @@ function Login() {
       return
     }
 
-    const result = login(username, password)
+    setIsLoading(true)
+
+    const result = await login(username, password)
+
+    setIsLoading(false)
 
     if (result.success) {
-      setOnline(result.user.id)
       navigate("/dashboard")
     } else {
       setError(result.message)
@@ -76,9 +79,10 @@ function Login() {
 
           <button
             type="submit"
-            className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition duration-200 shadow-lg hover:shadow-purple-500/25"
+            disabled={isLoading}
+            className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition duration-200 shadow-lg hover:shadow-purple-500/25 disabled:opacity-50"
           >
-            Se connecter
+            {isLoading ? "Connexion en cours..." : "Se connecter"}
           </button>
         </form>
 
