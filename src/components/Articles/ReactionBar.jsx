@@ -32,7 +32,7 @@ function ReactionBar({ articleId, reactionsCount }) {
 
       setCounts(newCounts)
     } catch (error) {
-      console.error("Erreur reaction:", error)
+      console.error("Erreur réaction:", error)
     }
 
     setShowPicker(false)

@@ -10,21 +10,18 @@ function CommentSection({ articleId }) {
   const [loading, setLoading] = useState(true)
 
   // Charger les commentaires
-  const loadComments = async () => {
-    try {
-      const response = await commentsAPI.getByArticle(articleId)
-      setComments(response.data)
-    } catch (error) {
-      console.error("Erreur chargement commentaires:", error)
-    }
-    setLoading(false)
-  }
-
   useEffect(() => {
-    const fetchComments = async () => {
-      await loadComments()
+    const loadComments = async () => {
+      try {
+        const response = await commentsAPI.getByArticle(articleId)
+        setComments(response.data)
+      } catch (error) {
+        console.error("Erreur chargement commentaires:", error)
+      }
+      setLoading(false)
     }
-    fetchComments()
+
+    loadComments()
   }, [articleId])
 
   // Poster un commentaire
@@ -40,9 +37,15 @@ function CommentSection({ articleId }) {
     try {
       await commentsAPI.create(articleId, newComment)
       setNewComment("")
-      await loadComments() // Recharger la liste
+      setLoading(true)
+      // Reload comments after posting
+      const response = await commentsAPI.getByArticle(articleId)
+      setComments(response.data)
+      setLoading(false)
     } catch (error) {
-      setError(error.response?.data?.message || "Erreur")
+      console.error("Erreur lors de l'envoi du commentaire:", error)
+      setError("Erreur lors de l'envoi du commentaire")
+      setLoading(false)
     }
   }
 
@@ -50,7 +53,11 @@ function CommentSection({ articleId }) {
   const handleDelete = async (commentId) => {
     try {
       await commentsAPI.delete(commentId)
-      await loadComments()
+      setLoading(true)
+      // Reload comments after deletion
+      const response = await commentsAPI.getByArticle(articleId)
+      setComments(response.data)
+      setLoading(false)
     } catch (error) {
       console.error("Erreur suppression:", error)
     }
@@ -107,7 +114,7 @@ function CommentSection({ articleId }) {
         <p className="text-purple-300/40 text-sm text-center py-4">Chargement...</p>
       ) : comments.length === 0 ? (
         <p className="text-purple-300/40 text-sm text-center py-4">
-          Aucun commentaire. Soyez le premier !
+          Aucun commentaire pour l'instant. Soyez le premier à commenter !
         </p>
       ) : (
         <div className="flex flex-col gap-3">

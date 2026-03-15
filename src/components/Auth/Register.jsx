@@ -57,7 +57,7 @@ function Register() {
           Mon Blog
         </h1>
         <p className="text-purple-200 text-center mb-8">
-          Creez votre compte pour commencer
+          Créez votre compte pour commencer
         </p>
 
         {error && (
@@ -129,7 +129,7 @@ function Register() {
         </form>
 
         <p className="text-purple-200 text-center mt-6">
-          Deja un compte ?{" "}
+          Déja un compte ?{" "}
           <Link to="/login" className="text-purple-400 hover:text-purple-300 underline">
             Se connecter
           </Link>

@@ -215,7 +215,7 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
               >
                 <span className="text-2xl">📎</span>
                 <span className="text-purple-200/70">
-                  Cliquer pour ajouter des photos ou videos
+                  Cliquer pour ajouter des photos ou vidéos
                 </span>
               </label>
             </div>
@@ -252,7 +252,7 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
                     {/* Badge video */}
                     {preview.type === "video" && (
                       <span className="absolute bottom-1 left-1 px-2 py-0.5 text-xs bg-black/60 text-white rounded">
-                        Video
+                        Vidéo
                       </span>
                     )}
                   </div>

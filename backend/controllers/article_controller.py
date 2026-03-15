@@ -69,14 +69,14 @@ def create():
         return jsonify({"message": "Le titre et le contenu sont obligatoires"}), 400
 
     if len(title.strip()) < 3:
-        return jsonify({"message": "Le titre doit contenir au moins 3 caracteres"}), 400
+        return jsonify({"message": "Le titre doit contenir au moins 3 caractères"}), 400
 
     media_list = []
     for file in files:
         if file and file.filename:
             if not allowed_file(file.filename):
                 return jsonify({
-                    "message": f"Type de fichier non autorise: {file.filename}"
+                    "message": f"Type de fichier non autorisé: {file.filename}"
                 }), 400
 
             ext = file.filename.rsplit(".", 1)[1].lower()

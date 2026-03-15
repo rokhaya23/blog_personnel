@@ -49,7 +49,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete }) {
             </span>
           ) : (
             <span className="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">
-              Prive
+              Privé
             </span>
           )}
           {article.allow_comments && (
@@ -100,7 +100,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete }) {
       {/* DATE + COMMENTAIRES */}
       <div className="flex justify-between items-center mb-4">
         <p className="text-sm text-purple-300/50">
-          Publie le {formatDate(article.created_at)}
+          Publié le {formatDate(article.created_at)}
         </p>
         {article.allow_comments && (
           <button
