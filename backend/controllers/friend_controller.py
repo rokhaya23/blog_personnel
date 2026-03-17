@@ -137,6 +137,7 @@ def get_friends():
         )
         if ami:
             ami["_id"] = str(ami["_id"])
+            ami["avatar"] = ami.get("avatar", None)
             amis.append(ami)
 
     return jsonify({"amis": amis}), 200
@@ -413,7 +414,8 @@ def get_user_friends(user_id):
                 "_id":       str(ami["_id"]),
                 "full_name": ami["full_name"],
                 "username":  ami["username"],
-                "is_online": ami.get("is_online", False)
+                "is_online": ami.get("is_online", False),
+                "avatar":    ami.get("avatar", None)
             })
 
     return jsonify({"amis": amis}), 200

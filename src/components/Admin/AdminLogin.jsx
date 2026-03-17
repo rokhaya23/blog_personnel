@@ -8,7 +8,6 @@
 // ============================================================
 
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 
 // Code secret admin — en production ce serait dans une variable d'environnement
 const ADMIN_CODE = "dailypost2026"

@@ -1,9 +1,12 @@
 import { useFriends } from "../../context/FriendContext"
+import { useNavigate } from "react-router-dom"
 
 function FriendsList() {
   // On récupère les données et fonctions du contexte
   // Pas besoin de useState ici — les données viennent du contexte
   const { amis, supprimerAmi, bloquerUser } = useFriends()
+    const navigate = useNavigate()
+
 
   const handleSupprimer = async (amiId) => {
     if (!confirm("Supprimer cet ami ?")) return
@@ -41,27 +44,37 @@ function FriendsList() {
               className="flex justify-between items-center px-4 py-3 bg-white/5 border border-white/10 rounded-xl"
             >
               {/* Avatar + infos */}
-              <div className="flex items-center gap-3">
-                {/* Cercle avec les initiales */}
-                <div className="w-9 h-9 rounded-full bg-purple-600/40 flex items-center justify-center text-sm font-medium text-purple-200 flex-shrink-0">
-                  {ami.full_name?.slice(0, 2).toUpperCase()}
-                </div>
+              <button
+                onClick={() => navigate(`/profile/${ami._id}`)}
+                className="flex items-center gap-3 text-left hover:opacity-80 transition flex-1"
+              >
+                {/* Avatar avec photo si disponible */}
+                {ami.avatar ? (
+                  <img
+                    src={`http://localhost:5000/api/auth/avatar/${ami.avatar}`}
+                    alt={ami.full_name}
+                    className="w-10 h-10 rounded-full object-cover border-2 border-purple-500 flex-shrink-0"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-purple-600/40 flex items-center justify-center text-sm font-medium text-purple-200 flex-shrink-0">
+                    {ami.full_name?.slice(0, 2).toUpperCase()}
+                  </div>
+                )}
                 <div>
-                  <div className="text-sm font-medium text-white">
+                  <div className="text-sm font-medium text-white hover:underline">
                     {ami.full_name}
                   </div>
                   <div className="text-xs text-purple-300/60 flex items-center gap-1">
                     @{ami.username}
-                    {/* Point vert si en ligne */}
                     {ami.is_online && (
-                      <span className="ml-1 flex items-center gap-1 text-green-400">
+                      <span className="flex items-center gap-1 text-green-400 ml-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
                         en ligne
                       </span>
                     )}
                   </div>
                 </div>
-              </div>
+              </button>
 
               {/* Boutons actions */}
               <div className="flex gap-2">
