@@ -19,7 +19,7 @@ import { useAuth } from "../../context/AuthContext"
 //     <Dashboard />
 //   </ProtectedRoute>
 // Alors "children" = <Dashboard />
-function ProtectedRoute({ children }) {
+function ProtectedRoute({ children, requireAdmin = false }) {
   // On récupère l'utilisateur connecté depuis le contexte
   const { currentUser } = useAuth()
 
@@ -29,6 +29,10 @@ function ProtectedRoute({ children }) {
     // "replace" remplace l'URL dans l'historique du navigateur
     // pour que le bouton "retour" ne ramène pas à la page protégée
     return <Navigate to="/login" replace />
+  }
+
+  if (requireAdmin && !currentUser.is_admin) {
+    return <Navigate to="/dashboard" replace />
   }
 
   // Si l'utilisateur est connecté, on affiche la page demandée

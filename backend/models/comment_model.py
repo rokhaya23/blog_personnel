@@ -1,27 +1,33 @@
 # ============================================================
-# comment_model.py
-# MODÈLE COMMENTAIRE — Accès à la collection "comments" MongoDB
-#
-# Gère les commentaires sur les articles :
-# - Ajouter un commentaire
-# - Récupérer les commentaires d'un article
-# - Supprimer un commentaire (auteur du commentaire ou de l'article)
+# comment_model.py — VERSION AVEC RÉPONSES
+# Ajout du champ parent_id pour les fils de discussion
 # ============================================================
 
 from database.db import get_db
 from bson.objectid import ObjectId
+from bson.errors import InvalidId
 from datetime import datetime
 
 
-def create_comment(article_id, author_id, content):
+def _to_object_id(value):
+    try:
+        return ObjectId(value)
+    except (InvalidId, TypeError):
+        return None
+
+
+def create_comment(article_id, author_id, content, parent_id=None):
     """
-    Crée un nouveau commentaire sur un article.
-    Vérifie d'abord que l'article existe et autorise les commentaires.
+    Crée un commentaire ou une réponse.
+    Si parent_id est fourni, c'est une réponse à un autre commentaire.
     """
     db = get_db()
+    article_oid = _to_object_id(article_id)
+    author_oid = _to_object_id(author_id)
+    if not article_oid or not author_oid:
+        return {"success": False, "message": "Identifiant invalide"}
 
-    # Vérifier que l'article existe et que les commentaires sont activés
-    article = db.articles.find_one({"_id": ObjectId(article_id)})
+    article = db.articles.find_one({"_id": article_oid})
 
     if not article:
         return {"success": False, "message": "Article introuvable"}
@@ -29,10 +35,20 @@ def create_comment(article_id, author_id, content):
     if not article.get("allow_comments", False):
         return {"success": False, "message": "Les commentaires sont desactives sur cet article"}
 
+    parent_oid = None
+    if parent_id:
+        parent_oid = _to_object_id(parent_id)
+        if not parent_oid:
+            return {"success": False, "message": "Commentaire parent invalide"}
+        parent_comment = db.comments.find_one({"_id": parent_oid, "article_id": article_oid})
+        if not parent_comment:
+            return {"success": False, "message": "Commentaire parent introuvable"}
+
     comment = {
-        "article_id": ObjectId(article_id),
-        "author_id": ObjectId(author_id),
+        "article_id": article_oid,
+        "author_id": author_oid,
         "content": content,
+        "parent_id": parent_oid,
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow(),
     }
@@ -47,20 +63,20 @@ def create_comment(article_id, author_id, content):
 
 def get_article_comments(article_id):
     """
-    Récupère tous les commentaires d'un article.
-    Triés du plus ancien au plus récent (ordre chronologique).
-    sort([("created_at", 1)]) → 1 = ordre croissant (ancien d'abord)
+    Récupère tous les commentaires d'un article (racines + réponses).
+    Le frontend les organisera en arbre grâce au parent_id.
     """
     db = get_db()
+    article_oid = _to_object_id(article_id)
+    if not article_oid:
+        return []
 
     comments = db.comments.find(
-        {"article_id": ObjectId(article_id)}
+        {"article_id": article_oid}
     ).sort([("created_at", 1)])
 
-    # Convertir en liste et ajouter les infos de l'auteur
     result = []
     for comment in comments:
-        # Chercher le nom de l'auteur du commentaire
         author = db.users.find_one({"_id": comment["author_id"]})
 
         result.append({
@@ -70,6 +86,7 @@ def get_article_comments(article_id):
             "author_name": author["full_name"] if author else "Utilisateur inconnu",
             "author_username": author["username"] if author else "inconnu",
             "content": comment["content"],
+            "parent_id": str(comment["parent_id"]) if comment.get("parent_id") else None,
             "created_at": comment["created_at"].isoformat(),
         })
 
@@ -78,39 +95,41 @@ def get_article_comments(article_id):
 
 def delete_comment(comment_id, user_id):
     """
-    Supprime un commentaire.
-    Autorisé pour :
-    - L'auteur du commentaire
-    - L'auteur de l'article (modération)
+    Supprime un commentaire et toutes ses réponses.
     """
     db = get_db()
+    comment_oid = _to_object_id(comment_id)
+    user_oid = _to_object_id(user_id)
+    if not comment_oid or not user_oid:
+        return {"success": False, "message": "Commentaire introuvable"}
 
-    # Trouver le commentaire
-    comment = db.comments.find_one({"_id": ObjectId(comment_id)})
+    comment = db.comments.find_one({"_id": comment_oid})
 
     if not comment:
         return {"success": False, "message": "Commentaire introuvable"}
 
-    # Trouver l'article associé pour vérifier si l'utilisateur est l'auteur de l'article
     article = db.articles.find_one({"_id": comment["article_id"]})
 
-    # Vérifier les permissions
-    is_comment_author = comment["author_id"] == ObjectId(user_id)
-    is_article_author = article and article["author_id"] == ObjectId(user_id)
+    is_comment_author = comment["author_id"] == user_oid
+    is_article_author = article and article["author_id"] == user_oid
 
     if not is_comment_author and not is_article_author:
         return {"success": False, "message": "Vous ne pouvez pas supprimer ce commentaire"}
 
-    # Supprimer le commentaire
-    db.comments.delete_one({"_id": ObjectId(comment_id)})
+    # Supprimer le commentaire ET ses réponses
+    db.comments.delete_many({
+        "$or": [
+            {"_id": comment_oid},
+            {"parent_id": comment_oid},
+        ]
+    })
 
     return {"success": True}
 
 
 def get_comment_count(article_id):
-    """
-    Compte le nombre de commentaires d'un article.
-    Utile pour afficher "3 commentaires" sur la carte d'article.
-    """
     db = get_db()
-    return db.comments.count_documents({"article_id": ObjectId(article_id)})
+    article_oid = _to_object_id(article_id)
+    if not article_oid:
+        return 0
+    return db.comments.count_documents({"article_id": article_oid})

@@ -1,12 +1,21 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson import ObjectId
+from bson.errors import InvalidId
 from database.db import get_db
 from controllers.article_controller import format_article
 from models.article_model import get_user_articles as fetch_articles
+import re
 
 
 friend_bp = Blueprint("friends", __name__)
+
+
+def to_object_id(value):
+    try:
+        return ObjectId(value)
+    except (InvalidId, TypeError):
+        return None
 
 # ════════════════════════════════════════
 # RECHERCHER UN UTILISATEUR
@@ -16,18 +25,23 @@ friend_bp = Blueprint("friends", __name__)
 def search_users():
     db = get_db()
     current_user_id = get_jwt_identity()
+    current_user_oid = to_object_id(current_user_id)
+    if not current_user_oid:
+        return jsonify({"message": "Session invalide"}), 401
 
     # Récupérer le paramètre q dans l'URL (?q=rokhaya)
     query = request.args.get("q", "").strip()
 
-    if len(query) < 2:
+    if len(query) < 2 or len(query) > 50:
         return jsonify({"message": "Minimum 2 caractères"}), 400
+
+    safe_query = re.escape(query)
 
     # $regex = cherche le texte n'importe où dans le champ
     # $options: "i" = insensible à la casse (majuscules/minuscules)
     users = list(db.users.find({
-        "username": {"$regex": query, "$options": "i"},
-        "_id": {"$ne": ObjectId(current_user_id)} # exclure soi-même
+        "username": {"$regex": safe_query, "$options": "i"},
+        "_id": {"$ne": current_user_oid} # exclure soi-même
     }, {
         "password_hash": 0 # ne jamais renvoyer le mot de passe
     }).limit(10))
@@ -48,23 +62,30 @@ def search_users():
 def send_request():
     db = get_db()
     current_user_id = get_jwt_identity()
+    current_user_oid = to_object_id(current_user_id)
+    if not current_user_oid:
+        return jsonify({"message": "Session invalide"}), 401
 
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     receiver_id = data.get("receiver_id")
+    receiver_oid = to_object_id(receiver_id)
 
-    if not receiver_id:
+    if not receiver_oid:
         return jsonify({"message": "receiver_id requis"}), 400
 
+    if current_user_oid == receiver_oid:
+        return jsonify({"message": "Vous ne pouvez pas vous ajouter vous-meme"}), 400
+
     # Vérifier que le destinataire existe
-    receiver = db.users.find_one({"_id": ObjectId(receiver_id)})
+    receiver = db.users.find_one({"_id": receiver_oid})
     if not receiver:
         return jsonify({"message": "Utilisateur introuvable"}), 404
 
     # Vérifier qu'une relation n'existe pas déjà
     existing = db.friendships.find_one({
         "$or": [
-            {"sender_id":   ObjectId(current_user_id), "receiver_id": ObjectId(receiver_id)},
-            {"sender_id":   ObjectId(receiver_id),     "receiver_id": ObjectId(current_user_id)}
+            {"sender_id": current_user_oid, "receiver_id": receiver_oid},
+            {"sender_id": receiver_oid, "receiver_id": current_user_oid}
         ]
     })
     if existing:
@@ -72,8 +93,8 @@ def send_request():
 
     from datetime import datetime
     db.friendships.insert_one({
-        "sender_id":         ObjectId(current_user_id),
-        "receiver_id":       ObjectId(receiver_id),
+        "sender_id":         current_user_oid,
+        "receiver_id":       receiver_oid,
         "status":            "pending",
         "seen_by_recipient": False,
         "created_at":        datetime.utcnow(),
@@ -92,12 +113,15 @@ def send_request():
 def get_friends():
     db = get_db()
     current_user_id = get_jwt_identity()
+    current_user_oid = to_object_id(current_user_id)
+    if not current_user_oid:
+        return jsonify({"message": "Session invalide"}), 401
 
     # Trouver toutes les relations "accepted"
     relations = list(db.friendships.find({
         "$or": [
-            {"sender_id":   ObjectId(current_user_id), "status": "accepted"},
-            {"receiver_id": ObjectId(current_user_id), "status": "accepted"}
+            {"sender_id": current_user_oid, "status": "accepted"},
+            {"receiver_id": current_user_oid, "status": "accepted"}
         ]
     }))
 
@@ -127,10 +151,13 @@ def get_friends():
 def get_requests():
     db = get_db()
     current_user_id = get_jwt_identity()
+    current_user_oid = to_object_id(current_user_id)
+    if not current_user_oid:
+        return jsonify({"message": "Session invalide"}), 401
 
     # Trouver les demandes reçues (je suis le receiver)
     relations = list(db.friendships.find({
-        "receiver_id": ObjectId(current_user_id),
+        "receiver_id": current_user_oid,
         "status":      "pending"
     }))
 
@@ -151,7 +178,7 @@ def get_requests():
 
     # Marquer les demandes comme vues
     db.friendships.update_many(
-        {"receiver_id": ObjectId(current_user_id), "seen_by_recipient": False},
+        {"receiver_id": current_user_oid, "seen_by_recipient": False},
         {"$set": {"seen_by_recipient": True}}
     )
 
@@ -167,15 +194,21 @@ def get_requests():
 def accept_request():
     db = get_db()
     current_user_id = get_jwt_identity()
+    current_user_oid = to_object_id(current_user_id)
+    if not current_user_oid:
+        return jsonify({"message": "Session invalide"}), 401
 
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     sender_id = data.get("sender_id")
+    sender_oid = to_object_id(sender_id)
+    if not sender_oid:
+        return jsonify({"message": "sender_id invalide"}), 400
 
     from datetime import datetime
     result = db.friendships.update_one(
         {
-            "sender_id":   ObjectId(sender_id),
-            "receiver_id": ObjectId(current_user_id),
+            "sender_id": sender_oid,
+            "receiver_id": current_user_oid,
             "status":      "pending"
         },
         {"$set": {
@@ -199,13 +232,19 @@ def accept_request():
 def decline_request():
     db = get_db()
     current_user_id = get_jwt_identity()
+    current_user_oid = to_object_id(current_user_id)
+    if not current_user_oid:
+        return jsonify({"message": "Session invalide"}), 401
 
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     sender_id = data.get("sender_id")
+    sender_oid = to_object_id(sender_id)
+    if not sender_oid:
+        return jsonify({"message": "sender_id invalide"}), 400
 
     result = db.friendships.delete_one({
-        "sender_id":   ObjectId(sender_id),
-        "receiver_id": ObjectId(current_user_id),
+        "sender_id": sender_oid,
+        "receiver_id": current_user_oid,
         "status":      "pending"
     })
 
@@ -224,11 +263,17 @@ def decline_request():
 def remove_friend(ami_id):
     db = get_db()
     current_user_id = get_jwt_identity()
+    current_user_oid = to_object_id(current_user_id)
+    ami_oid = to_object_id(ami_id)
+    if not current_user_oid:
+        return jsonify({"message": "Session invalide"}), 401
+    if not ami_oid:
+        return jsonify({"message": "Ami invalide"}), 400
 
     result = db.friendships.delete_one({
         "$or": [
-            {"sender_id":   ObjectId(current_user_id), "receiver_id": ObjectId(ami_id)},
-            {"sender_id":   ObjectId(ami_id),          "receiver_id": ObjectId(current_user_id)}
+            {"sender_id": current_user_oid, "receiver_id": ami_oid},
+            {"sender_id": ami_oid, "receiver_id": current_user_oid}
         ],
         "status": "accepted"
     })
@@ -248,14 +293,22 @@ def remove_friend(ami_id):
 def block_user(user_id):
     db = get_db()
     current_user_id = get_jwt_identity()
+    current_user_oid = to_object_id(current_user_id)
+    target_oid = to_object_id(user_id)
+    if not current_user_oid:
+        return jsonify({"message": "Session invalide"}), 401
+    if not target_oid:
+        return jsonify({"message": "Utilisateur invalide"}), 400
+    if current_user_oid == target_oid:
+        return jsonify({"message": "Vous ne pouvez pas vous bloquer vous-meme"}), 400
 
     from datetime import datetime
 
     # Chercher si une relation existe déjà
     existing = db.friendships.find_one({
         "$or": [
-            {"sender_id":   ObjectId(current_user_id), "receiver_id": ObjectId(user_id)},
-            {"sender_id":   ObjectId(user_id),         "receiver_id": ObjectId(current_user_id)}
+            {"sender_id": current_user_oid, "receiver_id": target_oid},
+            {"sender_id": target_oid, "receiver_id": current_user_oid}
         ]
     })
 
@@ -268,8 +321,8 @@ def block_user(user_id):
     else:
         # Créer une nouvelle relation bloquée
         db.friendships.insert_one({
-            "sender_id":         ObjectId(current_user_id),
-            "receiver_id":       ObjectId(user_id),
+            "sender_id":         current_user_oid,
+            "receiver_id":       target_oid,
             "status":            "blocked",
             "seen_by_recipient": False,
             "created_at":        datetime.utcnow(),
@@ -283,8 +336,11 @@ def block_user(user_id):
 @jwt_required()
 def get_user_profile(user_id):
     db = get_db()
+    target_oid = to_object_id(user_id)
+    if not target_oid:
+        return jsonify({"message": "Utilisateur invalide"}), 400
     user = db.users.find_one(
-        {"_id": ObjectId(user_id)},
+        {"_id": target_oid},
         {"password_hash": 0}
     )
     if not user:
@@ -304,10 +360,13 @@ def get_user_profile(user_id):
 @friend_bp.route("/api/users/<user_id>/articles", methods=["GET"])
 @jwt_required()
 def get_user_articles(user_id):
-    
+    user_oid = to_object_id(user_id)
+    if not user_oid:
+        return jsonify({"articles": []}), 200
+
     try:
         # Récupérer tous les articles de l'utilisateur (publics ET privés)
-        articles = fetch_articles(user_id)
+        articles = fetch_articles(str(user_oid))
 
         # Filtrer uniquement les articles publics
         # car on consulte le profil d'un AUTRE utilisateur —
@@ -331,11 +390,14 @@ def get_user_articles(user_id):
 @jwt_required()
 def get_user_friends(user_id):
     db = get_db()
+    user_oid = to_object_id(user_id)
+    if not user_oid:
+        return jsonify({"amis": []}), 200
 
     relations = list(db.friendships.find({
         "$or": [
-            {"sender_id":   ObjectId(user_id), "status": "accepted"},
-            {"receiver_id": ObjectId(user_id), "status": "accepted"}
+            {"sender_id": user_oid, "status": "accepted"},
+            {"receiver_id": user_oid, "status": "accepted"}
         ]
     }))
 

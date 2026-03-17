@@ -42,6 +42,24 @@ export function AuthProvider({ children }) {
     checkAuth()
   }, [])
 
+  const refreshCurrentUser = async () => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+      setCurrentUser(null)
+      return null
+    }
+
+    try {
+      const response = await authAPI.getMe()
+      setCurrentUser(response.data)
+      return response.data
+    } catch {
+      localStorage.removeItem("token")
+      setCurrentUser(null)
+      return null
+    }
+  }
+
   // ========================
   // CONNEXION
   // ========================
@@ -104,6 +122,7 @@ export function AuthProvider({ children }) {
     login,
     register,
     logout,
+    refreshCurrentUser,
   }
 
   // Tant que loading est true, on affiche un écran de chargement

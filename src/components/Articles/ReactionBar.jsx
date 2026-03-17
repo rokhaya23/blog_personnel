@@ -1,4 +1,12 @@
-import { useState } from "react"
+// ============================================================
+// ReactionBar.jsx — VERSION AMÉLIORÉE
+//
+// Les emojis sont maintenant TOUJOURS visibles (pas juste un +).
+// L'utilisateur voit directement 👍❤️😂😮😢😡 et clique dessus.
+// Les emojis avec des réactions ont un compteur affiché.
+// ============================================================
+
+import { useState, useEffect } from "react"
 import { articlesAPI } from "../../services/api"
 
 const AVAILABLE_EMOJIS = [
@@ -12,80 +20,62 @@ const AVAILABLE_EMOJIS = [
 
 function ReactionBar({ articleId, reactionsCount }) {
   const [counts, setCounts] = useState(reactionsCount || {})
-  const [showPicker, setShowPicker] = useState(false)
+
+  useEffect(() => {
+    setCounts(reactionsCount || {})
+  }, [reactionsCount])
 
   const totalReactions = Object.values(counts).reduce((sum, c) => sum + c, 0)
 
   const handleEmojiClick = async (emojiType) => {
     try {
       const response = await articlesAPI.react(articleId, emojiType)
-
-      // Mettre à jour les compteurs localement
-      const action = response.data.action
-      const newCounts = { ...counts }
-
-      if (action === "added") {
-        newCounts[emojiType] = (newCounts[emojiType] || 0) + 1
-      } else if (action === "removed") {
-        newCounts[emojiType] = Math.max((newCounts[emojiType] || 0) - 1, 0)
+      if (response.data?.reactions_count) {
+        setCounts(response.data.reactions_count)
       }
-
-      setCounts(newCounts)
     } catch (error) {
-      console.error("Erreur réaction:", error)
+      console.error("Erreur reaction:", error)
     }
-
-    setShowPicker(false)
   }
 
   return (
-    <div className="flex items-center gap-2 flex-wrap">
-      {AVAILABLE_EMOJIS.map((emojiData) => {
-        const count = counts[emojiData.type] || 0
-        if (count === 0) return null
+    <div>
+      {/* ── LABEL "Réagir" pour guider l'utilisateur ── */}
+      <p className="text-purple-300/50 text-xs mb-2">Reagir a cet article :</p>
 
-        return (
-          <button
-            key={emojiData.type}
-            onClick={() => handleEmojiClick(emojiData.type)}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full text-sm bg-white/10 border border-white/10 hover:bg-white/20 transition"
-            title={emojiData.label}
-          >
-            <span>{emojiData.emoji}</span>
-            <span className="text-white/80 text-xs">{count}</span>
-          </button>
-        )
-      })}
+      {/* ── TOUS LES EMOJIS TOUJOURS VISIBLES ── */}
+      <div className="flex items-center gap-1.5 flex-wrap">
+        {AVAILABLE_EMOJIS.map((emojiData) => {
+          const count = counts[emojiData.type] || 0
+          const hasReactions = count > 0
 
-      <div className="relative">
-        <button
-          onClick={() => setShowPicker(!showPicker)}
-          className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white/60 text-sm transition"
-        >
-          {showPicker ? "✕" : "+"}
-        </button>
+          return (
+            <button
+              key={emojiData.type}
+              onClick={() => handleEmojiClick(emojiData.type)}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-sm transition hover:scale-110 ${
+                hasReactions
+                  ? "bg-purple-500/20 border border-purple-400/40"
+                  : "bg-white/5 border border-white/10 hover:bg-white/15"
+              }`}
+              title={emojiData.label}
+            >
+              <span className="text-base">{emojiData.emoji}</span>
+              {/* Afficher le compteur uniquement si > 0 */}
+              {hasReactions && (
+                <span className="text-white/80 text-xs font-medium">{count}</span>
+              )}
+            </button>
+          )
+        })}
 
-        {showPicker && (
-          <div className="absolute bottom-full left-0 mb-2 bg-slate-800 border border-white/20 rounded-xl p-2 flex gap-1 shadow-xl z-10">
-            {AVAILABLE_EMOJIS.map((emojiData) => (
-              <button
-                key={emojiData.type}
-                onClick={() => handleEmojiClick(emojiData.type)}
-                className="w-9 h-9 flex items-center justify-center rounded-lg text-lg transition hover:scale-125 hover:bg-white/10"
-                title={emojiData.label}
-              >
-                {emojiData.emoji}
-              </button>
-            ))}
-          </div>
+        {/* Total des réactions */}
+        {totalReactions > 0 && (
+          <span className="text-purple-300/40 text-xs ml-2">
+            {totalReactions} reaction{totalReactions !== 1 ? "s" : ""}
+          </span>
         )}
       </div>
-
-      {totalReactions > 0 && (
-        <span className="text-purple-300/40 text-xs ml-1">
-          {totalReactions} reaction{totalReactions !== 1 ? "s" : ""}
-        </span>
-      )}
     </div>
   )
 }

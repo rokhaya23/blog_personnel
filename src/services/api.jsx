@@ -56,6 +56,23 @@ export const authAPI = {
 
   // POST /api/auth/logout
   logout: () => api.post("/auth/logout"),
+
+  // PUT /api/auth/profile — Modifier le profil (avec avatar)
+  updateProfile: (data) => {
+    if (data instanceof FormData) {
+      return api.put("/auth/profile", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+    }
+    return api.put("/auth/profile", data)
+  },
+
+  // PUT /api/auth/password — Changer le mot de passe
+  changePassword: (oldPassword, newPassword) =>
+    api.put("/auth/password", {
+      old_password: oldPassword,
+      new_password: newPassword,
+    }),
 }
 
 // ============================================================
@@ -91,8 +108,10 @@ export const articlesAPI = {
   delete: (articleId) => api.delete(`/articles/${articleId}`),
 
   // POST /api/articles/:id/react — Réagir à un article
-  react: (articleId, emojiType) =>
-    api.post(`/articles/${articleId}/react`, { type: emojiType }),
+  react: (articleId, emojiType) => api.post(`/articles/${articleId}/react`, { type: emojiType }),
+  // POST /api/articles/:id/repost — Republier un article
+  repost: (articleId) => api.post(`/articles/${articleId}/repost`),
+  
 }
 
 // ============================================================
@@ -104,14 +123,37 @@ export const commentsAPI = {
   getByArticle: (articleId) => api.get(`/comments/article/${articleId}`),
 
   // POST /api/comments — Ajouter un commentaire
-  create: (articleId, content) =>
-    api.post("/comments", { article_id: articleId, content }),
+// parent_id est optionnel : null = commentaire racine, sinon = réponse
+  create: (articleId, content, parentId = null) =>
+    api.post("/comments", { article_id: articleId, content, parent_id: parentId }),
 
   // DELETE /api/comments/:id — Supprimer un commentaire
   delete: (commentId) => api.delete(`/comments/${commentId}`),
 
   // GET /api/comments/count/:id — Nombre de commentaires
   getCount: (articleId) => api.get(`/comments/count/${articleId}`),
+}
+
+// ============================================================
+// ADMIN (utilise un header secret au lieu de JWT)
+// ============================================================
+
+export const adminAPI = {
+  getStats: () => api.get("/admin/stats", {
+    headers: { "X-Admin-Secret": "dailypost2026" }
+  }),
+
+  getUsers: () => api.get("/admin/users", {
+    headers: { "X-Admin-Secret": "dailypost2026" }
+  }),
+
+  getArticles: () => api.get("/admin/articles", {
+    headers: { "X-Admin-Secret": "dailypost2026" }
+  }),
+
+  getComments: () => api.get("/admin/comments", {
+    headers: { "X-Admin-Secret": "dailypost2026" }
+  }),
 }
 
 export default api

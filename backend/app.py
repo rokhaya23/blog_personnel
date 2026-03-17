@@ -3,12 +3,11 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config import JWT_SECRET_KEY
 from database.db import init_db
-
-# ── Importer les blueprints ──
-from controllers.auth_controller      import auth_bp
-from controllers.article_controller   import article_bp
-from controllers.comment_controller   import comment_bp
-from controllers.friend_controller    import friend_bp
+from controllers.admin_controller import admin_bp
+from controllers.auth_controller import auth_bp
+from controllers.article_controller import article_bp
+from controllers.comment_controller import comment_bp
+from controllers.friend_controller import friend_bp
 from controllers.dashboard_controller import dashboard_bp
 
 # ── Créer l'application Flask ──
@@ -32,6 +31,7 @@ app.register_blueprint(article_bp)    # /api/articles
 app.register_blueprint(comment_bp)    # /api/comments
 app.register_blueprint(friend_bp)     # /api/friends, /api/users/search
 app.register_blueprint(dashboard_bp)  # /api/dashboard
+app.register_blueprint(admin_bp)       # /api/admin/*
 
 # ── Route de test ──
 @app.route("/api/ping")

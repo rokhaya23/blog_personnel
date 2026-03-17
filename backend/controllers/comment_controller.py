@@ -1,8 +1,5 @@
 # ============================================================
-# comment_controller.py
-# CONTROLLER COMMENTAIRES — Routes /api/comments/*
-#
-# Gère l'ajout, la lecture et la suppression de commentaires.
+# comment_controller.py — VERSION AVEC RÉPONSES
 # ============================================================
 
 from flask import Blueprint, request, jsonify
@@ -18,16 +15,17 @@ comment_bp = Blueprint("comments", __name__, url_prefix="/api/comments")
 
 
 # ========================
-# POST /api/comments — Ajouter un commentaire
+# POST /api/comments — Ajouter un commentaire ou une réponse
 # ========================
 @comment_bp.route("", methods=["POST"])
 @jwt_required()
 def create():
     user_id = get_jwt_identity()
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
     article_id = data.get("article_id")
     content = data.get("content")
+    parent_id = data.get("parent_id")  # null pour commentaire racine
 
     if not article_id or not content:
         return jsonify({"message": "article_id et content sont obligatoires"}), 400
@@ -35,7 +33,7 @@ def create():
     if not content.strip():
         return jsonify({"message": "Le commentaire ne peut pas etre vide"}), 400
 
-    result = create_comment(article_id, user_id, content.strip())
+    result = create_comment(article_id, user_id, content.strip(), parent_id)
 
     if not result["success"]:
         return jsonify({"message": result["message"]}), 400
@@ -67,13 +65,14 @@ def delete(comment_id):
     result = delete_comment(comment_id, user_id)
 
     if not result["success"]:
-        return jsonify({"message": result["message"]}), 403
+        status = 404 if "introuvable" in result["message"].lower() else 403
+        return jsonify({"message": result["message"]}), status
 
     return jsonify({"message": "Commentaire supprime"}), 200
 
 
 # ========================
-# GET /api/comments/count/<id> — Nombre de commentaires
+# GET /api/comments/count/<id>
 # ========================
 @comment_bp.route("/count/<article_id>", methods=["GET"])
 @jwt_required()

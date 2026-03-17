@@ -3,7 +3,7 @@
 # CONTROLLER ARTICLES — Routes /api/articles/*
 #
 # Gère le CRUD des articles, les réactions emoji et les médias.
-# Toutes les routes nécessitent un token JWT (sauf serve_media).
+# Toutes les routes nécessitent un token JWT.
 # ============================================================
 
 from flask import Blueprint, request, jsonify
@@ -16,10 +16,13 @@ from models.article_model import (
     update_article,
     delete_article,
     toggle_reaction,
+    repost_article,
+
 )
 from models.comment_model import get_comment_count
 import os
 import uuid
+from bson.objectid import ObjectId
 from werkzeug.utils import secure_filename
 
 article_bp = Blueprint("articles", __name__, url_prefix="/api/articles")
@@ -36,11 +39,43 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+def get_file_size(file_storage):
+    current_pos = file_storage.stream.tell()
+    file_storage.stream.seek(0, os.SEEK_END)
+    size = file_storage.stream.tell()
+    file_storage.stream.seek(current_pos)
+    return size
+
+
 def get_file_type(filename):
     ext = filename.rsplit(".", 1)[1].lower()
     if ext in ALLOWED_IMAGE_EXTENSIONS:
         return "image"
     return "video"
+
+
+def can_view_article(article, viewer_id, db):
+    try:
+        viewer_oid = ObjectId(viewer_id)
+    except Exception:
+        return False
+    author_oid = article["author_id"]
+
+    # L'auteur voit toujours son contenu
+    if author_oid == viewer_oid:
+        return True
+
+    # Les articles privés restent visibles uniquement par l'auteur
+    if not article.get("is_public", False):
+        return False
+
+    relation = db.friendships.find_one({
+        "$or": [
+            {"sender_id": author_oid, "receiver_id": viewer_oid},
+            {"sender_id": viewer_oid, "receiver_id": author_oid},
+        ]
+    })
+    return relation is not None and relation.get("status") == "accepted"
 
 
 # ========================
@@ -58,7 +93,7 @@ def create():
         allow_comments = request.form.get("allow_comments", "true") == "true"
         files = request.files.getlist("media")
     else:
-        data = request.get_json()
+        data = request.get_json(silent=True) or {}
         title = data.get("title")
         content = data.get("content")
         is_public = data.get("is_public", True)
@@ -78,6 +113,10 @@ def create():
                 return jsonify({
                     "message": f"Type de fichier non autorisé: {file.filename}"
                 }), 400
+            if get_file_size(file) > MAX_FILE_SIZE:
+                return jsonify({
+                    "message": f"Le fichier {file.filename} depasse 50 Mo"
+                }), 400
 
             ext = file.filename.rsplit(".", 1)[1].lower()
             unique_filename = f"{uuid.uuid4().hex}.{ext}"
@@ -96,6 +135,8 @@ def create():
         user_id, title.strip(), content.strip(),
         is_public, allow_comments, media_list
     )
+    if not article_id:
+        return jsonify({"message": "Auteur invalide"}), 400
 
     return jsonify({
         "message": "Article cree avec succes",
@@ -112,9 +153,18 @@ def get_mine():
     user_id = get_jwt_identity()
     articles = get_user_articles(user_id)
 
+    from database.db import get_db as get_database
+    database = get_database()
+
     result = []
     for a in articles:
-        result.append(format_article(a))
+        formatted = format_article(a)
+        # Si c'est un repost, ajouter le nom de l'auteur original
+        if a.get("original_author_id"):
+            original_author = database.users.find_one({"_id": a["original_author_id"]})
+            if original_author:
+                formatted["original_author_name"] = original_author["full_name"]
+        result.append(formatted)
 
     return jsonify(result), 200
 
@@ -170,7 +220,13 @@ def get_feed():
             formatted["author_name"] = author["full_name"]
             formatted["author_username"] = author["username"]
             formatted["author_is_online"] = author.get("is_online", False)
+            formatted["author_avatar"] = author.get("avatar")
             formatted["author_last_seen"] = author.get("last_seen").isoformat() if author.get("last_seen") else None
+        # Si c'est un repost, ajouter le nom de l'auteur original
+        if a.get("original_author_id"):
+            original_author = db.users.find_one({"_id": a["original_author_id"]})
+            if original_author:
+                formatted["original_author_name"] = original_author["full_name"]
         result.append(formatted)
 
     return jsonify(result), 200
@@ -180,8 +236,21 @@ def get_feed():
 # GET /api/articles/media/<filename> — Servir un fichier uploadé
 # ========================
 @article_bp.route("/media/<filename>", methods=["GET"])
+@jwt_required()
 def serve_media(filename):
     from flask import send_from_directory
+
+    viewer_id = get_jwt_identity()
+    from database.db import get_db
+    db = get_db()
+
+    article = db.articles.find_one({"media.filename": filename})
+    if not article:
+        return jsonify({"message": "Media introuvable"}), 404
+
+    if not can_view_article(article, viewer_id, db):
+        return jsonify({"message": "Acces refuse"}), 403
+
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 
@@ -206,15 +275,16 @@ def get_one(article_id):
 @jwt_required()
 def update(article_id):
     user_id = get_jwt_identity()
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
     updates = {}
     if "title" in data:
-        if len(data["title"].strip()) < 3:
+        title = (data.get("title") or "").strip()
+        if len(title) < 3:
             return jsonify({"message": "Le titre doit contenir au moins 3 caracteres"}), 400
-        updates["title"] = data["title"].strip()
+        updates["title"] = title
     if "content" in data:
-        updates["content"] = data["content"].strip()
+        updates["content"] = (data.get("content") or "").strip()
     if "is_public" in data:
         updates["is_public"] = data["is_public"]
     if "allow_comments" in data:
@@ -254,7 +324,7 @@ def delete(article_id):
 @jwt_required()
 def react(article_id):
     user_id = get_jwt_identity()
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
     emoji_type = data.get("type")
 
@@ -267,11 +337,32 @@ def react(article_id):
     if result is None:
         return jsonify({"message": "Article introuvable"}), 404
 
+    article = get_article_by_id(article_id)
+    reactions_count = article.get("reactions_count", {}) if article else {}
+
     return jsonify({
         "message": f"Reaction {result}",
         "action": result,
+        "reactions_count": reactions_count,
     }), 200
 
+# ========================
+# POST /api/articles/<id>/repost — Republier un article
+# ========================
+@article_bp.route("/<article_id>/repost", methods=["POST"])
+@jwt_required()
+def repost(article_id):
+    user_id = get_jwt_identity()
+
+    result = repost_article(user_id, article_id)
+
+    if not result["success"]:
+        return jsonify({"message": result["message"]}), 400
+
+    return jsonify({
+        "message": "Article republié avec succes",
+        "article_id": result["article_id"],
+    }), 201
 
 # ============================================================
 # FONCTION UTILITAIRE — Formater un article pour React
@@ -289,4 +380,6 @@ def format_article(article):
         "comment_count": get_comment_count(str(article["_id"])),
         "created_at": article["created_at"].isoformat(),
         "updated_at": article["updated_at"].isoformat(),
-    }
+        "repost_of": str(article["repost_of"]) if article.get("repost_of") else None,
+        "original_author_id": str(article["original_author_id"]) if article.get("original_author_id") else None,
+    }    

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext, useState, useEffect, useCallback } from "react"
 import api from "../services/api"
 import { useAuth } from "./AuthContext"
 
@@ -11,72 +11,65 @@ export function FriendProvider({ children }) {
   const [demandes, setDemandes] = useState([])
 
   // ════════════════════════════════
-  // CHARGER AU DÉMARRAGE
-  // ════════════════════════════════
-  useEffect(() => {
-    if (!currentUser) return
-
-    const fetchAmis = async () => {
-      try {
-        const res = await api.get("/friends")
-        setAmis(res.data.amis || [])
-      } catch (err) {
-        console.error("Erreur chargement amis :", err)
-      }
-    }
-
-    const fetchDemandes = async () => {
-      try {
-        const res = await api.get("/friends/requests")
-        setDemandes(res.data.demandes || [])
-      } catch (err) {
-        console.error("Erreur chargement demandes :", err)
-      }
-    }
-
-    fetchAmis()
-    fetchDemandes()
-
-  }, [currentUser])
-
-  // ════════════════════════════════
   // RECHARGER MANUELLEMENT
   // ════════════════════════════════
-  const chargerAmis = async () => {
+  const chargerAmis = useCallback(async () => {
+    if (!currentUser) {
+      setAmis([])
+      return
+    }
     try {
       const res = await api.get("/friends")
       setAmis(res.data.amis || [])
     } catch (err) {
       console.error("Erreur chargement amis :", err)
     }
-  }
+  }, [currentUser])
 
-  const chargerDemandes = async () => {
+  const chargerDemandes = useCallback(async () => {
+    if (!currentUser) {
+      setDemandes([])
+      return
+    }
     try {
       const res = await api.get("/friends/requests")
       setDemandes(res.data.demandes || [])
     } catch (err) {
       console.error("Erreur chargement demandes :", err)
     }
-  }
+  }, [currentUser])
+
+  // ════════════════════════════════
+  // CHARGER AU DÉMARRAGE
+  // ════════════════════════════════
+  useEffect(() => {
+    if (!currentUser) {
+      setAmis([])
+      setDemandes([])
+      return
+    }
+
+    chargerAmis()
+    chargerDemandes()
+  }, [currentUser, chargerAmis, chargerDemandes])
 
   // ════════════════════════════════
   // RECHERCHER UN UTILISATEUR
   // ════════════════════════════════
-  const rechercherUsers = async (query) => {
+  const rechercherUsers = useCallback(async (query) => {
     try {
-      const res = await api.get(`/users/search?q=${query}`)
+      const res = await api.get(`/users/search?q=${encodeURIComponent(query)}`)
       return res.data.users || []
     } catch (err) {
       console.error("Erreur recherche :", err)
       return []
     }
-  }
+  }, [])
 
   // ════════════════════════════════
   // ENVOYER UNE DEMANDE D'AMI
   // ════════════════════════════════
-  const envoyerDemande = async (receiverId) => {
+  const envoyerDemande = useCallback(async (receiverId) => {
     try {
       await api.post("/friends/request", { receiver_id: receiverId })
       return { success: true }
@@ -86,12 +79,12 @@ export function FriendProvider({ children }) {
         message: err.response?.data?.message || "Erreur"
       }
     }
-  }
+  }, [])
 
   // ════════════════════════════════
   // ACCEPTER UNE DEMANDE
   // ════════════════════════════════
-  const accepterDemande = async (senderId) => {
+  const accepterDemande = useCallback(async (senderId) => {
     try {
       await api.put("/friends/accept", { sender_id: senderId })
       setDemandes(prev => prev.filter(d => d.sender_id !== senderId))
@@ -103,12 +96,12 @@ export function FriendProvider({ children }) {
         message: err.response?.data?.message || "Erreur"
       }
     }
-  }
+  }, [chargerAmis])
 
   // ════════════════════════════════
   // REFUSER UNE DEMANDE
   // ════════════════════════════════
-  const refuserDemande = async (senderId) => {
+  const refuserDemande = useCallback(async (senderId) => {
     try {
       await api.put("/friends/decline", { sender_id: senderId })
       setDemandes(prev => prev.filter(d => d.sender_id !== senderId))
@@ -119,12 +112,12 @@ export function FriendProvider({ children }) {
         message: err.response?.data?.message || "Erreur"
       }
     }
-  }
+  }, [])
 
   // ════════════════════════════════
   // SUPPRIMER UN AMI
   // ════════════════════════════════
-  const supprimerAmi = async (amiId) => {
+  const supprimerAmi = useCallback(async (amiId) => {
     try {
       await api.delete(`/friends/${amiId}`)
       setAmis(prev => prev.filter(a => a._id !== amiId))
@@ -135,12 +128,12 @@ export function FriendProvider({ children }) {
         message: err.response?.data?.message || "Erreur"
       }
     }
-  }
+  }, [])
 
   // ════════════════════════════════
   // BLOQUER UN UTILISATEUR
   // ════════════════════════════════
-  const bloquerUser = async (userId) => {
+  const bloquerUser = useCallback(async (userId) => {
     try {
       await api.put(`/friends/${userId}/block`)
       setAmis(prev => prev.filter(a => a._id !== userId))
@@ -151,7 +144,7 @@ export function FriendProvider({ children }) {
         message: err.response?.data?.message || "Erreur"
       }
     }
-  }
+  }, [])
 
   const value = {
     amis,

@@ -1,9 +1,17 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson import ObjectId
+from bson.errors import InvalidId
 from database.db import get_db
 
 dashboard_bp = Blueprint("dashboard", __name__)
+
+
+def to_object_id(value):
+    try:
+        return ObjectId(value)
+    except (InvalidId, TypeError):
+        return None
 
 
 # ════════════════════════════════════════
@@ -17,12 +25,15 @@ dashboard_bp = Blueprint("dashboard", __name__)
 def get_dashboard():
     db = get_db()
     current_user_id = get_jwt_identity()
+    current_user_oid = to_object_id(current_user_id)
+    if not current_user_oid:
+        return jsonify({"message": "Session invalide"}), 401
 
     # ── 1. Trouver les amis acceptés ──
     relations = list(db.friendships.find({
         "$or": [
-            {"sender_id":   ObjectId(current_user_id), "status": "accepted"},
-            {"receiver_id": ObjectId(current_user_id), "status": "accepted"}
+            {"sender_id": current_user_oid, "status": "accepted"},
+            {"receiver_id": current_user_oid, "status": "accepted"}
         ]
     }))
 
@@ -38,8 +49,8 @@ def get_dashboard():
     # (pour ne pas afficher leurs articles)
     bloqués = list(db.friendships.find({
         "$or": [
-            {"sender_id":   ObjectId(current_user_id), "status": "blocked"},
-            {"receiver_id": ObjectId(current_user_id), "status": "blocked"}
+            {"sender_id": current_user_oid, "status": "blocked"},
+            {"receiver_id": current_user_oid, "status": "blocked"}
         ]
     }))
 
@@ -52,7 +63,7 @@ def get_dashboard():
 
     # ── 3. Articles de l'utilisateur connecté ──
     mes_articles = list(db.articles.find(
-        {"author_id": ObjectId(current_user_id)},
+        {"author_id": current_user_oid},
     ).sort("created_at", -1))  # -1 = du plus récent au plus ancien
 
     # ── 4. Articles publics des amis non bloqués ──
@@ -81,7 +92,7 @@ def get_dashboard():
 
     # ── 6. Compter les demandes reçues non vues ──
     nb_demandes = db.friendships.count_documents({
-        "receiver_id":       ObjectId(current_user_id),
+        "receiver_id":       current_user_oid,
         "status":            "pending",
         "seen_by_recipient": False
     })
