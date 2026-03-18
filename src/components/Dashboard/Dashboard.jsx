@@ -155,20 +155,42 @@ function Dashboard() {
     } catch { showToast("Erreur lors du changement de photo", "error") }
   }
 
-  // ═══ CLASSES DYNAMIQUES SELON LE THÈME ═══
-  const bg = isDark ? "bg-slate-900" : "bg-gray-50"
-  const sidebarBg = isDark ? "bg-white/5 border-white/10" : "bg-white border-gray-200"
-  const cardBg = isDark ? "bg-white/10 border-white/10" : "bg-white border-gray-200 shadow-sm"
-  const textPrimary = isDark ? "text-white" : "text-gray-900"
-  const textSecondary = isDark ? "text-purple-300/60" : "text-gray-500"
-  const textMuted = isDark ? "text-purple-300/40" : "text-gray-400"
+// ═══ CLASSES DYNAMIQUES SELON LE THÈME ═══
+  const bg = isDark ? "bg-slate-900" : "bg-[#f6f2fb]"
+  const sidebarBg = isDark
+    ? "bg-white/5 border-white/10"
+    : "bg-white/90 border-violet-200/80 shadow-[0_18px_40px_rgba(76,29,149,0.08)] backdrop-blur-xl"
+  const cardBg = isDark
+    ? "bg-white/10 border-white/10"
+    : "bg-white/92 border-violet-200/70 shadow-[0_16px_32px_rgba(76,29,149,0.08)]"
+  const textPrimary = isDark ? "text-white" : "text-gray-800"
+  const textSecondary = isDark ? "text-purple-300/60" : "text-violet-900/70"
+  const textMuted = isDark ? "text-purple-300/40" : "text-violet-800/55"
   const inputBg = isDark
     ? "bg-white/10 border-white/20 text-white placeholder-white/40"
-    : "bg-gray-100 border-gray-300 text-gray-900 placeholder-gray-400"
-  const btnActive = "bg-purple-600 text-white"
-  const btnInactive = isDark ? "bg-white/10 text-purple-200 hover:bg-white/20" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-  const hoverCard = isDark ? "hover:bg-white/10" : "hover:bg-gray-50"
-  const topBarBg = isDark ? "bg-white/5 border-white/10" : "bg-white border-gray-200"
+    : "bg-white border-violet-200 text-gray-800 placeholder:text-violet-500/55"
+  const btnActive = isDark
+    ? "bg-violet-600 text-white shadow-[0_14px_30px_rgba(46,16,101,0.35)] hover:bg-violet-500"
+    : "bg-violet-700 text-white shadow-[0_14px_30px_rgba(76,29,149,0.16)] hover:bg-violet-800"
+  const btnInactive = isDark
+    ? "bg-white/10 text-purple-200 hover:bg-white/20"
+    : "bg-white text-violet-900 hover:bg-violet-50 border border-violet-200/80 shadow-sm"
+  const hoverCard = isDark ? "hover:bg-white/10" : "hover:bg-violet-50/70"
+  const topBarBg = isDark
+    ? "bg-white/5 border-white/10"
+    : "bg-white/90 border-violet-200/80 shadow-[0_12px_28px_rgba(76,29,149,0.08)] backdrop-blur-xl"
+  const statCardBg = isDark
+    ? "bg-white/5 border-white/10"
+    : "bg-gradient-to-br from-white via-violet-50/80 to-fuchsia-50/50 border-violet-200/80 shadow-[0_12px_30px_rgba(76,29,149,0.08)]"
+  const primaryButton = isDark
+    ? "bg-violet-600 hover:bg-violet-500 text-white shadow-[0_14px_30px_rgba(46,16,101,0.30)]"
+    : "bg-violet-700 hover:bg-violet-800 text-white shadow-[0_12px_28px_rgba(76,29,149,0.14)]"
+  const toggleButton = isDark
+    ? "bg-white/10 hover:bg-white/20 text-purple-200"
+    : "bg-violet-100 hover:bg-violet-200 text-violet-900"
+  const brandGradient = isDark
+    ? "from-purple-400 via-violet-300 to-purple-500"
+    : "from-violet-900 via-fuchsia-700 to-violet-600"
 
   return (
     <div className={`min-h-screen ${bg} flex flex-col`}>
@@ -189,18 +211,18 @@ function Dashboard() {
         {/* Titre + toggle thème */}
         <div className="flex items-center gap-4">
           {/* Toggle dark/light */}
-          <button
+<button
             onClick={toggleTheme}
-            className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition ${
-              isDark ? "bg-white/10 hover:bg-white/20" : "bg-gray-100 hover:bg-gray-200"
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition ${
+              toggleButton
             }`}
-            title={isDark ? "Mode clair" : "Mode sombre"}
           >
-            {isDark ? "☀️" : "🌙"}
+            {isDark ? "☀️ Mode clair" : "🌙 Mode sombre"}
           </button>
 
+
           <h1
-            className="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-purple-400 via-violet-300 to-purple-500 bg-clip-text text-transparent"
+            className={`text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r ${brandGradient} bg-clip-text text-transparent`}
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
             Daily Post
@@ -223,7 +245,7 @@ function Dashboard() {
         `}>
 
           {/* Avatar + nom */}
-          <div className={`flex items-center gap-3 px-2 py-3 mb-2 border-b ${isDark ? "border-white/10" : "border-gray-200"}`}>
+          <div className={`flex items-center gap-3 px-2 py-3 mb-2 border-b ${isDark ? "border-white/10" : "border-violet-200/80"}`}>
             {currentUser.avatar ? (
               <img
                 src={`http://localhost:5000/api/auth/avatar/${currentUser.avatar}`}
@@ -252,8 +274,8 @@ function Dashboard() {
               key={item.id}
               onClick={() => handleNavClick(item.id)}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition w-full text-left
-                ${activePage === item.id ? btnActive : isDark ? "text-purple-200 hover:bg-white/10" : "text-gray-700 hover:bg-gray-100"}`}
-            >
+              ${activePage === item.id ? btnActive : isDark ? "text-purple-200 hover:bg-white/10" : "text-violet-900 hover:bg-violet-50/70"}`}
+                >
               <span>{item.icon}</span>
               {item.label}
               {item.badge > 0 && (
@@ -262,7 +284,7 @@ function Dashboard() {
             </button>
           ))}
 
-          <div className={`mt-auto border-t pt-3 ${isDark ? "border-white/10" : "border-gray-200"}`}>
+          <div className={`mt-auto border-t pt-3 ${isDark ? "border-white/10" : "border-violet-200/80"}`}>
             <button
               onClick={handleLogout}
               className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-400 hover:bg-red-500/10 transition w-full"
@@ -314,17 +336,17 @@ function Dashboard() {
                     <div
                       key={stat.label}
                       onClick={() => stat.page && handleNavClick(stat.page)}
-                      className={`${cardBg} rounded-xl p-5 border ${stat.page ? `cursor-pointer ${hoverCard} transition` : ""}`}
+                      className={`${statCardBg} rounded-xl p-5 border ${stat.page ? `cursor-pointer ${hoverCard} transition` : ""}`}
                     >
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-lg">{stat.icon}</span>
                         <span className={`text-xs ${textSecondary}`}>{stat.label}</span>
                       </div>
-                      <div className={`text-3xl font-bold ${stat.violet ? "text-purple-400" : textPrimary}`}>
+                      <div className={`text-3xl font-bold ${stat.violet ? (isDark ? "text-purple-400" : "text-violet-700") : textPrimary}`}>
                         {stat.valeur}
                       </div>
                       {stat.page && stat.valeur > 0 && (
-                        <p className="text-xs text-purple-400 mt-2">Cliquer pour voir →</p>
+                        <p className={`text-xs mt-2 ${isDark ? "text-purple-400" : "text-violet-700/70"}`}>Cliquer pour voir →</p>
                       )}
                     </div>
                   ))}
@@ -357,7 +379,12 @@ function Dashboard() {
                         placeholder="Rechercher par titre ou contenu..."
                       />
                       {searchQuery && (
-                        <button onClick={() => { setSearchQuery(""); setCurrentPage(1) }} className={`absolute right-4 top-1/2 -translate-y-1/2 ${textMuted} hover:${textPrimary}`}>✕</button>
+                        <button
+                          onClick={() => { setSearchQuery(""); setCurrentPage(1) }}
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 transition ${textMuted} ${isDark ? "hover:text-white" : "hover:text-violet-900"}`}
+                        >
+                          ✕
+                        </button>
                       )}
                     </div>
                     {searchQuery && (
@@ -377,7 +404,7 @@ function Dashboard() {
                   {activeTab === "mine" && !showForm && (
                     <button
                       onClick={() => { setArticleToEdit(null); setShowForm(true) }}
-                      className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition"
+                      className={`px-5 py-2.5 font-semibold rounded-lg transition ${primaryButton}`}
                     >+ Nouvel article</button>
                   )}
                 </div>
@@ -409,7 +436,7 @@ function Dashboard() {
                 {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="flex justify-center items-center gap-2 mt-8 flex-wrap">
-                    <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} disabled={currentPage === 1} className={`px-4 py-2 rounded-lg transition disabled:opacity-30 ${btnInactive}`}>←</button>
+                  <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} disabled={currentPage === 1} className={`px-4 py-2 rounded-lg transition disabled:opacity-30 ${btnInactive}`}>←</button>
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                       <button key={page} onClick={() => setCurrentPage(page)} className={`w-10 h-10 rounded-lg font-medium transition ${currentPage === page ? btnActive : btnInactive}`}>{page}</button>
                     ))}
@@ -429,7 +456,7 @@ function Dashboard() {
                     Mes articles <span className={`${textMuted} text-lg ml-2`}>({myArticles.length})</span>
                   </h2>
                   <button onClick={() => { setArticleToEdit(null); setShowForm(true); setActivePage("dashboard"); setActiveTab("mine") }}
-                    className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition">+ Nouvel article</button>
+                    className={`px-5 py-2.5 font-semibold rounded-lg transition ${primaryButton}`}>+ Nouvel article</button>
                 </div>
                 {myArticles.length === 0 ? (
                   <div className="text-center py-16"><p className={textSecondary}>Vous n'avez pas encore d'articles</p></div>
@@ -457,7 +484,7 @@ function Dashboard() {
                       <div className="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center text-2xl font-bold text-white">{initiales}</div>
                     )}
                     <div>
-                      <label htmlFor="avatar-upload" className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition cursor-pointer inline-block">Changer la photo</label>
+                      <label htmlFor="avatar-upload" className={`px-5 py-2.5 font-medium rounded-lg transition cursor-pointer inline-block ${primaryButton}`}>Changer la photo</label>
                       <input id="avatar-upload" type="file" accept="image/png,image/jpg,image/jpeg,image/gif,image/webp" className="hidden" onChange={handleAvatarUpload} />
                       <p className={`${textMuted} text-xs mt-2`}>PNG, JPG, GIF — Max 5 Mo</p>
                     </div>

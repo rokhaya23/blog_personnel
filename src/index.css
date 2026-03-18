@@ -4,42 +4,34 @@
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-primary, #111827);
+  transition: background-color 180ms ease, color 180ms ease;
 }
 
-/* ══════════════════════════════════════
-   VARIABLES DE THÈME
-   Le thème est appliqué via une classe
-   sur le body : "theme-dark" ou "theme-light"
-══════════════════════════════════════ */
-
-/* Mode sombre (défaut) */
+/* Mode sombre — on garde les couleurs actuelles */
 .theme-dark {
   --bg-primary: #0f172a;
-  --bg-secondary: rgba(255, 255, 255, 0.05);
+  --bg-secondary: rgba(15, 23, 42, 0.72);
   --bg-card: rgba(255, 255, 255, 0.1);
-  --bg-hover: rgba(255, 255, 255, 0.15);
-  --bg-input: rgba(255, 255, 255, 0.1);
   --border-color: rgba(255, 255, 255, 0.1);
-  --border-hover: rgba(139, 92, 246, 0.3);
   --text-primary: #ffffff;
-  --text-secondary: rgba(196, 181, 253, 0.7);
-  --text-muted: rgba(196, 181, 253, 0.4);
-  --text-placeholder: rgba(255, 255, 255, 0.4);
-  --sidebar-bg: rgba(255, 255, 255, 0.05);
+  --text-secondary: rgba(216, 205, 255, 0.76);
+  --text-muted: rgba(196, 181, 253, 0.44);
 }
 
-/* Mode clair */
+/* Mode clair — ivoire froid + violet plus profond */
 .theme-light {
-  --bg-primary: #f8fafc;
+  --bg-primary: #f6f2fb;
   --bg-secondary: #ffffff;
   --bg-card: #ffffff;
-  --bg-hover: #f1f5f9;
-  --bg-input: #f1f5f9;
-  --border-color: #e2e8f0;
-  --border-hover: rgba(139, 92, 246, 0.3);
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
-  --text-placeholder: #94a3b8;
-  --sidebar-bg: #ffffff;
+  --border-color: #ddd6fe;
+  --text-primary: #1f2937;
+  --text-secondary: #4c1d95;
+  --text-muted: #7c6aaf;
+}
+
+.theme-dark,
+.theme-light {
+  min-height: 100vh;
 }

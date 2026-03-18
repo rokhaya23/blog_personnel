@@ -1,9 +1,10 @@
 // ============================================================
-// ArticleCard.jsx — VERSION AVEC REPOST + MÉDIAS CORRIGÉS
+// ArticleCard.jsx — VERSION DARK/LIGHT
 // ============================================================
 
 import { useState } from "react"
 import { articlesAPI } from "../../services/api"
+import { useTheme } from "../../context/ThemeContext"
 import CommentSection from "./CommentSection"
 import ReactionBar from "./ReactionBar"
 import { useToast } from "../Layout/Toast"
@@ -11,7 +12,7 @@ import { useToast } from "../Layout/Toast"
 function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
   const [showComments, setShowComments] = useState(false)
-
+  const { isDark } = useTheme()
   const { showToast } = useToast()
 
   const handleDelete = () => {
@@ -19,9 +20,6 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
     setShowConfirmDelete(false)
   }
 
-  // ========================
-  // REPUBLIER UN ARTICLE
-  // ========================
   const handleRepost = async () => {
     try {
       await articlesAPI.repost(article.id)
@@ -42,12 +40,27 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
     })
   }
 
-  return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/10 hover:border-purple-500/30 transition duration-300">
+  const cardClass = isDark
+    ? "bg-white/10 backdrop-blur-lg border-white/10 hover:border-purple-500/30"
+    : "bg-white/92 border-violet-200/70 shadow-sm hover:shadow-[0_18px_34px_rgba(76,29,149,0.08)] hover:border-violet-300"
+  const accentText = isDark ? "text-purple-300/60" : "text-violet-900/70"
+  const authorText = isDark ? "text-purple-300/70" : "text-violet-900/65"
+  const bodyText = isDark ? "text-purple-200/80" : "text-slate-600"
+  const metaText = isDark ? "text-purple-300/50" : "text-violet-800/55"
+  const actionText = isDark ? "text-purple-400 hover:text-purple-300" : "text-violet-700 hover:text-violet-900"
+  const editButton = isDark
+    ? "bg-purple-500/20 text-purple-300 hover:bg-purple-500/30"
+    : "bg-violet-50 text-violet-900 hover:bg-violet-100 border border-violet-200"
+  const neutralButton = isDark
+    ? "bg-white/10 text-white/60 hover:bg-white/20"
+    : "bg-white text-slate-600 hover:bg-violet-50 border border-violet-200"
 
-      {/* ── BADGE REPOST ── */}
+  return (
+    <div className={`rounded-xl p-6 border transition duration-300 ${cardClass}`}>
+
+      {/* Badge repost */}
       {article.repost_of && (
-        <div className="flex items-center gap-2 mb-3 text-purple-300/60 text-sm">
+        <div className={`flex items-center gap-2 mb-3 text-sm ${accentText}`}>
           <span>🔁</span>
           <span>
             {isOwner
@@ -57,14 +70,14 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
         </div>
       )}
 
-      {/* ── EN-TÊTE ── */}
+      {/* En-tête */}
       <div className="flex justify-between items-start mb-3">
         <div className="flex-1 mr-4">
-          <h3 className="text-xl font-bold text-white">{article.title}</h3>
-          
+          <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-800"}`}>
+            {article.title}
+          </h3>
           {!isOwner && article.author_name && (
             <div className="flex items-center gap-2 mt-1">
-              {/* Avatar de l'auteur */}
               {article.author_avatar ? (
                 <img
                   src={`http://localhost:5000/api/auth/avatar/${article.author_avatar}`}
@@ -76,12 +89,8 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
                   {article.author_name.charAt(0).toUpperCase()}
                 </div>
               )}
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  article.author_is_online ? "bg-green-400" : "bg-gray-500"
-                }`}
-              />
-              <span className="text-sm text-purple-300/70">
+              <span className={`w-2 h-2 rounded-full ${article.author_is_online ? "bg-green-400" : "bg-gray-400"}`} />
+              <span className={`text-sm ${authorText}`}>
                 {article.author_name}
               </span>
             </div>
@@ -90,18 +99,18 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
 
         <div className="flex gap-2 flex-shrink-0">
           {article.is_public ? (
-            <span className="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-300 border border-green-500/30">
-              Public
-            </span>
+            <span className={`px-2 py-1 text-xs rounded-full border ${
+              isDark ? "bg-green-500/20 text-green-300 border-green-500/30" : "bg-green-50 text-green-600 border-green-200"
+            }`}>Public</span>
           ) : (
-            <span className="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">
-              Prive
-            </span>
+            <span className={`px-2 py-1 text-xs rounded-full border ${
+              isDark ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/30" : "bg-yellow-50 text-yellow-600 border-yellow-200"
+            }`}>Prive</span>
           )}
         </div>
       </div>
 
-      {/* ── MÉDIAS ── */}
+      {/* Médias */}
       {article.media && article.media.length > 0 && (
         <div className="mb-4">
           {article.media.length === 1 ? (
@@ -110,7 +119,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
                 <img
                   src={`http://localhost:5000/api/articles/media/${article.media[0].filename}`}
                   alt={article.media[0].original_name || "Image"}
-                  className="w-full max-h-96 object-contain rounded-lg bg-black/20"
+                  className={`w-full max-h-96 object-contain rounded-lg ${isDark ? "bg-black/20" : "bg-slate-100"}`}
                 />
               ) : (
                 <video
@@ -144,42 +153,41 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
         </div>
       )}
 
-      {/* ── CONTENU ── */}
-      <p className="text-purple-200/80 mb-4 leading-relaxed">
+      {/* Contenu */}
+      <p className={`mb-4 leading-relaxed ${bodyText}`}>
         {article.content.length > 150
           ? article.content.slice(0, 150) + "..."
           : article.content}
       </p>
 
-      {/* ── RÉACTIONS ── */}
+      {/* Réactions */}
       <div className="mb-4">
         <ReactionBar articleId={article.id} reactionsCount={article.reactions_count} />
       </div>
 
-      {/* ── DATE + ACTIONS SOCIALES ── */}
-      <div className="flex justify-between items-center mb-4">
-        <p className="text-sm text-purple-300/50">
+      {/* Date + actions sociales */}
+      <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
+        <p className={`text-sm ${metaText}`}>
           Publie le {formatDate(article.created_at)}
         </p>
 
         <div className="flex items-center gap-4">
-          {/* Bouton Republier (uniquement sur les articles des autres) */}
+          {/* Republier */}
           {!isOwner && !article.repost_of && (
             <button
               onClick={handleRepost}
-              className="flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300 transition"
-              title="Republier sur votre profil"
+              className={`flex items-center gap-1 text-sm transition ${actionText}`}
             >
               <span>🔁</span>
               <span>Republier</span>
             </button>
           )}
 
-          {/* Bouton Commentaires */}
+          {/* Commentaires */}
           {article.allow_comments && (
             <button
               onClick={() => setShowComments(!showComments)}
-              className="text-sm text-purple-400 hover:text-purple-300 transition"
+              className={`text-sm transition ${actionText}`}
             >
               💬 {article.comment_count || 0} commentaire{(article.comment_count || 0) !== 1 ? "s" : ""}
               <span className="ml-1">{showComments ? "▲" : "▼"}</span>
@@ -188,14 +196,13 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
         </div>
       </div>
 
-      {/* ── BOUTONS MODIFIER / SUPPRIMER ── */}
+      {/* Boutons Modifier / Supprimer */}
       {isOwner && (
-        <div className="flex gap-3 pt-3 border-t border-white/10">
-          {/* Pas de modification pour les reposts */}
+        <div className={`flex gap-3 pt-3 border-t flex-wrap ${isDark ? "border-white/10" : "border-violet-200/70"}`}>
           {!article.repost_of && (
             <button
               onClick={() => onEdit(article)}
-              className="px-4 py-2 text-sm bg-purple-500/20 text-purple-300 rounded-lg hover:bg-purple-500/30 transition"
+              className={`px-4 py-2 text-sm rounded-lg transition ${editButton}`}
             >
               Modifier
             </button>
@@ -204,13 +211,13 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
             <div className="flex gap-2">
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 text-sm bg-red-500/30 text-red-300 rounded-lg hover:bg-red-500/40 transition"
+                className={`px-4 py-2 text-sm rounded-lg transition ${isDark ? "bg-red-500/30 text-red-300 hover:bg-red-500/40" : "bg-red-50 text-red-600 hover:bg-red-100 border border-red-200"}`}
               >
                 Confirmer
               </button>
               <button
                 onClick={() => setShowConfirmDelete(false)}
-                className="px-4 py-2 text-sm bg-white/10 text-white/60 rounded-lg hover:bg-white/20 transition"
+                className={`px-4 py-2 text-sm rounded-lg transition ${neutralButton}`}
               >
                 Annuler
               </button>
@@ -218,7 +225,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
           ) : (
             <button
               onClick={() => setShowConfirmDelete(true)}
-              className="px-4 py-2 text-sm bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition"
+              className={`px-4 py-2 text-sm rounded-lg transition ${isDark ? "bg-red-500/20 text-red-300 hover:bg-red-500/30" : "bg-red-50 text-red-600 hover:bg-red-100 border border-red-200"}`}
             >
               Supprimer
             </button>
@@ -226,7 +233,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
         </div>
       )}
 
-      {/* ── COMMENTAIRES ── */}
+      {/* Commentaires */}
       {article.allow_comments && showComments && (
         <CommentSection articleId={article.id} />
       )}

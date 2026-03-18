@@ -1,34 +1,20 @@
-// ============================================================
-// ThemeContext.jsx
-// GESTION DU THÈME (DARK / LIGHT MODE)
-//
-// Permet de basculer entre le mode sombre et le mode clair.
-// Le choix est sauvegardé dans localStorage pour persister
-// entre les sessions.
-//
-// Utilisation dans n'importe quel composant :
-//   const { theme, toggleTheme } = useTheme()
-// ============================================================
 
 import { createContext, useContext, useState } from "react"
 
 const ThemeContext = createContext(null)
 
 export function ThemeProvider({ children }) {
-  // Lire le thème sauvegardé dans localStorage
-  // Si rien n'est sauvegardé, on utilise "dark" par défaut
+  // Mode clair par défaut (au lieu de dark)
   const [theme, setTheme] = useState(
-    localStorage.getItem("daily_post_theme") || "dark"
+    localStorage.getItem("daily_post_theme") || "light"
   )
 
-  // Basculer entre dark et light
   const toggleTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark"
     setTheme(newTheme)
     localStorage.setItem("daily_post_theme", newTheme)
   }
 
-  // Vérifier si on est en mode sombre
   const isDark = theme === "dark"
 
   const value = { theme, isDark, toggleTheme }
