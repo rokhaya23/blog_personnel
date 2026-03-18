@@ -12,7 +12,7 @@ import FriendRequests from "../Friends/FriendRequests"
 import { useFriends } from "../../context/FriendContext"
 
 function Dashboard() {
-  const { currentUser, logout } = useAuth()
+  const { currentUser, logout, refreshCurrentUser } = useAuth()
   const { isDark, toggleTheme } = useTheme()
   const navigate = useNavigate()
   const { showToast } = useToast()
@@ -150,8 +150,8 @@ function Dashboard() {
     formData.append("avatar", file)
     try {
       await authAPI.updateProfile(formData)
+      await refreshCurrentUser()
       showToast("Photo de profil mise a jour !", "success")
-      window.location.reload()
     } catch { showToast("Erreur lors du changement de photo", "error") }
   }
 

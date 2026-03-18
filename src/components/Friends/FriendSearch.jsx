@@ -16,6 +16,7 @@ function FriendSearch() {
 
   // useRef pour détecter le clic en dehors du dropdown
   const containerRef = useRef(null)
+  const latestSearchRef = useRef(0)
 
   // ════════════════════════════════
   // RECHERCHE EN TEMPS RÉEL
@@ -24,28 +25,41 @@ function FriendSearch() {
   // C'est ce qu'on appelle le "debounce" — évite d'appeler
   // l'API à chaque lettre tapée
   // ════════════════════════════════
-  // APRÈS — on déplace les setState dans des fonctions async
-    useEffect(() => {
+  useEffect(() => {
     if (query.trim().length < 2) {
-        const vider = () => {
+      latestSearchRef.current += 1
+      const vider = () => {
         setResultats([])
         setShowDrop(false)
-        }
-        vider()
-        return
+        setLoading(false)
+      }
+      vider()
+      return
     }
 
+    const searchId = latestSearchRef.current + 1
+    latestSearchRef.current = searchId
+
     const timer = setTimeout(async () => {
-        setLoading(true)
-        const users = await rechercherUsers(query)
-        setResultats(users)
-        setShowDrop(true)
-        setLoading(false)
+      setLoading(true)
+      const users = await rechercherUsers(query)
+
+      if (latestSearchRef.current !== searchId) {
+        return
+      }
+
+      setResultats(users)
+      setShowDrop(true)
+      setLoading(false)
     }, 400)
 
-    return () => clearTimeout(timer)
-
-    }, [query, rechercherUsers]) // ← ajouter rechercherUsers // ← se relance à chaque changement de query
+    return () => {
+      clearTimeout(timer)
+      if (latestSearchRef.current === searchId) {
+        setLoading(false)
+      }
+    }
+  }, [query, rechercherUsers])
 
   // ════════════════════════════════
   // FERMER LE DROPDOWN SI CLIC EN DEHORS

@@ -8,15 +8,17 @@
 // - Derniers inscrits, derniers articles, derniers commentaires
 //
 // Rafraîchissement automatique toutes les 30 secondes.
-// Accessible uniquement via /admin/monitoring avec le code secret.
+// Accessible uniquement avec un compte admin authentifié.
 // ============================================================
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { adminAPI } from "../../services/api"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../../context/AuthContext"
 
 function AdminMonitoring() {
   const navigate = useNavigate()
+  const { logout } = useAuth()
 
   const [stats, setStats] = useState(null)
   const [users, setUsers] = useState([])
@@ -26,7 +28,7 @@ function AdminMonitoring() {
   const [lastRefresh, setLastRefresh] = useState(new Date())
 
   // Charger les données
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const [statsRes, usersRes, articlesRes, commentsRes] = await Promise.all([
         adminAPI.getStats(),
@@ -41,26 +43,29 @@ function AdminMonitoring() {
       setLastRefresh(new Date())
     } catch (error) {
       console.error("Erreur chargement admin:", error)
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        navigate("/admin/monitoring", { replace: true })
+      }
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
-  }
+  }, [navigate])
 
   // Chargement initial
   useEffect(() => {
     loadData()
-  }, [])
+  }, [loadData])
 
   // Rafraîchir toutes les 30 secondes
   useEffect(() => {
     const interval = setInterval(loadData, 30000)
     return () => clearInterval(interval)
-  }, [])
+  }, [loadData])
 
   // Se déconnecter du monitoring
-  const handleLogout = () => {
-    sessionStorage.removeItem("admin_authenticated")
-    navigate("/admin/monitoring")
-    window.location.reload()
+  const handleLogout = async () => {
+    await logout()
+    navigate("/admin/monitoring", { replace: true })
   }
 
   const formatDate = (dateString) => {

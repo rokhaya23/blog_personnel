@@ -1,31 +1,34 @@
-// ============================================================
-// AdminLogin.jsx
-// PAGE DE CONNEXION ADMIN — Séparée du login utilisateur
-//
-// Accessible via /admin/monitoring
-// L'admin entre un code secret pour accéder au monitoring.
-// Ce n'est PAS un compte utilisateur normal.
-// ============================================================
-
 import { useState } from "react"
+import { useAuth } from "../../context/AuthContext"
 
-// Code secret admin — en production ce serait dans une variable d'environnement
-const ADMIN_CODE = "dailypost2026"
-
-function AdminLogin({ onLogin }) {
-  const [code, setCode] = useState("")
+function AdminLogin() {
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const { login, logout } = useAuth()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
 
-    if (code === ADMIN_CODE) {
-      // Stocker dans sessionStorage (disparaît quand on ferme le navigateur)
-      sessionStorage.setItem("admin_authenticated", "true")
-      onLogin()
-    } else {
-      setError("Code d'acces incorrect")
+    if (!username.trim() || !password) {
+      setError("Veuillez remplir tous les champs")
+      return
+    }
+
+    setIsLoading(true)
+    const result = await login(username.trim(), password)
+    setIsLoading(false)
+
+    if (!result.success) {
+      setError(result.message)
+      return
+    }
+
+    if (!result.user?.is_admin) {
+      await logout()
+      setError("Ce compte n'a pas les droits administrateur")
     }
   }
 
@@ -50,24 +53,38 @@ function AdminLogin({ onLogin }) {
         )}
 
         <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-purple-200 text-sm mb-2">
+              Nom d'utilisateur admin
+            </label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-400 transition"
+              placeholder="Entrez votre username"
+            />
+          </div>
+
           <div className="mb-6">
             <label className="block text-purple-200 text-sm mb-2">
-              Code d'acces administrateur
+              Mot de passe
             </label>
             <input
               type="password"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-400 transition"
-              placeholder="Entrez le code secret"
+              placeholder="Entrez votre mot de passe"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition duration-200 shadow-lg"
+            disabled={isLoading}
+            className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition duration-200 shadow-lg disabled:opacity-50"
           >
-            Acceder au monitoring
+            {isLoading ? "Connexion en cours..." : "Acceder au monitoring"}
           </button>
         </form>
 

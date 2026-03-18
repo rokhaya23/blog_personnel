@@ -49,8 +49,8 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
   const metaText = isDark ? "text-purple-300/50" : "text-violet-800/55"
   const actionText = isDark ? "text-purple-400 hover:text-purple-300" : "text-violet-700 hover:text-violet-900"
   const editButton = isDark
-    ? "bg-purple-500/20 text-purple-300 hover:bg-purple-500/30"
-    : "bg-violet-50 text-violet-900 hover:bg-violet-100 border border-violet-200"
+    ? "bg-purple-500/30 text-purple-200 hover:bg-purple-500/40"
+    : "bg-violet-100 text-violet-950 hover:bg-violet-200 border border-violet-300"
   const neutralButton = isDark
     ? "bg-white/10 text-white/60 hover:bg-white/20"
     : "bg-white text-slate-600 hover:bg-violet-50 border border-violet-200"
@@ -100,11 +100,11 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
         <div className="flex gap-2 flex-shrink-0">
           {article.is_public ? (
             <span className={`px-2 py-1 text-xs rounded-full border ${
-              isDark ? "bg-green-500/20 text-green-300 border-green-500/30" : "bg-green-50 text-green-600 border-green-200"
+              isDark ? "bg-green-500/30 text-green-200 border-green-400/40" : "bg-green-100 text-green-800 border-green-300"
             }`}>Public</span>
           ) : (
             <span className={`px-2 py-1 text-xs rounded-full border ${
-              isDark ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/30" : "bg-yellow-50 text-yellow-600 border-yellow-200"
+              isDark ? "bg-amber-500/30 text-amber-200 border-amber-400/40" : "bg-amber-100 text-amber-800 border-amber-300"
             }`}>Prive</span>
           )}
         </div>
@@ -162,7 +162,11 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
 
       {/* Réactions */}
       <div className="mb-4">
-        <ReactionBar articleId={article.id} reactionsCount={article.reactions_count} />
+        <ReactionBar
+          articleId={article.id}
+          reactionsCount={article.reactions_count}
+          currentUserReaction={article.current_user_reaction}
+        />
       </div>
 
       {/* Date + actions sociales */}
@@ -211,7 +215,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
             <div className="flex gap-2">
               <button
                 onClick={handleDelete}
-                className={`px-4 py-2 text-sm rounded-lg transition ${isDark ? "bg-red-500/30 text-red-300 hover:bg-red-500/40" : "bg-red-50 text-red-600 hover:bg-red-100 border border-red-200"}`}
+                className={`px-4 py-2 text-sm rounded-lg transition ${isDark ? "bg-red-500/35 text-red-200 hover:bg-red-500/45" : "bg-red-100 text-red-700 hover:bg-red-200 border border-red-300"}`}
               >
                 Confirmer
               </button>
@@ -225,7 +229,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
           ) : (
             <button
               onClick={() => setShowConfirmDelete(true)}
-              className={`px-4 py-2 text-sm rounded-lg transition ${isDark ? "bg-red-500/20 text-red-300 hover:bg-red-500/30" : "bg-red-50 text-red-600 hover:bg-red-100 border border-red-200"}`}
+              className={`px-4 py-2 text-sm rounded-lg transition ${isDark ? "bg-red-500/30 text-red-200 hover:bg-red-500/40" : "bg-red-100 text-red-700 hover:bg-red-200 border border-red-300"}`}
             >
               Supprimer
             </button>
@@ -235,7 +239,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
 
       {/* Commentaires */}
       {article.allow_comments && showComments && (
-        <CommentSection articleId={article.id} />
+        <CommentSection articleId={article.id} articleAuthorId={article.author_id} />
       )}
     </div>
   )

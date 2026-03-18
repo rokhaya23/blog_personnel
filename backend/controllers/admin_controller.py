@@ -3,23 +3,19 @@
 # CONTROLLER ADMIN — Routes /api/admin/*
 #
 # Monitoring de la plateforme.
-# Pas de JWT ici — l'admin utilise un code secret
-# vérifié côté frontend. Le backend vérifie un header secret.
+# Les routes admin exigent un JWT valide et un utilisateur admin.
 # ============================================================
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from database.db import get_db
+from models.user_model import is_admin
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/api/admin")
 
-# Code secret admin — doit correspondre à celui du frontend
-ADMIN_SECRET = "dailypost2026"
-
-
-def check_admin():
-    """Vérifie le header X-Admin-Secret."""
-    secret = request.headers.get("X-Admin-Secret")
-    if secret != ADMIN_SECRET:
+def check_admin_access():
+    user_id = get_jwt_identity()
+    if not is_admin(user_id):
         return jsonify({"message": "Acces refuse"}), 403
     return None
 
@@ -28,8 +24,9 @@ def check_admin():
 # GET /api/admin/stats — Statistiques globales
 # ========================
 @admin_bp.route("/stats", methods=["GET"])
+@jwt_required()
 def stats():
-    error = check_admin()
+    error = check_admin_access()
     if error:
         return error
 
@@ -51,8 +48,9 @@ def stats():
 # GET /api/admin/users — Tous les utilisateurs
 # ========================
 @admin_bp.route("/users", methods=["GET"])
+@jwt_required()
 def list_users():
-    error = check_admin()
+    error = check_admin_access()
     if error:
         return error
 
@@ -81,8 +79,9 @@ def list_users():
 # GET /api/admin/articles — Tous les articles
 # ========================
 @admin_bp.route("/articles", methods=["GET"])
+@jwt_required()
 def list_articles():
-    error = check_admin()
+    error = check_admin_access()
     if error:
         return error
 
@@ -110,8 +109,9 @@ def list_articles():
 # GET /api/admin/comments — Derniers commentaires
 # ========================
 @admin_bp.route("/comments", methods=["GET"])
+@jwt_required()
 def list_comments():
-    error = check_admin()
+    error = check_admin_access()
     if error:
         return error
 

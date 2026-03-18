@@ -13,12 +13,18 @@ from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from datetime import datetime
 
+REACTION_TYPES = ("like", "love", "haha", "wow", "sad", "angry")
+
 
 def _to_object_id(value):
     try:
         return ObjectId(value)
     except (InvalidId, TypeError):
         return None
+
+
+def _empty_reaction_counts():
+    return {reaction_type: 0 for reaction_type in REACTION_TYPES}
 
 
 def create_article(author_id, title, content, is_public, allow_comments, media=None):
@@ -41,14 +47,7 @@ def create_article(author_id, title, content, is_public, allow_comments, media=N
         "allow_comments": allow_comments,
         "media": media or [],        # Liste des fichiers attachés
         "reactions": [],
-        "reactions_count": {
-            "like": 0,
-            "love": 0,
-            "haha": 0,
-            "wow": 0,
-            "sad": 0,
-            "angry": 0,
-        },
+        "reactions_count": _empty_reaction_counts(),
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow(),
     }
@@ -200,61 +199,55 @@ def toggle_reaction(article_id, user_id, emoji_type):
         return None
 
     reactions = article.get("reactions", [])
+    existing_reactions = [reaction for reaction in reactions if reaction.get("user_id") == user_oid]
+    current_reaction = existing_reactions[0]["type"] if existing_reactions else None
 
-    # Chercher si l'utilisateur a déjà réagi
-    existing = None
-    existing_index = -1
-    for i, r in enumerate(reactions):
-        if r["user_id"] == user_oid:
-            existing = r
-            existing_index = i
-            break
+    # Supprimer toute réaction existante de cet utilisateur avant de décider
+    # si on remet une nouvelle réaction. Cela garantit une seule réaction
+    # par utilisateur même si plusieurs clics rapprochés arrivent.
+    db.articles.update_one(
+        {"_id": article_oid},
+        {"$pull": {"reactions": {"user_id": user_oid}}},
+    )
 
-    if existing:
-        if existing["type"] == emoji_type:
-            # CAS 2 : Même emoji → retirer
-            # $pull retire un élément du tableau
-            db.articles.update_one(
-                {"_id": article_oid},
-                {
-                    "$pull": {"reactions": {"user_id": user_oid}},
-                    "$inc": {f"reactions_count.{emoji_type}": -1},
-                }
-            )
-            return "removed"
-        else:
-            # CAS 3 : Emoji différent → changer
-            old_type = existing["type"]
-            db.articles.update_one(
-                {"_id": article_oid, "reactions.user_id": user_oid},
-                {
-                    "$set": {
-                        "reactions.$.type": emoji_type,
-                        "reactions.$.created_at": datetime.utcnow(),
-                    },
-                    "$inc": {
-                        f"reactions_count.{old_type}": -1,
-                        f"reactions_count.{emoji_type}": 1,
-                    },
-                }
-            )
-            return "changed"
+    if current_reaction == emoji_type:
+        action = "removed"
+        next_reaction = None
     else:
-        # CAS 1 : Pas encore de réaction → ajouter
-        # $push ajoute un élément au tableau
-        new_reaction = {
+        action = "changed" if current_reaction else "added"
+        next_reaction = {
             "user_id": user_oid,
             "type": emoji_type,
             "created_at": datetime.utcnow(),
         }
         db.articles.update_one(
             {"_id": article_oid},
-            {
-                "$push": {"reactions": new_reaction},
-                "$inc": {f"reactions_count.{emoji_type}": 1},
-            }
+            {"$push": {"reactions": next_reaction}},
         )
-        return "added"
+
+    updated_article = db.articles.find_one({"_id": article_oid}, {"reactions": 1})
+    updated_reactions = updated_article.get("reactions", []) if updated_article else []
+    reactions_count = _empty_reaction_counts()
+    for reaction in updated_reactions:
+        reaction_type = reaction.get("type")
+        if reaction_type in reactions_count:
+            reactions_count[reaction_type] += 1
+
+    db.articles.update_one(
+        {"_id": article_oid},
+        {
+            "$set": {
+                "reactions_count": reactions_count,
+                "updated_at": datetime.utcnow(),
+            }
+        },
+    )
+
+    return {
+        "action": action,
+        "reactions_count": reactions_count,
+        "current_user_reaction": next_reaction["type"] if next_reaction else None,
+    }
 
 
 def repost_article(user_id, original_article_id):
@@ -298,10 +291,7 @@ def repost_article(user_id, original_article_id):
         "allow_comments": True,
         "media": original.get("media", []),
         "reactions": [],
-        "reactions_count": {
-            "like": 0, "love": 0, "haha": 0,
-            "wow": 0, "sad": 0, "angry": 0,
-        },
+        "reactions_count": _empty_reaction_counts(),
         "repost_of": original_oid,
         "original_author_id": original["author_id"],
         "created_at": datetime.utcnow(),

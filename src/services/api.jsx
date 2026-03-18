@@ -135,25 +135,15 @@ export const commentsAPI = {
 }
 
 // ============================================================
-// ADMIN (utilise un header secret au lieu de JWT)
+// ADMIN
+// Les routes admin sont protégées par le JWT standard.
 // ============================================================
 
 export const adminAPI = {
-  getStats: () => api.get("/admin/stats", {
-    headers: { "X-Admin-Secret": "dailypost2026" }
-  }),
-
-  getUsers: () => api.get("/admin/users", {
-    headers: { "X-Admin-Secret": "dailypost2026" }
-  }),
-
-  getArticles: () => api.get("/admin/articles", {
-    headers: { "X-Admin-Secret": "dailypost2026" }
-  }),
-
-  getComments: () => api.get("/admin/comments", {
-    headers: { "X-Admin-Secret": "dailypost2026" }
-  }),
+  getStats: () => api.get("/admin/stats"),
+  getUsers: () => api.get("/admin/users"),
+  getArticles: () => api.get("/admin/articles"),
+  getComments: () => api.get("/admin/comments"),
 }
 
 export default api

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { articlesAPI } from "../../services/api"
 import { useTheme } from "../../context/ThemeContext"
 
@@ -11,25 +11,34 @@ const AVAILABLE_EMOJIS = [
   { type: "angry", emoji: "😡", label: "Grrr" },
 ]
 
-function ReactionBar({ articleId, reactionsCount }) {
+function ReactionBar({ articleId, reactionsCount, currentUserReaction }) {
   const [counts, setCounts] = useState(reactionsCount || {})
+  const [myReaction, setMyReaction] = useState(currentUserReaction || null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { isDark } = useTheme()
+
+  useEffect(() => {
+    setCounts(reactionsCount || {})
+  }, [reactionsCount])
+
+  useEffect(() => {
+    setMyReaction(currentUserReaction || null)
+  }, [currentUserReaction])
 
   const totalReactions = Object.values(counts).reduce((sum, c) => sum + c, 0)
 
   const handleEmojiClick = async (emojiType) => {
+    if (isSubmitting) return
+
+    setIsSubmitting(true)
     try {
       const response = await articlesAPI.react(articleId, emojiType)
-      const action = response.data.action
-      const newCounts = { ...counts }
-      if (action === "added") {
-        newCounts[emojiType] = (newCounts[emojiType] || 0) + 1
-      } else if (action === "removed") {
-        newCounts[emojiType] = Math.max((newCounts[emojiType] || 0) - 1, 0)
-      }
-      setCounts(newCounts)
+      setCounts(response.data.reactions_count || {})
+      setMyReaction(response.data.current_user_reaction || null)
     } catch (error) {
       console.error("Erreur reaction:", error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -42,14 +51,22 @@ function ReactionBar({ articleId, reactionsCount }) {
         {AVAILABLE_EMOJIS.map((emojiData) => {
           const count = counts[emojiData.type] || 0
           const hasReactions = count > 0
+          const isActive = myReaction === emojiData.type
 
           return (
             <button
               key={emojiData.type}
               onClick={() => handleEmojiClick(emojiData.type)}
-              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-sm transition hover:scale-110 ${
-                hasReactions
-                  ? "bg-purple-500/20 border border-purple-400/40"
+              disabled={isSubmitting}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-sm transition disabled:opacity-70 ${
+                isActive
+                  ? isDark
+                    ? "bg-violet-500/25 border border-violet-300/50 text-white"
+                    : "bg-violet-200 border border-violet-400 text-violet-950"
+                  : hasReactions
+                  ? isDark
+                    ? "bg-purple-500/15 border border-purple-400/30"
+                    : "bg-violet-50 border border-violet-200"
                   : isDark
                   ? "bg-white/5 border border-white/10 hover:bg-white/15"
                   : "bg-white border border-violet-200 hover:bg-violet-50"

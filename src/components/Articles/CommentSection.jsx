@@ -3,14 +3,14 @@ import { commentsAPI } from "../../services/api"
 import { useAuth } from "../../context/AuthContext"
 import { useTheme } from "../../context/ThemeContext"
 
-function SingleComment({ comment, allComments, articleId, currentUser, onReload, depth = 0 }) {
+function SingleComment({ comment, allComments, articleId, articleAuthorId, currentUser, onReload, depth = 0 }) {
   const [showReplyForm, setShowReplyForm] = useState(false)
   const [replyContent, setReplyContent] = useState("")
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
   const { isDark } = useTheme()
 
   const replies = allComments.filter((c) => c.parent_id === comment.id)
-  const canDelete = currentUser.id === comment.author_id
+  const canDelete = currentUser.id === comment.author_id || currentUser.id === articleAuthorId
 
   const handleReply = async (e) => {
     e.preventDefault()
@@ -94,13 +94,22 @@ function SingleComment({ comment, allComments, articleId, currentUser, onReload,
         )}
       </div>
       {replies.map((reply) => (
-        <SingleComment key={reply.id} comment={reply} allComments={allComments} articleId={articleId} currentUser={currentUser} onReload={onReload} depth={depth + 1} />
+        <SingleComment
+          key={reply.id}
+          comment={reply}
+          allComments={allComments}
+          articleId={articleId}
+          articleAuthorId={articleAuthorId}
+          currentUser={currentUser}
+          onReload={onReload}
+          depth={depth + 1}
+        />
       ))}
     </div>
   )
 }
 
-function CommentSection({ articleId }) {
+function CommentSection({ articleId, articleAuthorId }) {
   const { currentUser } = useAuth()
   const { isDark } = useTheme()
   const [comments, setComments] = useState([])
@@ -171,7 +180,16 @@ function CommentSection({ articleId }) {
       ) : (
         <div className="flex flex-col gap-2">
           {rootComments.map((comment) => (
-            <SingleComment key={comment.id} comment={comment} allComments={comments} articleId={articleId} currentUser={currentUser} onReload={loadComments} depth={0} />
+            <SingleComment
+              key={comment.id}
+              comment={comment}
+              allComments={comments}
+              articleId={articleId}
+              articleAuthorId={articleAuthorId}
+              currentUser={currentUser}
+              onReload={loadComments}
+              depth={0}
+            />
           ))}
         </div>
       )}

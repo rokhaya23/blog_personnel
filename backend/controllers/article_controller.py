@@ -158,7 +158,7 @@ def get_mine():
 
     result = []
     for a in articles:
-        formatted = format_article(a)
+        formatted = format_article(a, user_id)
         # Si c'est un repost, ajouter le nom de l'auteur original
         if a.get("original_author_id"):
             original_author = database.users.find_one({"_id": a["original_author_id"]})
@@ -214,7 +214,7 @@ def get_feed():
 
     result = []
     for a in articles:
-        formatted = format_article(a)
+        formatted = format_article(a, user_id)
         author = db.users.find_one({"_id": a["author_id"]})
         if author:
             formatted["author_name"] = author["full_name"]
@@ -265,7 +265,8 @@ def get_one(article_id):
     if not article:
         return jsonify({"message": "Article introuvable"}), 404
 
-    return jsonify(format_article(article)), 200
+    user_id = get_jwt_identity()
+    return jsonify(format_article(article, user_id)), 200
 
 
 # ========================
@@ -337,13 +338,11 @@ def react(article_id):
     if result is None:
         return jsonify({"message": "Article introuvable"}), 404
 
-    article = get_article_by_id(article_id)
-    reactions_count = article.get("reactions_count", {}) if article else {}
-
     return jsonify({
-        "message": f"Reaction {result}",
-        "action": result,
-        "reactions_count": reactions_count,
+        "message": f"Reaction {result['action']}",
+        "action": result["action"],
+        "reactions_count": result["reactions_count"],
+        "current_user_reaction": result["current_user_reaction"],
     }), 200
 
 # ========================
@@ -367,7 +366,15 @@ def repost(article_id):
 # ============================================================
 # FONCTION UTILITAIRE — Formater un article pour React
 # ============================================================
-def format_article(article):
+def format_article(article, current_user_id=None):
+    current_user_reaction = None
+    current_user_oid = ObjectId(current_user_id) if ObjectId.is_valid(current_user_id) else None
+    if current_user_oid:
+        for reaction in article.get("reactions", []):
+            if reaction.get("user_id") == current_user_oid:
+                current_user_reaction = reaction.get("type")
+                break
+
     return {
         "id": str(article["_id"]),
         "author_id": str(article["author_id"]),
@@ -382,4 +389,5 @@ def format_article(article):
         "updated_at": article["updated_at"].isoformat(),
         "repost_of": str(article["repost_of"]) if article.get("repost_of") else None,
         "original_author_id": str(article["original_author_id"]) if article.get("original_author_id") else None,
+        "current_user_reaction": current_user_reaction,
     }    
