@@ -286,7 +286,7 @@ function Dashboard() {
                     {getGreeting()}, {prenom} 👋
                   </h1>
                   <p className="text-purple-300/60">
-                    Bienvenue sur Daily Post. Decouvrez les derniers articles de vos amis ou partagez vos idees.
+                    Bienvenue sur Daily Post. Découvrez les derniers articles de vos amis ou partagez vos idées.
                   </p>
                 </div>
 
@@ -294,8 +294,8 @@ function Dashboard() {
                 <div className="grid grid-cols-3 gap-4 mb-8">
                   {[
                     { label: "Mes articles", valeur: myArticles.length, page: null, icon: "📝" },
-                    { label: "Fil d'actualite", valeur: feedArticles.length, page: null, icon: "📰" },
-                    { label: "Demandes recues", valeur: demandes.length, violet: true, page: "demandes", icon: "🔔" },
+                    { label: "Fil d'actualité", valeur: feedArticles.length, page: null, icon: "📰" },
+                    { label: "Demandes reçues", valeur: demandes.length, violet: true, page: "demandes", icon: "🔔" },
                   ].map((stat) => (
                     <div
                       key={stat.label}
