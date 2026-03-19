@@ -419,3 +419,57 @@ def get_user_friends(user_id):
             })
 
     return jsonify({"amis": amis}), 200
+
+# ════════════════════════════════════════
+# LISTE DES UTILISATEURS BLOQUÉS
+# GET /api/friends/blocked
+# ════════════════════════════════════════
+@friend_bp.route("/api/friends/blocked", methods=["GET"])
+@jwt_required()
+def get_blocked():
+    db = get_db()
+    current_user_id = get_jwt_identity()
+
+    # Trouver les relations où JE suis celui qui a bloqué
+    relations = list(db.friendships.find({
+        "sender_id": ObjectId(current_user_id),
+        "status":    "blocked"
+    }))
+
+    bloques = []
+    for r in relations:
+        user = db.users.find_one(
+            {"_id": r["receiver_id"]},
+            {"password_hash": 0}
+        )
+        if user:
+            bloques.append({
+                "_id":       str(user["_id"]),
+                "full_name": user["full_name"],
+                "username":  user["username"],
+                "avatar":    user.get("avatar", None),
+            })
+
+    return jsonify({"bloques": bloques}), 200
+
+
+# ════════════════════════════════════════
+# DÉBLOQUER UN UTILISATEUR
+# DELETE /api/friends/<user_id>/block
+# ════════════════════════════════════════
+@friend_bp.route("/api/friends/<user_id>/block", methods=["DELETE"])
+@jwt_required()
+def unblock_user(user_id):
+    db = get_db()
+    current_user_id = get_jwt_identity()
+
+    result = db.friendships.delete_one({
+        "sender_id":   ObjectId(current_user_id),
+        "receiver_id": ObjectId(user_id),
+        "status":      "blocked"
+    })
+
+    if result.deleted_count == 0:
+        return jsonify({"message": "Relation introuvable"}), 404
+
+    return jsonify({"message": "Utilisateur débloqué"}), 200

@@ -9,6 +9,8 @@ export function FriendProvider({ children }) {
 
   const [amis,     setAmis]     = useState([])
   const [demandes, setDemandes] = useState([])
+  const [bloques, setBloques] = useState([])
+
 
   // ════════════════════════════════
   // RECHARGER MANUELLEMENT
@@ -42,16 +44,33 @@ export function FriendProvider({ children }) {
   // ════════════════════════════════
   // CHARGER AU DÉMARRAGE
   // ════════════════════════════════
+
+  const chargerBloques = useCallback(async () => {
+  if (!currentUser) {
+    setBloques([])
+    return
+  }
+  try {
+    const res = await api.get("/friends/blocked")
+    setBloques(res.data.bloques || [])
+  } catch (err) {
+    console.error("Erreur chargement bloqués :", err)
+  }
+  }, [currentUser])
+
+
   useEffect(() => {
     if (!currentUser) {
       setAmis([])
       setDemandes([])
+      setBloques([])
       return
     }
 
     chargerAmis()
     chargerDemandes()
-  }, [currentUser, chargerAmis, chargerDemandes])
+    chargerBloques()
+  }, [currentUser, chargerAmis, chargerDemandes, chargerBloques])
 
   // ════════════════════════════════
   // RECHERCHER UN UTILISATEUR
@@ -137,6 +156,7 @@ export function FriendProvider({ children }) {
     try {
       await api.put(`/friends/${userId}/block`)
       setAmis(prev => prev.filter(a => a._id !== userId))
+      await chargerBloques()
       return { success: true }
     } catch (err) {
       return {
@@ -144,19 +164,36 @@ export function FriendProvider({ children }) {
         message: err.response?.data?.message || "Erreur"
       }
     }
-  }, [])
+  }, [chargerBloques])
+
+  const debloquerUser = useCallback(async (userId) => {
+  try {
+    await api.delete(`/friends/${userId}/block`)
+    // Retirer de la liste des bloqués localement
+    setBloques(prev => prev.filter(b => b._id !== userId))
+    return { success: true }
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || "Erreur"
+    }
+  }
+}, [])
 
   const value = {
     amis,
     demandes,
+    bloques,
     chargerAmis,
     chargerDemandes,
+    chargerBloques,
     rechercherUsers,
     envoyerDemande,
     accepterDemande,
     refuserDemande,
     supprimerAmi,
     bloquerUser,
+    debloquerUser,
   }
 
   return (
