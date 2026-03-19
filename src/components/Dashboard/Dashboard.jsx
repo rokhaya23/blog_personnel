@@ -193,7 +193,7 @@ function Dashboard() {
     : "from-violet-900 via-fuchsia-700 to-violet-600"
 
   return (
-    <div className={`min-h-screen ${bg} flex flex-col`}>
+    <div className={`h-screen ${bg} flex flex-col overflow-hidden`}>
 
       {/* ═══ BARRE DU HAUT — DAILY POST ═══ */}
       <div className={`${topBarBg} border-b px-4 md:px-6 py-3 flex items-center justify-between`}>
@@ -245,8 +245,10 @@ function Dashboard() {
         `}>
 
           {/* Avatar + nom */}
-          <div className={`flex items-center gap-3 px-2 py-3 mb-2 border-b ${isDark ? "border-white/10" : "border-violet-200/80"}`}>
-            {currentUser.avatar ? (
+            <div
+              className={`flex items-center gap-3 px-2 py-3 mb-2 border-b cursor-pointer hover:opacity-80 transition ${isDark ? "border-white/10" : "border-violet-200/80"}`}
+              onClick={() => setActivePage("profil")}>
+              {currentUser.avatar ? (
               <img
                 src={`http://localhost:5000/api/auth/avatar/${currentUser.avatar}`}
                 alt="Avatar"
@@ -472,44 +474,179 @@ function Dashboard() {
 
             {/* ═══ PAGE PROFIL ═══ */}
             {activePage === "profil" && (
-              <div className="max-w-2xl">
-                <h2 className={`text-2xl font-bold ${textPrimary} mb-6`}>Mon profil</h2>
+            <div className="max-w-3xl">
 
-                <div className={`${cardBg} rounded-xl p-6 border mb-6`}>
-                  <h3 className={`text-lg font-medium ${textPrimary} mb-4`}>Photo de profil</h3>
-                  <div className="flex items-center gap-6">
-                    {currentUser.avatar ? (
-                      <img src={`http://localhost:5000/api/auth/avatar/${currentUser.avatar}`} alt="Avatar" className="w-20 h-20 rounded-full object-cover border-4 border-purple-500" />
-                    ) : (
-                      <div className="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center text-2xl font-bold text-white">{initiales}</div>
-                    )}
+              {/* ── Carte principale avec bannière ── */}
+              <div className={`border rounded-2xl overflow-hidden mb-6 ${cardBg}`}>
+                {/* Bannière */}
+                <div className={`h-36 relative ${isDark
+                  ? "bg-gradient-to-r from-purple-900 via-violet-700 to-purple-900"
+                  : "bg-gradient-to-r from-violet-900 via-fuchsia-700 to-rose-400"
+                }`}>
+                  <div className="absolute top-4 right-8 w-16 h-16 rounded-full bg-white/5 border border-white/10"></div>
+                  <div className="absolute top-8 right-20 w-8 h-8 rounded-full bg-white/5 border border-white/10"></div>
+                  <div className="absolute bottom-4 left-1/3 w-12 h-12 rounded-full bg-white/5 border border-white/10"></div>
+                </div>
+
+                <div className="px-6 pb-6">
+                  <div className="flex items-end justify-between -mt-12 mb-4">
+                    {/* Avatar avec bouton changer photo */}
+                    <div className="relative">
+                      {currentUser.avatar ? (
+                        <img
+                          src={`http://localhost:5000/api/auth/avatar/${currentUser.avatar}`}
+                          alt="Avatar"
+                          className={`w-24 h-24 rounded-full object-cover border-4 ${isDark ? "border-slate-900" : "border-white"}`}
+                        />
+                      ) : (
+                        <div className={`w-24 h-24 rounded-full border-4 flex items-center justify-center text-3xl font-bold text-white
+                          bg-gradient-to-br from-purple-500 to-violet-700
+                          ${isDark ? "border-slate-900" : "border-white"}`}>
+                          {initiales}
+                        </div>
+                      )}
+                      <label
+                        htmlFor="avatar-upload"
+                        className="absolute bottom-1 right-1 w-7 h-7 bg-purple-600 hover:bg-purple-500 rounded-full flex items-center justify-center cursor-pointer transition border-2 border-slate-900"
+                        title="Changer la photo"
+                      >
+                        <span style={{ fontSize: "11px" }}>📷</span>
+                      </label>
+                      <input
+                        id="avatar-upload"
+                        type="file"
+                        accept="image/png,image/jpg,image/jpeg,image/gif,image/webp"
+                        className="hidden"
+                        onChange={handleAvatarUpload}
+                      />
+                    </div>
+
+                    {/* Badges */}
+                    <div className="mb-2 flex flex-col items-end gap-2">
+                      <span className="flex items-center gap-1.5 px-3 py-1 bg-green-500/15 border border-green-500/30 text-green-400 rounded-full text-xs">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+                        En ligne
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Nom + username */}
+                  <h3 className={`text-2xl font-bold ${textPrimary}`}>{currentUser.full_name}</h3>
+                  <p className={`text-sm mb-4 ${textSecondary}`}>@{currentUser.username}</p>
+
+                  {/* Mini stats */}
+                  <div className={`flex gap-6 pt-4 border-t ${isDark ? "border-white/10" : "border-violet-200/70"}`}>
                     <div>
-                      <label htmlFor="avatar-upload" className={`px-5 py-2.5 font-medium rounded-lg transition cursor-pointer inline-block ${primaryButton}`}>Changer la photo</label>
-                      <input id="avatar-upload" type="file" accept="image/png,image/jpg,image/jpeg,image/gif,image/webp" className="hidden" onChange={handleAvatarUpload} />
-                      <p className={`${textMuted} text-xs mt-2`}>PNG, JPG, GIF — Max 5 Mo</p>
+                      <span className={`text-xl font-bold ${textPrimary}`}>{myArticles.length}</span>
+                      <span className={`text-sm ml-1 ${textSecondary}`}>articles</span>
+                    </div>
+                    <div>
+                      <span className={`text-xl font-bold ${textPrimary}`}>{feedArticles.length}</span>
+                      <span className={`text-sm ml-1 ${textSecondary}`}>dans le fil</span>
+                    </div>
+                    <div>
+                      <span className={`text-xl font-bold ${isDark ? "text-purple-400" : "text-violet-700"}`}>{demandes.length}</span>
+                      <span className={`text-sm ml-1 ${textSecondary}`}>demandes</span>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div className={`${cardBg} rounded-xl p-6 border mb-6`}>
-                  <h3 className={`text-lg font-medium ${textPrimary} mb-4`}>Informations</h3>
-                  <div className="flex flex-col gap-3">
-                    <div><span className={`${textSecondary} text-sm`}>Nom complet</span><p className={textPrimary}>{currentUser.full_name}</p></div>
-                    <div><span className={`${textSecondary} text-sm`}>Nom d'utilisateur</span><p className={textPrimary}>@{currentUser.username}</p></div>
-                    <div><span className={`${textSecondary} text-sm`}>Membre depuis</span><p className={textPrimary}>{currentUser.created_at ? new Date(currentUser.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : "Inconnu"}</p></div>
+              {/* ── Grille 2 colonnes ── */}
+              <div className="grid grid-cols-2 gap-6 mb-6">
+
+                {/* Informations */}
+                <div className={`border rounded-2xl p-6 ${cardBg}`}>
+                  <h3 className={`text-xs font-semibold uppercase tracking-widest mb-5 ${textMuted}`}>
+                    Informations
+                  </h3>
+                  <div className="flex flex-col gap-5">
+                    {[
+                      { icon: "👤", label: "Nom complet",       valeur: currentUser.full_name },
+                      { icon: "🔖", label: "Nom d'utilisateur", valeur: `@${currentUser.username}` },
+                      { icon: "📅", label: "Membre depuis",      valeur: currentUser.created_at
+                          ? new Date(currentUser.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
+                          : "Inconnu"
+                      },
+                    ].map(info => (
+                      <div key={info.label} className="flex items-center gap-3">
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0
+                          ${isDark ? "bg-purple-500/15 border border-purple-500/20" : "bg-violet-100 border border-violet-200"}`}>
+                          {info.icon}
+                        </div>
+                        <div>
+                          <p className={`text-xs ${textMuted}`}>{info.label}</p>
+                          <p className={`text-sm font-medium ${textPrimary}`}>{info.valeur}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                <div className={`${cardBg} rounded-xl p-6 border`}>
-                  <h3 className={`text-lg font-medium ${textPrimary} mb-4`}>Statistiques</h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="text-center"><p className={`text-2xl font-bold ${textPrimary}`}>{myArticles.length}</p><p className={`${textSecondary} text-xs`}>Articles</p></div>
-                    <div className="text-center"><p className={`text-2xl font-bold ${textPrimary}`}>{feedArticles.length}</p><p className={`${textSecondary} text-xs`}>Dans le fil</p></div>
-                    <div className="text-center"><p className={`text-2xl font-bold ${textPrimary}`}>{demandes.length}</p><p className={`${textSecondary} text-xs`}>Demandes</p></div>
+                {/* Statistiques */}
+                <div className={`border rounded-2xl p-6 ${cardBg}`}>
+                  <h3 className={`text-xs font-semibold uppercase tracking-widest mb-5 ${textMuted}`}>
+                    Statistiques
+                  </h3>
+                  <div className="flex flex-col gap-4">
+                    {[
+                      { icon: "📝", label: "Articles publiés",    valeur: myArticles.length,   color: textPrimary,                                    bg: isDark ? "bg-blue-500/15 border-blue-500/20"   : "bg-blue-50 border-blue-200" },
+                      { icon: "📰", label: "Articles dans le fil", valeur: feedArticles.length, color: textPrimary,                                    bg: isDark ? "bg-teal-500/15 border-teal-500/20"   : "bg-teal-50 border-teal-200" },
+                      { icon: "🔔", label: "Demandes en attente",  valeur: demandes.length,     color: isDark ? "text-purple-400" : "text-violet-700", bg: isDark ? "bg-purple-500/15 border-purple-500/20" : "bg-violet-100 border-violet-200" },
+                    ].map(s => (
+                      <div key={s.label} className={`flex items-center justify-between p-3 rounded-xl border ${s.bg}`}>
+                        <div className="flex items-center gap-3">
+                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0 ${s.bg}`}>
+                            {s.icon}
+                          </div>
+                          <p className={`text-sm ${textSecondary}`}>{s.label}</p>
+                        </div>
+                        <span className={`text-2xl font-bold ${s.color}`}>{s.valeur}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
-            )}
+
+              {/* ── Changer la photo ── */}
+              <div className={`border rounded-2xl p-6 ${cardBg}`}>
+                <h3 className={`text-xs font-semibold uppercase tracking-widest mb-5 ${textMuted}`}>
+                  Photo de profil
+                </h3>
+                <div className="flex items-center gap-5">
+                  {currentUser.avatar ? (
+                    <img
+                      src={`http://localhost:5000/api/auth/avatar/${currentUser.avatar}`}
+                      alt="Avatar"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-purple-500"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-violet-700 flex items-center justify-center text-xl font-bold text-white">
+                      {initiales}
+                    </div>
+                  )}
+                  <div>
+                    <p className={`text-sm font-medium mb-2 ${textPrimary}`}>Mettre à jour votre photo</p>
+                    <label
+                      htmlFor="avatar-upload-2"
+                      className={`px-4 py-2 text-sm font-medium rounded-lg transition cursor-pointer inline-block ${primaryButton}`}
+                    >
+                      Choisir une photo
+                    </label>
+                    <input
+                      id="avatar-upload-2"
+                      type="file"
+                      accept="image/png,image/jpg,image/jpeg,image/gif,image/webp"
+                      className="hidden"
+                      onChange={handleAvatarUpload}
+                    />
+                    <p className={`text-xs mt-2 ${textMuted}`}>PNG, JPG, GIF — Max 5 Mo</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          )}
           </div>
         </main>
       </div>

@@ -140,10 +140,17 @@ function UserProfile() {
           <div className="px-6 pb-6">
             <div className="flex items-end justify-between -mt-10 mb-4">
 
-              {/* Avatar grand format */}
-              <div className={`w-20 h-20 rounded-full bg-violet-600 border-4 flex items-center justify-center text-2xl font-bold text-white flex-shrink-0 ${isDark ? "border-slate-900" : "border-white"}`}>
+              {user?.avatar ? (
+              <img
+                src={`http://localhost:5000/api/auth/avatar/${user.avatar}`}
+                alt={user.full_name}
+                className={`w-20 h-20 rounded-full object-cover border-4 flex-shrink-0 ${isDark ? "border-slate-900" : "border-white"}`}
+              />
+            ) : (
+              <div className={`w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-violet-700 border-4 flex items-center justify-center text-2xl font-bold text-white flex-shrink-0 ${isDark ? "border-slate-900" : "border-white"}`}>
                 {initiales}
               </div>
+            )}
 
               {/* ════════════════════════════════
                   BOUTONS SELON LE STATUT
@@ -309,9 +316,17 @@ function UserProfile() {
                     onClick={() => navigate(`/profile/${ami._id}`)}
                     className={`flex items-center gap-3 p-3 border rounded-xl transition text-left ${isDark ? "bg-white/5 border-white/10 hover:bg-white/10" : "bg-white/92 border-violet-200/70 hover:bg-white shadow-sm"}`}
                   >
+                    {ami.avatar ? (
+                    <img
+                      src={`http://localhost:5000/api/auth/avatar/${ami.avatar}`}
+                      alt={ami.full_name}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-purple-500 flex-shrink-0"
+                    />
+                  ) : (
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 ${isDark ? "bg-purple-600/50 text-purple-200" : "bg-violet-100 text-violet-800"}`}>
                       {ami.full_name?.slice(0, 2).toUpperCase()}
                     </div>
+                  )}
                     <div>
                       <div className={`text-sm font-medium ${primaryText}`}>{ami.full_name}</div>
                       <div className={`text-xs flex items-center gap-1 ${secondaryText}`}>

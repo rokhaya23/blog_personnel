@@ -60,9 +60,17 @@ function FriendRequests() {
                 onClick={() => navigate(`/profile/${demande.sender_id}`)}
                 className="flex items-center gap-3 text-left hover:opacity-80 transition"
               >
-                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 ${avatarClass}`}>
-                  {demande.full_name?.slice(0, 2).toUpperCase()}
-                </div>
+                {demande.avatar ? (
+                  <img
+                    src={`http://localhost:5000/api/auth/avatar/${demande.avatar}`}
+                    alt={demande.full_name}
+                    className="w-9 h-9 rounded-full object-cover border-2 border-purple-500 flex-shrink-0"
+                  />
+                ) : (
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 ${avatarClass}`}>
+                    {demande.full_name?.slice(0, 2).toUpperCase()}
+                  </div>
+                )}
                 <div>
                   <div className={`text-sm font-medium hover:underline ${nameClass}`}>
                     {demande.full_name}
