@@ -52,7 +52,7 @@ function SingleComment({ comment, allComments, articleId, articleAuthorId, curre
     : "bg-white border-violet-200 text-gray-800 placeholder:text-violet-500/55"
   const linkClass = isDark ? "text-purple-400 hover:text-purple-300" : "text-violet-700 hover:text-violet-900"
   const secondaryAction = isDark ? "text-purple-400/50 hover:text-purple-300" : "text-violet-800/50 hover:text-violet-900"
-  const primaryButton = isDark ? "bg-violet-600 hover:bg-violet-500 text-white" : "bg-violet-700 hover:bg-violet-800 text-white"
+  const primaryButton = isDark ? "bg-slate-800 hover:bg-slate-700 text-white" : "bg-slate-900 hover:bg-slate-800 text-white"
 
   return (
     <div className={`${depth > 0 ? `ml-8 pl-4 border-l-2 ${borderClass}` : ""}`}>
@@ -66,7 +66,7 @@ function SingleComment({ comment, allComments, articleId, articleAuthorId, curre
           {depth < 2 && (
             <button onClick={() => setShowReplyForm(!showReplyForm)}
               className={`text-xs transition ${linkClass}`}>
-              {showReplyForm ? "Annuler" : "Repondre"}
+              {showReplyForm ? "Annuler" : "Répondre"}
             </button>
           )}
           {canDelete && (
@@ -87,7 +87,7 @@ function SingleComment({ comment, allComments, articleId, articleAuthorId, curre
             <div className="flex gap-2">
               <input type="text" value={replyContent} onChange={(e) => setReplyContent(e.target.value)}
                 className={`flex-1 px-3 py-2 text-sm rounded-lg border focus:outline-none focus:border-purple-400 transition ${inputClass}`}
-                placeholder={`Repondre a ${comment.author_name}...`} />
+                placeholder={`Répondre à ${comment.author_name}...`} />
               <button type="submit" className={`px-4 py-2 text-sm rounded-lg transition ${primaryButton}`}>Envoyer</button>
             </div>
           </form>
@@ -151,7 +151,7 @@ function CommentSection({ articleId, articleAuthorId }) {
     ? "bg-white/10 border-white/20 text-white placeholder-white/40"
     : "bg-white border-violet-200 text-gray-800 placeholder:text-violet-500/55"
   const emptyClass = isDark ? "text-purple-300/40" : "text-violet-800/55"
-  const primaryButton = isDark ? "bg-violet-600 hover:bg-violet-500 text-white" : "bg-violet-700 hover:bg-violet-800 text-white"
+  const primaryButton = isDark ? "bg-slate-800 hover:bg-slate-700 text-white" : "bg-slate-900 hover:bg-slate-800 text-white"
 
   return (
     <div className={`mt-6 pt-6 border-t ${borderTop}`}>

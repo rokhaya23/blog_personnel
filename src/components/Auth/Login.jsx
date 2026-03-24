@@ -80,7 +80,7 @@ function Login() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition duration-200 shadow-lg hover:shadow-purple-500/25 disabled:opacity-50"
+            className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg transition duration-200 shadow-[0_14px_30px_rgba(15,23,42,0.26)] hover:shadow-[0_16px_34px_rgba(15,23,42,0.30)] disabled:opacity-50"
           >
             {isLoading ? "Connexion en cours..." : "Se connecter"}
           </button>

@@ -27,6 +27,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
       if (onReload) onReload()
     } catch (error) {
       const message = error.response?.data?.message || "Erreur lors du repost"
+      console.error("Repost error:", error)
       showToast(message, "error")
     }
   }
@@ -42,7 +43,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
 
   const cardClass = isDark
     ? "bg-white/10 backdrop-blur-lg border-white/10 hover:border-purple-500/30"
-    : "bg-white/92 border-violet-200/70 shadow-sm hover:shadow-[0_18px_34px_rgba(76,29,149,0.08)] hover:border-violet-300"
+    : "bg-white/92 border-violet-200/70 shadow-sm hover:shadow-[0_18px_34px_rgba(29,78,216,0.08)] hover:border-violet-300"
   const accentText = isDark ? "text-purple-300/60" : "text-violet-900/70"
   const authorText = isDark ? "text-purple-300/70" : "text-violet-900/65"
   const bodyText = isDark ? "text-purple-200/80" : "text-slate-600"
@@ -172,7 +173,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
       {/* Date + actions sociales */}
       <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
         <p className={`text-sm ${metaText}`}>
-          Publie le {formatDate(article.created_at)}
+          Publié le {formatDate(article.created_at)}
         </p>
 
         <div className="flex items-center gap-4">

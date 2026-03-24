@@ -23,7 +23,7 @@ function UserProfile() {
   // ════════════════════════════════
   const statutRelation = () => {
     if (amis.find(a => a._id === userId))           return "ami"
-    if (demandes.find(d => d.sender_id === userId)) return "demande_recue"
+    if (demandes.find(d => d.sender_id === userId)) return "demande_reçue"
     return "aucun"
   }
 
@@ -76,22 +76,22 @@ function UserProfile() {
     else setMessage(result.message)
   }
 
-  const pageBg = isDark ? "bg-slate-900" : "bg-[#f6f2fb]"
+  const pageBg = isDark ? "bg-slate-900" : "bg-[#f0f4f8]"
   const topBarBg = isDark
     ? "bg-white/5 border-white/10"
-    : "bg-white/90 border-violet-200/80 shadow-[0_12px_28px_rgba(76,29,149,0.08)] backdrop-blur-xl"
+    : "bg-white/90 border-slate-200/80 shadow-[0_12px_28px_rgba(15,23,42,0.06)] backdrop-blur-xl"
   const cardBg = isDark
     ? "bg-white/5 border-white/10"
-    : "bg-white/92 border-violet-200/70 shadow-[0_18px_38px_rgba(76,29,149,0.08)]"
+    : "bg-white/92 border-slate-200/70 shadow-[0_18px_38px_rgba(15,23,42,0.06)]"
   const bannerBg = isDark
-    ? "bg-gradient-to-r from-purple-900 via-purple-800 to-slate-800"
-    : "bg-gradient-to-r from-violet-900 via-fuchsia-700 to-rose-400"
+    ? "bg-gradient-to-r from-blue-900 via-indigo-700 to-blue-900"
+    : "bg-gradient-to-r from-blue-900 via-indigo-700 to-blue-500"
   const primaryText = isDark ? "text-white" : "text-slate-800"
   const secondaryText = isDark ? "text-purple-300/60" : "text-violet-900/65"
   const mutedText = isDark ? "text-purple-300/40" : "text-violet-800/55"
   const primaryButton = isDark
-    ? "bg-violet-600 hover:bg-violet-500 text-white shadow-[0_14px_30px_rgba(46,16,101,0.30)]"
-    : "bg-violet-700 hover:bg-violet-800 text-white shadow-[0_12px_28px_rgba(76,29,149,0.14)]"
+    ? "bg-slate-800 hover:bg-slate-700 text-white shadow-[0_14px_30px_rgba(15,23,42,0.32)]"
+    : "bg-slate-900 hover:bg-slate-800 text-white shadow-[0_12px_28px_rgba(15,23,42,0.20)]"
   const neutralButton = isDark
     ? "bg-white/10 hover:bg-white/20 text-purple-200"
     : "bg-white hover:bg-violet-50 text-violet-900 border border-violet-200"
@@ -175,7 +175,7 @@ function UserProfile() {
                 {/* Demande reçue de cet utilisateur */}
                 {statut === "demande_recue" && (
                   <span className={`px-4 py-2 rounded-lg text-sm ${isDark ? "bg-purple-500/20 text-purple-300" : "bg-violet-100 text-violet-900"}`}>
-                    Demande reçue — va dans "Demandes" pour répondre
+                    Demande reçue — allez dans "Demandes" pour répondre
                   </span>
                 )}
 
@@ -276,7 +276,7 @@ function UserProfile() {
           <div className="flex flex-col gap-3">
             {articles.length === 0 ? (
               <div className="text-center py-16">
-                <p className={secondaryText}>Aucun article public pour l'instant</p>
+                <p className={secondaryText}>Vous n'avez aucun article public pour l'instant</p>
               </div>
             ) : (
               articles.map(article => (

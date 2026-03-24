@@ -101,7 +101,7 @@ function FriendSearch() {
   const feedbackClass = isDark ? "text-purple-300" : "text-violet-900"
   const dropdownClass = isDark
     ? "bg-slate-800 border border-white/10 shadow-xl"
-    : "bg-white/95 border border-violet-200 shadow-[0_18px_40px_rgba(76,29,149,0.12)] backdrop-blur-xl"
+    : "bg-white/95 border border-violet-200 shadow-[0_18px_40px_rgba(29,78,216,0.12)] backdrop-blur-xl"
   const rowClass = isDark
     ? "bg-white/5 hover:bg-white/10"
     : "bg-violet-50/40 hover:bg-violet-100/70"
@@ -114,8 +114,8 @@ function FriendSearch() {
     ? "bg-white/10 hover:bg-white/20 text-purple-200"
     : "bg-white hover:bg-violet-50 text-violet-900 border border-violet-200"
   const primaryButton = isDark
-    ? "bg-violet-600 hover:bg-violet-500 text-white"
-    : "bg-violet-700 hover:bg-violet-800 text-white"
+    ? "bg-slate-800 hover:bg-slate-700 text-white"
+    : "bg-slate-900 hover:bg-slate-800 text-white"
   const emptyClass = isDark ? "text-purple-300/60" : "text-violet-900/60"
 
   return (

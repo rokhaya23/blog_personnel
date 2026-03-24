@@ -18,7 +18,6 @@ function Dashboard() {
   const { showToast } = useToast()
 
   const [activePage, setActivePage] = useState("dashboard")
-  const [activeTab, setActiveTab] = useState("mine")
   const [myArticles, setMyArticles] = useState([])
   const [feedArticles, setFeedArticles] = useState([])
   const [showForm, setShowForm] = useState(false)
@@ -28,7 +27,6 @@ function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1)
   const ARTICLES_PER_PAGE = 10
 
-  // Sidebar mobile (ouverte/fermée)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const { demandes } = useFriends()
@@ -43,7 +41,7 @@ function Dashboard() {
   const getGreeting = () => {
     const hour = new Date().getHours()
     if (hour < 12) return "Bonjour"
-    if (hour < 18) return "Bon apres-midi"
+    if (hour < 18) return "Bon après-midi"
     return "Bonsoir"
   }
 
@@ -81,7 +79,7 @@ function Dashboard() {
       await articlesAPI.create(data)
       await loadArticles()
       setShowForm(false)
-      showToast("Article publie avec succes !", "success")
+      showToast("Article publié avec succès !", "success")
     } catch (err) {
       return { success: false, message: err.response?.data?.message || "Erreur" }
     }
@@ -94,7 +92,7 @@ function Dashboard() {
       await loadArticles()
       setShowForm(false)
       setArticleToEdit(null)
-      showToast("Article modifie avec succes !", "success")
+      showToast("Article modifié avec succès !", "success")
     } catch (err) {
       return { success: false, message: err.response?.data?.message || "Erreur" }
     }
@@ -102,16 +100,21 @@ function Dashboard() {
   }
 
   const handleDeleteArticle = async (articleId) => {
+    if (!window.confirm("Supprimer cet article ?")) return
     try {
       await articlesAPI.delete(articleId)
       await loadArticles()
-      showToast("Article supprime", "info")
-    } catch { showToast("Erreur lors de la suppression", "error") }
+      showToast("Article supprimé avec succès !", "info")
+    } catch (err) {
+      console.error("Erreur lors de la suppression article :", err)
+      showToast("Erreur lors de la suppression", "error")
+    }
   }
 
   const handleEdit = (article) => {
     setArticleToEdit(article)
     setShowForm(true)
+    setActivePage("articles")
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
@@ -130,16 +133,11 @@ function Dashboard() {
     return articles.slice(start, start + ARTICLES_PER_PAGE)
   }
 
-  const currentArticles = activeTab === "mine" ? myArticles : feedArticles
-  const filteredArticles = filterArticles(currentArticles)
-  const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE)
-  const displayedArticles = paginateArticles(filteredArticles)
-
-  const handleTabChange = (tab) => { setActiveTab(tab); setCurrentPage(1); setSearchQuery("") }
-
   const handleNavClick = (pageId) => {
     setActivePage(pageId)
-    setSidebarOpen(false) // Fermer la sidebar mobile après navigation
+    setSearchQuery("")
+    setCurrentPage(1)
+    setSidebarOpen(false)
   }
 
   const handleAvatarUpload = async (e) => {
@@ -155,49 +153,44 @@ function Dashboard() {
     } catch { showToast("Erreur lors du changement de photo", "error") }
   }
 
-// ═══ CLASSES DYNAMIQUES SELON LE THÈME ═══
-  const bg = isDark ? "bg-slate-900" : "bg-[#f6f2fb]"
+  // ═══ PALETTE BLEU / INDIGO ═══
+  const bg = isDark ? "bg-slate-900" : "bg-[#f0f4f8]"
   const sidebarBg = isDark
     ? "bg-white/5 border-white/10"
-    : "bg-white/90 border-violet-200/80 shadow-[0_18px_40px_rgba(76,29,149,0.08)] backdrop-blur-xl"
+    : "bg-white/90 border-slate-200/80 shadow-[0_18px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl"
   const cardBg = isDark
     ? "bg-white/10 border-white/10"
-    : "bg-white/92 border-violet-200/70 shadow-[0_16px_32px_rgba(76,29,149,0.08)]"
+    : "bg-white/92 border-slate-200/70 shadow-[0_16px_32px_rgba(15,23,42,0.06)]"
   const textPrimary = isDark ? "text-white" : "text-gray-800"
-  const textSecondary = isDark ? "text-purple-300/60" : "text-violet-900/70"
-  const textMuted = isDark ? "text-purple-300/40" : "text-violet-800/55"
+  const textSecondary = isDark ? "text-blue-300/60" : "text-slate-600"
+  const textMuted = isDark ? "text-blue-300/40" : "text-slate-500"
   const inputBg = isDark
     ? "bg-white/10 border-white/20 text-white placeholder-white/40"
-    : "bg-white border-violet-200 text-gray-800 placeholder:text-violet-500/55"
+    : "bg-white border-slate-200 text-gray-800 placeholder:text-slate-400"
   const btnActive = isDark
-    ? "bg-violet-600 text-white shadow-[0_14px_30px_rgba(46,16,101,0.35)] hover:bg-violet-500"
-    : "bg-violet-700 text-white shadow-[0_14px_30px_rgba(76,29,149,0.16)] hover:bg-violet-800"
+    ? "bg-slate-800 text-white shadow-[0_14px_30px_rgba(15,23,42,0.35)] hover:bg-slate-700"
+    : "bg-slate-900 text-white shadow-[0_14px_30px_rgba(15,23,42,0.18)] hover:bg-slate-800"
   const btnInactive = isDark
-    ? "bg-white/10 text-purple-200 hover:bg-white/20"
-    : "bg-white text-violet-900 hover:bg-violet-50 border border-violet-200/80 shadow-sm"
-  const hoverCard = isDark ? "hover:bg-white/10" : "hover:bg-violet-50/70"
+    ? "bg-white/10 text-blue-200 hover:bg-white/20"
+    : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200/80 shadow-sm"
   const topBarBg = isDark
     ? "bg-white/5 border-white/10"
-    : "bg-white/90 border-violet-200/80 shadow-[0_12px_28px_rgba(76,29,149,0.08)] backdrop-blur-xl"
-  const statCardBg = isDark
-    ? "bg-white/5 border-white/10"
-    : "bg-gradient-to-br from-white via-violet-50/80 to-fuchsia-50/50 border-violet-200/80 shadow-[0_12px_30px_rgba(76,29,149,0.08)]"
+    : "bg-white/90 border-slate-200/80 shadow-[0_12px_28px_rgba(15,23,42,0.06)] backdrop-blur-xl"
   const primaryButton = isDark
-    ? "bg-violet-600 hover:bg-violet-500 text-white shadow-[0_14px_30px_rgba(46,16,101,0.30)]"
-    : "bg-violet-700 hover:bg-violet-800 text-white shadow-[0_12px_28px_rgba(76,29,149,0.14)]"
+    ? "bg-slate-800 hover:bg-slate-700 text-white shadow-[0_14px_30px_rgba(15,23,42,0.32)]"
+    : "bg-slate-900 hover:bg-slate-800 text-white shadow-[0_12px_28px_rgba(15,23,42,0.18)]"
   const toggleButton = isDark
-    ? "bg-white/10 hover:bg-white/20 text-purple-200"
-    : "bg-violet-100 hover:bg-violet-200 text-violet-900"
+    ? "bg-white/10 hover:bg-white/20 text-blue-200"
+    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
   const brandGradient = isDark
-    ? "from-purple-400 via-violet-300 to-purple-500"
-    : "from-violet-900 via-fuchsia-700 to-violet-600"
+    ? "from-blue-400 via-indigo-300 to-blue-500"
+    : "from-blue-900 via-indigo-700 to-blue-600"
 
   return (
     <div className={`h-screen ${bg} flex flex-col overflow-hidden`}>
 
       {/* ═══ BARRE DU HAUT — DAILY POST ═══ */}
       <div className={`${topBarBg} border-b px-4 md:px-6 py-3 flex items-center justify-between`}>
-        {/* Bouton hamburger (mobile uniquement) */}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className={`md:hidden ${textPrimary} text-2xl`}
@@ -205,21 +198,15 @@ function Dashboard() {
           {sidebarOpen ? "✕" : "☰"}
         </button>
 
-        {/* Espace vide au centre */}
         <div className="flex-1" />
 
-        {/* Titre + toggle thème */}
         <div className="flex items-center gap-4">
-          {/* Toggle dark/light */}
-<button
+          <button
             onClick={toggleTheme}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition ${
-              toggleButton
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition ${toggleButton}`}
           >
             {isDark ? "☀️ Mode clair" : "🌙 Mode sombre"}
           </button>
-
 
           <h1
             className={`text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r ${brandGradient} bg-clip-text text-transparent`}
@@ -234,8 +221,6 @@ function Dashboard() {
       <div className="flex flex-1 overflow-hidden">
 
         {/* ═══ SIDEBAR ═══ */}
-        {/* Sur mobile : position absolue avec overlay */}
-        {/* Sur desktop : toujours visible */}
         <aside className={`
           ${sidebarBg} border-r flex flex-col p-3 gap-1
           fixed md:static inset-y-0 left-0 z-40 w-60
@@ -245,17 +230,17 @@ function Dashboard() {
         `}>
 
           {/* Avatar + nom */}
-            <div
-              className={`flex items-center gap-3 px-2 py-3 mb-2 border-b cursor-pointer hover:opacity-80 transition ${isDark ? "border-white/10" : "border-violet-200/80"}`}
-              onClick={() => setActivePage("profil")}>
-              {currentUser.avatar ? (
+          <div
+            className={`flex items-center gap-3 px-2 py-3 mb-2 border-b cursor-pointer hover:opacity-80 transition ${isDark ? "border-white/10" : "border-slate-200/80"}`}
+            onClick={() => setActivePage("profil")}>
+            {currentUser.avatar ? (
               <img
                 src={`http://localhost:5000/api/auth/avatar/${currentUser.avatar}`}
                 alt="Avatar"
-                className="w-9 h-9 rounded-full object-cover border-2 border-purple-500 flex-shrink-0"
+                className="w-9 h-9 rounded-full object-cover border-2 border-blue-500 flex-shrink-0"
               />
             ) : (
-              <div className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-sm font-medium text-white flex-shrink-0">
+              <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium text-white flex-shrink-0">
                 {initiales}
               </div>
             )}
@@ -276,8 +261,8 @@ function Dashboard() {
               key={item.id}
               onClick={() => handleNavClick(item.id)}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition w-full text-left
-              ${activePage === item.id ? btnActive : isDark ? "text-purple-200 hover:bg-white/10" : "text-violet-900 hover:bg-violet-50/70"}`}
-                >
+              ${activePage === item.id ? btnActive : isDark ? "text-blue-200 hover:bg-white/10" : "text-slate-700 hover:bg-slate-50"}`}
+            >
               <span>{item.icon}</span>
               {item.label}
               {item.badge > 0 && (
@@ -286,18 +271,18 @@ function Dashboard() {
             </button>
           ))}
 
-          <div className={`mt-auto border-t pt-3 ${isDark ? "border-white/10" : "border-violet-200/80"}`}>
+          <div className={`mt-auto border-t pt-3 ${isDark ? "border-white/10" : "border-slate-200/80"}`}>
             <button
               onClick={handleLogout}
               className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-400 hover:bg-red-500/10 transition w-full"
             >
               <span>🚪</span>
-              Deconnexion
+              Déconnexion
             </button>
           </div>
         </aside>
 
-        {/* Overlay sombre (mobile — ferme la sidebar quand on clique) */}
+        {/* Overlay sombre (mobile) */}
         {sidebarOpen && (
           <div
             className="fixed inset-0 bg-black/50 z-30 md:hidden mt-[57px]"
@@ -315,7 +300,7 @@ function Dashboard() {
 
           <div className="flex-1 overflow-auto p-4 md:p-6">
 
-            {/* ═══ PAGE : TABLEAU DE BORD ═══ */}
+            {/* ═══ PAGE : TABLEAU DE BORD (FIL D'ACTUALITÉ UNIQUEMENT) ═══ */}
             {activePage === "dashboard" && (
               <div>
                 {/* Bienvenue */}
@@ -324,52 +309,13 @@ function Dashboard() {
                     {getGreeting()}, {prenom} 👋
                   </h1>
                   <p className={textSecondary}>
-                    Bienvenue sur Daily Post. Decouvrez les derniers articles de vos amis ou partagez vos idees.
+                    Bienvenue sur Daily Post. Découvrez les derniers articles de vos amis.
                   </p>
                 </div>
 
-                {/* Stats — 1 colonne sur mobile, 3 sur desktop */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                  {[
-                    { label: "Mes articles", valeur: myArticles.length, page: null, icon: "📝" },
-                    { label: "Fil d'actualite", valeur: feedArticles.length, page: null, icon: "📰" },
-                    { label: "Demandes recues", valeur: demandes.length, violet: true, page: "demandes", icon: "🔔" },
-                  ].map((stat) => (
-                    <div
-                      key={stat.label}
-                      onClick={() => stat.page && handleNavClick(stat.page)}
-                      className={`${statCardBg} rounded-xl p-5 border ${stat.page ? `cursor-pointer ${hoverCard} transition` : ""}`}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg">{stat.icon}</span>
-                        <span className={`text-xs ${textSecondary}`}>{stat.label}</span>
-                      </div>
-                      <div className={`text-3xl font-bold ${stat.violet ? (isDark ? "text-purple-400" : "text-violet-700") : textPrimary}`}>
-                        {stat.valeur}
-                      </div>
-                      {stat.page && stat.valeur > 0 && (
-                        <p className={`text-xs mt-2 ${isDark ? "text-purple-400" : "text-violet-700/70"}`}>Cliquer pour voir →</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Onglets */}
-                <div className="flex gap-2 mb-6 flex-wrap">
-                  {[
-                    { id: "mine", label: "Mes articles" },
-                    { id: "feed", label: `Fil d'actualite (${feedArticles.length})` },
-                  ].map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => handleTabChange(tab.id)}
-                      className={`px-5 py-2.5 rounded-lg font-medium transition ${activeTab === tab.id ? btnActive : btnInactive}`}
-                    >{tab.label}</button>
-                  ))}
-                </div>
 
                 {/* Recherche */}
-                {currentArticles.length > 0 && (
+                {feedArticles.length > 0 && (
                   <div className="mb-6">
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">🔍</span>
@@ -377,13 +323,13 @@ function Dashboard() {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1) }}
-                        className={`w-full pl-12 pr-4 py-3 rounded-lg border focus:outline-none focus:border-purple-400 transition ${inputBg}`}
+                        className={`w-full pl-12 pr-4 py-3 rounded-lg border focus:outline-none focus:border-blue-400 transition ${inputBg}`}
                         placeholder="Rechercher par titre ou contenu..."
                       />
                       {searchQuery && (
                         <button
                           onClick={() => { setSearchQuery(""); setCurrentPage(1) }}
-                          className={`absolute right-4 top-1/2 -translate-y-1/2 transition ${textMuted} ${isDark ? "hover:text-white" : "hover:text-violet-900"}`}
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 transition ${textMuted} ${isDark ? "hover:text-white" : "hover:text-slate-900"}`}
                         >
                           ✕
                         </button>
@@ -391,76 +337,71 @@ function Dashboard() {
                     </div>
                     {searchQuery && (
                       <p className={`${textMuted} text-sm mt-2`}>
-                        {filteredArticles.length} resultat{filteredArticles.length !== 1 ? "s" : ""} pour "{searchQuery}"
+                        {filterArticles(feedArticles).length} resultat{filterArticles(feedArticles).length !== 1 ? "s" : ""} pour "{searchQuery}"
                       </p>
                     )}
                   </div>
                 )}
 
-                {/* En-tête + bouton */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
-                  <h2 className={`text-2xl font-bold ${textPrimary}`}>
-                    {activeTab === "mine" ? "Mes articles" : "Fil d'actualite"}
-                    <span className={`${textMuted} text-lg ml-2`}>({filteredArticles.length})</span>
-                  </h2>
-                  {activeTab === "mine" && !showForm && (
-                    <button
-                      onClick={() => { setArticleToEdit(null); setShowForm(true) }}
-                      className={`px-5 py-2.5 font-semibold rounded-lg transition ${primaryButton}`}
-                    >+ Nouvel article</button>
-                  )}
-                </div>
+                {/* Titre fil d'actualité */}
+                <h2 className={`text-2xl font-bold ${textPrimary} mb-6`}>
+                  Fil d'actualité
+                  <span className={`${textMuted} text-lg ml-2`}>({filterArticles(feedArticles).length})</span>
+                </h2>
 
-                {/* Formulaire */}
-                {activeTab === "mine" && showForm && (
-                  <div className="mb-8">
-                    <ArticleForm articleToEdit={articleToEdit} onCreate={handleCreateArticle} onUpdate={handleUpdateArticle} onDone={handleFormDone} />
-                  </div>
-                )}
-
-                {/* Articles */}
+                {/* Articles du fil */}
                 {loading ? (
                   <p className={`${textSecondary} text-center py-16`}>Chargement...</p>
-                ) : displayedArticles.length === 0 ? (
+                ) : paginateArticles(filterArticles(feedArticles)).length === 0 ? (
                   <div className="text-center py-16">
                     <p className={`${textSecondary} text-lg`}>
-                      {searchQuery ? "Aucun article ne correspond" : activeTab === "mine" ? "Vous n'avez pas encore d'articles" : "Aucun article dans votre fil"}
+                      {searchQuery ? "Aucun article ne correspond" : "Aucun article dans votre fil"}
                     </p>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-4">
-                    {displayedArticles.map((article) => (
-                      <ArticleCard key={article._id || article.id} article={article} isOwner={activeTab === "mine"} onEdit={handleEdit} onDelete={handleDeleteArticle} onReload={loadArticles} />
+                    {paginateArticles(filterArticles(feedArticles)).map((article) => (
+                      <ArticleCard key={article._id || article.id} article={article} isOwner={false} onReload={loadArticles} />
                     ))}
                   </div>
                 )}
 
                 {/* Pagination */}
-                {totalPages > 1 && (
+                {Math.ceil(filterArticles(feedArticles).length / ARTICLES_PER_PAGE) > 1 && (
                   <div className="flex justify-center items-center gap-2 mt-8 flex-wrap">
-                  <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} disabled={currentPage === 1} className={`px-4 py-2 rounded-lg transition disabled:opacity-30 ${btnInactive}`}>←</button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} disabled={currentPage === 1} className={`px-4 py-2 rounded-lg transition disabled:opacity-30 ${btnInactive}`}>←</button>
+                    {Array.from({ length: Math.ceil(filterArticles(feedArticles).length / ARTICLES_PER_PAGE) }, (_, i) => i + 1).map((page) => (
                       <button key={page} onClick={() => setCurrentPage(page)} className={`w-10 h-10 rounded-lg font-medium transition ${currentPage === page ? btnActive : btnInactive}`}>{page}</button>
                     ))}
-                    <button onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages} className={`px-4 py-2 rounded-lg transition disabled:opacity-30 ${btnInactive}`}>→</button>
+                    <button onClick={() => setCurrentPage((p) => Math.min(p + 1, Math.ceil(filterArticles(feedArticles).length / ARTICLES_PER_PAGE)))} disabled={currentPage === Math.ceil(filterArticles(feedArticles).length / ARTICLES_PER_PAGE)} className={`px-4 py-2 rounded-lg transition disabled:opacity-30 ${btnInactive}`}>→</button>
                   </div>
                 )}
               </div>
             )}
 
-            {/* ═══ AUTRES PAGES ═══ */}
+            {/* ═══ PAGE : MES AMIS ═══ */}
             {activePage === "amis" && <FriendsList />}
 
+            {/* ═══ PAGE : MES ARTICLES ═══ */}
             {activePage === "articles" && (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
                   <h2 className={`text-2xl font-bold ${textPrimary}`}>
                     Mes articles <span className={`${textMuted} text-lg ml-2`}>({myArticles.length})</span>
                   </h2>
-                  <button onClick={() => { setArticleToEdit(null); setShowForm(true); setActivePage("dashboard"); setActiveTab("mine") }}
-                    className={`px-5 py-2.5 font-semibold rounded-lg transition ${primaryButton}`}>+ Nouvel article</button>
+                  {!showForm && (
+                    <button onClick={() => { setArticleToEdit(null); setShowForm(true) }}
+                      className={`px-5 py-2.5 font-semibold rounded-lg transition ${primaryButton}`}>+ Nouvel article</button>
+                  )}
                 </div>
-                {myArticles.length === 0 ? (
+
+                {showForm && (
+                  <div className="mb-8">
+                    <ArticleForm articleToEdit={articleToEdit} onCreate={handleCreateArticle} onUpdate={handleUpdateArticle} onDone={handleFormDone} />
+                  </div>
+                )}
+
+                {myArticles.length === 0 && !showForm ? (
                   <div className="text-center py-16"><p className={textSecondary}>Vous n'avez pas encore d'articles</p></div>
                 ) : (
                   myArticles.map((article) => (
@@ -470,183 +411,168 @@ function Dashboard() {
               </div>
             )}
 
+            {/* ═══ PAGE : DEMANDES ═══ */}
             {activePage === "demandes" && <FriendRequests />}
 
-            {/* ═══ PAGE PROFIL ═══ */}
+            {/* ═══ PAGE : PROFIL ═══ */}
             {activePage === "profil" && (
-            <div className="max-w-3xl">
+              <div className="max-w-3xl">
 
-              {/* ── Carte principale avec bannière ── */}
-              <div className={`border rounded-2xl overflow-hidden mb-6 ${cardBg}`}>
-                {/* Bannière */}
-                <div className={`h-36 relative ${isDark
-                  ? "bg-gradient-to-r from-purple-900 via-violet-700 to-purple-900"
-                  : "bg-gradient-to-r from-violet-900 via-fuchsia-700 to-rose-400"
-                }`}>
-                  <div className="absolute top-4 right-8 w-16 h-16 rounded-full bg-white/5 border border-white/10"></div>
-                  <div className="absolute top-8 right-20 w-8 h-8 rounded-full bg-white/5 border border-white/10"></div>
-                  <div className="absolute bottom-4 left-1/3 w-12 h-12 rounded-full bg-white/5 border border-white/10"></div>
+                {/* Carte principale avec bannière */}
+                <div className={`border rounded-2xl overflow-hidden mb-6 ${cardBg}`}>
+                  <div className={`h-36 relative ${isDark
+                    ? "bg-gradient-to-r from-blue-900 via-indigo-700 to-blue-900"
+                    : "bg-gradient-to-r from-blue-900 via-indigo-600 to-blue-500"
+                  }`}>
+                    <div className="absolute top-4 right-8 w-16 h-16 rounded-full bg-white/5 border border-white/10"></div>
+                    <div className="absolute top-8 right-20 w-8 h-8 rounded-full bg-white/5 border border-white/10"></div>
+                    <div className="absolute bottom-4 left-1/3 w-12 h-12 rounded-full bg-white/5 border border-white/10"></div>
+                  </div>
+
+                  <div className="px-6 pb-6">
+                    <div className="flex items-end justify-between -mt-12 mb-4">
+                      <div className="relative">
+                        {currentUser.avatar ? (
+                          <img
+                            src={`http://localhost:5000/api/auth/avatar/${currentUser.avatar}`}
+                            alt="Avatar"
+                            className={`w-24 h-24 rounded-full object-cover border-4 ${isDark ? "border-slate-900" : "border-white"}`}
+                          />
+                        ) : (
+                          <div className={`w-24 h-24 rounded-full border-4 flex items-center justify-center text-3xl font-bold text-white
+                            bg-gradient-to-br from-blue-500 to-indigo-700
+                            ${isDark ? "border-slate-900" : "border-white"}`}>
+                            {initiales}
+                          </div>
+                        )}
+                        <label
+                          htmlFor="avatar-upload"
+                          className="absolute bottom-1 right-1 w-7 h-7 bg-blue-600 hover:bg-blue-500 rounded-full flex items-center justify-center cursor-pointer transition border-2 border-slate-900"
+                          title="Changer la photo"
+                        >
+                          <span style={{ fontSize: "11px" }}>📷</span>
+                        </label>
+                        <input
+                          id="avatar-upload"
+                          type="file"
+                          accept="image/png,image/jpg,image/jpeg,image/gif,image/webp"
+                          className="hidden"
+                          onChange={handleAvatarUpload}
+                        />
+                      </div>
+
+                      <div className="mb-2 flex flex-col items-end gap-2">
+                        <span className="flex items-center gap-1.5 px-3 py-1 bg-green-500/15 border border-green-500/30 text-green-400 rounded-full text-xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+                          En ligne
+                        </span>
+                      </div>
+                    </div>
+
+                    <h3 className={`text-2xl font-bold ${textPrimary}`}>{currentUser.full_name}</h3>
+                    <p className={`text-sm mb-4 ${textSecondary}`}>@{currentUser.username}</p>
+
+                    <div className={`flex gap-6 pt-4 border-t ${isDark ? "border-white/10" : "border-slate-200/70"}`}>
+
+                    </div>
+                  </div>
                 </div>
 
-                <div className="px-6 pb-6">
-                  <div className="flex items-end justify-between -mt-12 mb-4">
-                    {/* Avatar avec bouton changer photo */}
-                    <div className="relative">
-                      {currentUser.avatar ? (
-                        <img
-                          src={`http://localhost:5000/api/auth/avatar/${currentUser.avatar}`}
-                          alt="Avatar"
-                          className={`w-24 h-24 rounded-full object-cover border-4 ${isDark ? "border-slate-900" : "border-white"}`}
-                        />
-                      ) : (
-                        <div className={`w-24 h-24 rounded-full border-4 flex items-center justify-center text-3xl font-bold text-white
-                          bg-gradient-to-br from-purple-500 to-violet-700
-                          ${isDark ? "border-slate-900" : "border-white"}`}>
-                          {initiales}
+                {/* Grille 2 colonnes */}
+                <div className="grid grid-cols-2 gap-6 mb-6">
+
+                  {/* Informations */}
+                  <div className={`border rounded-2xl p-6 ${cardBg}`}>
+                    <h3 className={`text-xs font-semibold uppercase tracking-widest mb-5 ${textMuted}`}>
+                      Informations
+                    </h3>
+                    <div className="flex flex-col gap-5">
+                      {[
+                        { icon: "👤", label: "Nom complet",       valeur: currentUser.full_name },
+                        { icon: "🔖", label: "Nom d'utilisateur", valeur: `@${currentUser.username}` },
+                        { icon: "📅", label: "Membre depuis",      valeur: currentUser.created_at
+                            ? new Date(currentUser.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
+                            : "Date inconnue"
+                        },
+                      ].map(info => (
+                        <div key={info.label} className="flex items-center gap-3">
+                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0
+                            ${isDark ? "bg-blue-500/15 border border-blue-500/20" : "bg-blue-50 border border-blue-200"}`}>
+                            {info.icon}
+                          </div>
+                          <div>
+                            <p className={`text-xs ${textMuted}`}>{info.label}</p>
+                            <p className={`text-sm font-medium ${textPrimary}`}>{info.valeur}</p>
+                          </div>
                         </div>
-                      )}
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Statistiques */}
+                  <div className={`border rounded-2xl p-6 ${cardBg}`}>
+                    <h3 className={`text-xs font-semibold uppercase tracking-widest mb-5 ${textMuted}`}>
+                      Statistiques
+                    </h3>
+                    <div className="flex flex-col gap-4">
+                      {[
+                        { icon: "📝", label: "Articles publiés",    valeur: myArticles.length,   color: textPrimary,                                  bg: isDark ? "bg-blue-500/15 border-blue-500/20"     : "bg-blue-50 border-blue-200" },
+                        { icon: "📰", label: "Articles dans le fil", valeur: feedArticles.length, color: textPrimary,                                  bg: isDark ? "bg-teal-500/15 border-teal-500/20"     : "bg-teal-50 border-teal-200" },
+                        { icon: "🔔", label: "Demandes en attente",  valeur: demandes.length,     color: textPrimary,                                  bg: isDark ? "bg-indigo-500/15 border-indigo-500/20" : "bg-indigo-50 border-indigo-200" },
+                      ].map(s => (
+                        <div key={s.label} className={`flex items-center justify-between p-3 rounded-xl border ${s.bg}`}>
+                          <div className="flex items-center gap-3">
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0 ${s.bg}`}>
+                              {s.icon}
+                            </div>
+                            <p className={`text-sm ${textSecondary}`}>{s.label}</p>
+                          </div>
+                          <span className={`text-2xl font-bold ${s.color}`}>{s.valeur}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Changer la photo */}
+                <div className={`border rounded-2xl p-6 ${cardBg}`}>
+                  <h3 className={`text-xs font-semibold uppercase tracking-widest mb-5 ${textMuted}`}>
+                    Photo de profil
+                  </h3>
+                  <div className="flex items-center gap-5">
+                    {currentUser.avatar ? (
+                      <img
+                        src={`http://localhost:5000/api/auth/avatar/${currentUser.avatar}`}
+                        alt="Avatar"
+                        className="w-16 h-16 rounded-full object-cover border-2 border-blue-500"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-700 flex items-center justify-center text-xl font-bold text-white">
+                        {initiales}
+                      </div>
+                    )}
+                    <div>
+                      <p className={`text-sm font-medium mb-2 ${textPrimary}`}>Mettre à jour votre photo</p>
                       <label
-                        htmlFor="avatar-upload"
-                        className="absolute bottom-1 right-1 w-7 h-7 bg-purple-600 hover:bg-purple-500 rounded-full flex items-center justify-center cursor-pointer transition border-2 border-slate-900"
-                        title="Changer la photo"
+                        htmlFor="avatar-upload-2"
+                        className={`px-4 py-2 text-sm font-medium rounded-lg transition cursor-pointer inline-block ${primaryButton}`}
                       >
-                        <span style={{ fontSize: "11px" }}>📷</span>
+                        Choisir une photo
                       </label>
                       <input
-                        id="avatar-upload"
+                        id="avatar-upload-2"
                         type="file"
                         accept="image/png,image/jpg,image/jpeg,image/gif,image/webp"
                         className="hidden"
                         onChange={handleAvatarUpload}
                       />
-                    </div>
-
-                    {/* Badges */}
-                    <div className="mb-2 flex flex-col items-end gap-2">
-                      <span className="flex items-center gap-1.5 px-3 py-1 bg-green-500/15 border border-green-500/30 text-green-400 rounded-full text-xs">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
-                        En ligne
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Nom + username */}
-                  <h3 className={`text-2xl font-bold ${textPrimary}`}>{currentUser.full_name}</h3>
-                  <p className={`text-sm mb-4 ${textSecondary}`}>@{currentUser.username}</p>
-
-                  {/* Mini stats */}
-                  <div className={`flex gap-6 pt-4 border-t ${isDark ? "border-white/10" : "border-violet-200/70"}`}>
-                    <div>
-                      <span className={`text-xl font-bold ${textPrimary}`}>{myArticles.length}</span>
-                      <span className={`text-sm ml-1 ${textSecondary}`}>articles</span>
-                    </div>
-                    <div>
-                      <span className={`text-xl font-bold ${textPrimary}`}>{feedArticles.length}</span>
-                      <span className={`text-sm ml-1 ${textSecondary}`}>dans le fil</span>
-                    </div>
-                    <div>
-                      <span className={`text-xl font-bold ${isDark ? "text-purple-400" : "text-violet-700"}`}>{demandes.length}</span>
-                      <span className={`text-sm ml-1 ${textSecondary}`}>demandes</span>
+                      <p className={`text-xs mt-2 ${textMuted}`}>PNG, JPG, GIF — Max 5 Mo</p>
                     </div>
                   </div>
                 </div>
+
               </div>
-
-              {/* ── Grille 2 colonnes ── */}
-              <div className="grid grid-cols-2 gap-6 mb-6">
-
-                {/* Informations */}
-                <div className={`border rounded-2xl p-6 ${cardBg}`}>
-                  <h3 className={`text-xs font-semibold uppercase tracking-widest mb-5 ${textMuted}`}>
-                    Informations
-                  </h3>
-                  <div className="flex flex-col gap-5">
-                    {[
-                      { icon: "👤", label: "Nom complet",       valeur: currentUser.full_name },
-                      { icon: "🔖", label: "Nom d'utilisateur", valeur: `@${currentUser.username}` },
-                      { icon: "📅", label: "Membre depuis",      valeur: currentUser.created_at
-                          ? new Date(currentUser.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
-                          : "Inconnu"
-                      },
-                    ].map(info => (
-                      <div key={info.label} className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0
-                          ${isDark ? "bg-purple-500/15 border border-purple-500/20" : "bg-violet-100 border border-violet-200"}`}>
-                          {info.icon}
-                        </div>
-                        <div>
-                          <p className={`text-xs ${textMuted}`}>{info.label}</p>
-                          <p className={`text-sm font-medium ${textPrimary}`}>{info.valeur}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Statistiques */}
-                <div className={`border rounded-2xl p-6 ${cardBg}`}>
-                  <h3 className={`text-xs font-semibold uppercase tracking-widest mb-5 ${textMuted}`}>
-                    Statistiques
-                  </h3>
-                  <div className="flex flex-col gap-4">
-                    {[
-                      { icon: "📝", label: "Articles publiés",    valeur: myArticles.length,   color: textPrimary,                                    bg: isDark ? "bg-blue-500/15 border-blue-500/20"   : "bg-blue-50 border-blue-200" },
-                      { icon: "📰", label: "Articles dans le fil", valeur: feedArticles.length, color: textPrimary,                                    bg: isDark ? "bg-teal-500/15 border-teal-500/20"   : "bg-teal-50 border-teal-200" },
-                      { icon: "🔔", label: "Demandes en attente",  valeur: demandes.length,     color: isDark ? "text-purple-400" : "text-violet-700", bg: isDark ? "bg-purple-500/15 border-purple-500/20" : "bg-violet-100 border-violet-200" },
-                    ].map(s => (
-                      <div key={s.label} className={`flex items-center justify-between p-3 rounded-xl border ${s.bg}`}>
-                        <div className="flex items-center gap-3">
-                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0 ${s.bg}`}>
-                            {s.icon}
-                          </div>
-                          <p className={`text-sm ${textSecondary}`}>{s.label}</p>
-                        </div>
-                        <span className={`text-2xl font-bold ${s.color}`}>{s.valeur}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* ── Changer la photo ── */}
-              <div className={`border rounded-2xl p-6 ${cardBg}`}>
-                <h3 className={`text-xs font-semibold uppercase tracking-widest mb-5 ${textMuted}`}>
-                  Photo de profil
-                </h3>
-                <div className="flex items-center gap-5">
-                  {currentUser.avatar ? (
-                    <img
-                      src={`http://localhost:5000/api/auth/avatar/${currentUser.avatar}`}
-                      alt="Avatar"
-                      className="w-16 h-16 rounded-full object-cover border-2 border-purple-500"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-violet-700 flex items-center justify-center text-xl font-bold text-white">
-                      {initiales}
-                    </div>
-                  )}
-                  <div>
-                    <p className={`text-sm font-medium mb-2 ${textPrimary}`}>Mettre à jour votre photo</p>
-                    <label
-                      htmlFor="avatar-upload-2"
-                      className={`px-4 py-2 text-sm font-medium rounded-lg transition cursor-pointer inline-block ${primaryButton}`}
-                    >
-                      Choisir une photo
-                    </label>
-                    <input
-                      id="avatar-upload-2"
-                      type="file"
-                      accept="image/png,image/jpg,image/jpeg,image/gif,image/webp"
-                      className="hidden"
-                      onChange={handleAvatarUpload}
-                    />
-                    <p className={`text-xs mt-2 ${textMuted}`}>PNG, JPG, GIF — Max 5 Mo</p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          )}
+            )}
           </div>
         </main>
       </div>

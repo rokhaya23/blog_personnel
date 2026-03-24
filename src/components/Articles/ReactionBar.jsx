@@ -45,7 +45,7 @@ function ReactionBar({ articleId, reactionsCount, currentUserReaction }) {
   return (
     <div>
       <p className={`text-xs mb-2 ${isDark ? "text-purple-300/50" : "text-violet-900/60"}`}>
-        Reagir a cet article :
+        Réagir à cet article :
       </p>
       <div className="flex items-center gap-1.5 flex-wrap">
         {AVAILABLE_EMOJIS.map((emojiData) => {

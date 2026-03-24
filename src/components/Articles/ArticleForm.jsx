@@ -80,7 +80,7 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
   // Classes dynamiques
   const cardClass = isDark
     ? "bg-white/10 backdrop-blur-lg border-white/10"
-    : "bg-white/92 border-violet-200/70 shadow-[0_16px_34px_rgba(76,29,149,0.08)]"
+    : "bg-white/92 border-violet-200/70 shadow-[0_16px_34px_rgba(29,78,216,0.08)]"
   const titleClass = isDark ? "text-white" : "text-gray-800"
   const labelClass = isDark ? "text-purple-200" : "text-violet-900/80"
   const inputClass = isDark
@@ -89,8 +89,8 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
   const checkLabel = isDark ? "text-purple-200" : "text-violet-900/80"
   const hintClass = isDark ? "text-purple-300/50" : "text-violet-800/55"
   const primaryButton = isDark
-    ? "bg-violet-600 hover:bg-violet-500 text-white shadow-[0_14px_30px_rgba(46,16,101,0.30)]"
-    : "bg-violet-700 hover:bg-violet-800 text-white shadow-[0_12px_28px_rgba(76,29,149,0.14)]"
+    ? "bg-slate-800 hover:bg-slate-700 text-white shadow-[0_14px_30px_rgba(15,23,42,0.32)]"
+    : "bg-slate-900 hover:bg-slate-800 text-white shadow-[0_12px_28px_rgba(15,23,42,0.20)]"
   const neutralButton = isDark
     ? "bg-white/10 text-white/60 hover:bg-white/20"
     : "bg-white text-slate-600 hover:bg-violet-50 border border-violet-200"

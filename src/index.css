@@ -1,34 +1,76 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
+@theme {
+  --color-purple-50: var(--color-blue-50);
+  --color-purple-100: var(--color-blue-100);
+  --color-purple-200: var(--color-blue-200);
+  --color-purple-300: var(--color-blue-300);
+  --color-purple-400: var(--color-blue-400);
+  --color-purple-500: var(--color-blue-500);
+  --color-purple-600: var(--color-blue-600);
+  --color-purple-700: var(--color-blue-700);
+  --color-purple-800: var(--color-blue-800);
+  --color-purple-900: var(--color-blue-900);
+  --color-purple-950: var(--color-blue-950);
+
+  --color-violet-50: var(--color-indigo-50);
+  --color-violet-100: var(--color-indigo-100);
+  --color-violet-200: var(--color-indigo-200);
+  --color-violet-300: var(--color-indigo-300);
+  --color-violet-400: var(--color-indigo-400);
+  --color-violet-500: var(--color-indigo-500);
+  --color-violet-600: var(--color-indigo-600);
+  --color-violet-700: var(--color-indigo-700);
+  --color-violet-800: var(--color-indigo-800);
+  --color-violet-900: var(--color-indigo-900);
+  --color-violet-950: var(--color-indigo-950);
+
+  --color-fuchsia-50: var(--color-indigo-50);
+  --color-fuchsia-100: var(--color-indigo-100);
+  --color-fuchsia-200: var(--color-indigo-200);
+  --color-fuchsia-300: var(--color-indigo-300);
+  --color-fuchsia-400: var(--color-indigo-400);
+  --color-fuchsia-500: var(--color-indigo-500);
+  --color-fuchsia-600: var(--color-indigo-600);
+  --color-fuchsia-700: var(--color-indigo-700);
+  --color-fuchsia-800: var(--color-indigo-800);
+  --color-fuchsia-900: var(--color-indigo-900);
+  --color-fuchsia-950: var(--color-indigo-950);
+}
+
+:root {
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --accent-gradient: linear-gradient(110deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
+}
+
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: var(--bg-primary, #ffffff);
+  background: var(--bg-primary, #f0f4f8);
   color: var(--text-primary, #111827);
   transition: background-color 180ms ease, color 180ms ease;
 }
 
-/* Mode sombre — on garde les couleurs actuelles */
 .theme-dark {
   --bg-primary: #0f172a;
-  --bg-secondary: rgba(15, 23, 42, 0.72);
-  --bg-card: rgba(255, 255, 255, 0.1);
-  --border-color: rgba(255, 255, 255, 0.1);
-  --text-primary: #ffffff;
-  --text-secondary: rgba(216, 205, 255, 0.76);
-  --text-muted: rgba(196, 181, 253, 0.44);
+  --bg-secondary: rgba(15, 23, 42, 0.82);
+  --bg-card: rgba(255, 255, 255, 0.08);
+  --border-color: rgba(255, 255, 255, 0.12);
+  --text-primary: #e2e8f0;
+  --text-secondary: rgba(147, 197, 253, 0.75);
+  --text-muted: rgba(147, 197, 253, 0.55);
 }
 
-/* Mode clair — ivoire froid + violet plus profond */
 .theme-light {
-  --bg-primary: #f6f2fb;
+  --bg-primary: #f0f4f8;
   --bg-secondary: #ffffff;
   --bg-card: #ffffff;
-  --border-color: #ddd6fe;
+  --border-color: #e2e8f0;
   --text-primary: #1f2937;
-  --text-secondary: #4c1d95;
-  --text-muted: #7c6aaf;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
 }
 
 .theme-dark,

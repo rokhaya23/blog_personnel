@@ -23,15 +23,15 @@ function FriendRequests() {
   const emptySecondary = isDark ? "text-purple-300/40" : "text-violet-800/55"
   const cardClass = isDark
     ? "bg-white/5 border-white/10"
-    : "bg-white/90 border-violet-200/70 shadow-sm hover:shadow-[0_14px_28px_rgba(76,29,149,0.08)]"
+    : "bg-white/90 border-violet-200/70 shadow-sm hover:shadow-[0_14px_28px_rgba(29,78,216,0.08)]"
   const avatarClass = isDark
     ? "bg-purple-600/40 text-purple-200"
     : "bg-violet-100 text-violet-800"
   const nameClass = isDark ? "text-white" : "text-slate-800"
   const usernameClass = isDark ? "text-purple-300/60" : "text-violet-900/55"
   const acceptButton = isDark
-    ? "bg-violet-600 hover:bg-violet-500 text-white"
-    : "bg-violet-700 hover:bg-violet-800 text-white"
+    ? "bg-slate-800 hover:bg-slate-700 text-white"
+    : "bg-slate-900 hover:bg-slate-800 text-white"
   const rejectButton = isDark
     ? "bg-white/10 hover:bg-white/20 text-red-400"
     : "bg-white hover:bg-red-50 text-red-600 border border-red-200"

@@ -2,6 +2,18 @@ import { useNavigate } from "react-router-dom"
 
 function LandingPage() {
   const navigate = useNavigate()
+  const c = {
+    primary: "#2563eb",
+    primaryDark: "#1d4ed8",
+    deep: "#0f172a",
+    border: "#e2e8f0",
+    heroGradient: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #2563eb 100%)",
+    sectionGradient: "linear-gradient(140deg, #0f172a 0%, #1d4ed8 55%, #2563eb 100%)",
+    altGradient: "linear-gradient(140deg, #0b1f3d 0%, #1e3a8a 60%, #2563eb 100%)",
+    footerGradient: "linear-gradient(160deg, #0f172a 0%, #1e3a8a 60%, #0b1f3d 100%)",
+    glow: "0 24px 60px rgba(15,23,42,0.35)",
+    softGlow: "0 18px 40px rgba(15,23,42,0.25)",
+  }
 
   return (
     <div style={{ fontFamily: "sans-serif" }}>
@@ -12,15 +24,15 @@ function LandingPage() {
       <nav style={{
         background: "white", display: "flex", alignItems: "center",
         justifyContent: "space-between", padding: "16px 48px",
-        borderBottom: "1px solid #e5e7eb", position: "sticky", top: 0, zIndex: 10
+        borderBottom: `1px solid ${c.border}`, position: "sticky", top: 0, zIndex: 10
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{
             width: "34px", height: "34px", borderRadius: "8px",
-            background: "#7c3aed", display: "flex", alignItems: "center",
+            background: c.primary, display: "flex", alignItems: "center",
             justifyContent: "center", fontWeight: 800, fontSize: "16px", color: "white"
           }}>B</div>
-          <span style={{ fontWeight: 700, fontSize: "17px", color: "#1e1b4b" }}>MonBlog</span>
+          <span style={{ fontWeight: 700, fontSize: "17px", color: c.deep }}>MonBlog</span>
         </div>
         <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
           <button
@@ -32,9 +44,10 @@ function LandingPage() {
           <button
             onClick={() => navigate("/register")}
             style={{
-              padding: "10px 20px", background: "#7c3aed", border: "none",
+              padding: "10px 20px", background: c.primary, border: "none",
               borderRadius: "6px", color: "white", fontSize: "13px",
-              fontWeight: 700, cursor: "pointer", letterSpacing: "0.5px", textTransform: "uppercase"
+              fontWeight: 700, cursor: "pointer", letterSpacing: "0.5px", textTransform: "uppercase",
+              boxShadow: c.softGlow
             }}
           >
             CRÉER VOTRE BLOG
@@ -46,7 +59,7 @@ function LandingPage() {
           SECTION 1 — HERO
       ══════════════════════════════ */}
       <section style={{
-        background: "#4c1d95", minHeight: "600px", display: "flex",
+        background: c.heroGradient, minHeight: "600px", display: "flex",
         flexDirection: "column", alignItems: "center", justifyContent: "center",
         textAlign: "center", padding: "60px 48px", position: "relative", overflow: "hidden"
       }}>
@@ -74,13 +87,13 @@ function LandingPage() {
         }}>
           Parlez de ce qui vous passionne,<br/>à votre manière
         </h1>
-        <p style={{ color: "rgba(221,214,254,0.8)", fontSize: "17px", marginBottom: "36px", position: "relative", zIndex: 1 }}>
+        <p style={{ color: "rgba(226,232,240,0.82)", fontSize: "17px", marginBottom: "36px", position: "relative", zIndex: 1 }}>
           Créez un blog unique et de qualité.
         </p>
         <button
           onClick={() => navigate("/register")}
           style={{
-            padding: "16px 40px", background: "#7c3aed", border: "none",
+            padding: "16px 40px", background: c.primary, border: "none",
             borderRadius: "6px", color: "white", fontSize: "14px", fontWeight: 700,
             cursor: "pointer", letterSpacing: "0.8px", textTransform: "uppercase",
             position: "relative", zIndex: 1
@@ -93,13 +106,13 @@ function LandingPage() {
         <div style={{
           marginTop: "48px", background: "white", borderRadius: "14px",
           padding: "20px", maxWidth: "460px", width: "100%",
-          position: "relative", zIndex: 1, boxShadow: "0 24px 60px rgba(0,0,0,0.35)"
+          position: "relative", zIndex: 1, boxShadow: c.glow
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px", paddingBottom: "12px", borderBottom: "1px solid #f3f4f6" }}>
-            <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: "#7c3aed", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: 700, color: "white" }}>RB</div>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px", paddingBottom: "12px", borderBottom: `1px solid ${c.border}` }}>
+            <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: c.primary, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: 700, color: "white" }}>RB</div>
             <div>
               <div style={{ fontSize: "12px", fontWeight: 600, color: "#1f2937" }}>Nos aventures au Sénégal</div>
-              <div style={{ fontSize: "10px", color: "#9ca3af" }}>Vendredi 14 mars 2026 · Public</div>
+              <div style={{ fontSize: "10px", color: "#64748b" }}>Vendredi 14 mars 2026 · Public</div>
             </div>
             <div style={{ marginLeft: "auto", width: "7px", height: "7px", borderRadius: "50%", background: "#22c55e" }}></div>
           </div>
@@ -122,7 +135,7 @@ function LandingPage() {
       {/* ══════════════════════════════
           SECTION 2 — Écrire et publier
       ══════════════════════════════ */}
-      <section style={{ background: "#5b21b6", minHeight: "520px", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 48px" }}>
+      <section style={{ background: c.sectionGradient, minHeight: "520px", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 48px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "60px", maxWidth: "1000px", width: "100%" }}>
           <div style={{ flex: 1 }}>
             <h2 style={{ fontSize: "36px", fontWeight: 700, color: "white", lineHeight: 1.25, marginBottom: "18px" }}>
@@ -150,7 +163,7 @@ function LandingPage() {
               <rect x="156" y="140" width="110" height="28" rx="6" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" strokeWidth="1"/>
               <text x="211" y="159" fontSize="11" fill="rgba(255,255,255,0.4)" textAnchor="middle">Privé</text>
               <rect x="36" y="180" width="100" height="28" rx="6" fill="rgba(255,255,255,0.9)"/>
-              <text x="86" y="199" fontSize="12" fontWeight="700" fill="#5b21b6" textAnchor="middle">Publier</text>
+              <text x="86" y="199" fontSize="12" fontWeight="700" fill={c.primaryDark} textAnchor="middle">Publier</text>
             </svg>
           </div>
         </div>
@@ -159,7 +172,7 @@ function LandingPage() {
       {/* ══════════════════════════════
           SECTION 3 — Amis
       ══════════════════════════════ */}
-      <section style={{ background: "#3b0764", minHeight: "520px", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 48px" }}>
+      <section style={{ background: c.altGradient, minHeight: "520px", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 48px" }}>
         <div style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "60px", maxWidth: "1000px", width: "100%" }}>
           <div style={{ flex: 1 }}>
             <h2 style={{ fontSize: "36px", fontWeight: 700, color: "white", lineHeight: 1.25, marginBottom: "18px" }}>
@@ -186,8 +199,8 @@ function LandingPage() {
               ].map(u => (
                 <g key={u.label}>
                   <circle cx={u.cx} cy={u.cy} r="16" fill="white"/>
-                  <text x={u.cx} y={u.cy + 4} textAnchor="middle" fontSize="10" fontWeight="700" fill="#3b0764">{u.label}</text>
-                  <circle cx={u.cx} cy={u.cy + 20} r="8" fill="#7c3aed"/>
+                  <text x={u.cx} y={u.cy + 4} textAnchor="middle" fontSize="10" fontWeight="700" fill={c.deep}>{u.label}</text>
+                  <circle cx={u.cx} cy={u.cy + 20} r="8" fill={c.primary}/>
                   <text x={u.cx} y={u.cy + 24} textAnchor="middle" fontSize="8" fontWeight="700" fill="white">B</text>
                 </g>
               ))}
@@ -199,7 +212,7 @@ function LandingPage() {
       {/* ══════════════════════════════
           SECTION 4 — Réactions
       ══════════════════════════════ */}
-      <section style={{ background: "#6d28d9", minHeight: "520px", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 48px" }}>
+      <section style={{ background: c.sectionGradient, minHeight: "520px", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 48px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "60px", maxWidth: "1000px", width: "100%" }}>
           <div style={{ flex: 1 }}>
             <h2 style={{ fontSize: "36px", fontWeight: 700, color: "white", lineHeight: 1.25, marginBottom: "18px" }}>
@@ -236,7 +249,7 @@ function LandingPage() {
       {/* ══════════════════════════════
           SECTION 5 — Fil d'actualité
       ══════════════════════════════ */}
-      <section style={{ background: "#4c1d95", minHeight: "520px", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 48px" }}>
+      <section style={{ background: c.heroGradient, minHeight: "520px", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 48px" }}>
         <div style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "60px", maxWidth: "1000px", width: "100%" }}>
           <div style={{ flex: 1 }}>
             <h2 style={{ fontSize: "36px", fontWeight: 700, color: "white", lineHeight: 1.25, marginBottom: "18px" }}>
@@ -260,7 +273,7 @@ function LandingPage() {
                   opacity: 1 - i * 0.15
                 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                    <div style={{ width: "26px", height: "26px", borderRadius: "50%", background: "#7c3aed", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 700, color: "white" }}>{item.init}</div>
+                    <div style={{ width: "26px", height: "26px", borderRadius: "50%", background: c.primary, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 700, color: "white" }}>{item.init}</div>
                     <div style={{ fontSize: "10px", color: "rgba(221,214,254,0.65)" }}>{item.time} · Public</div>
                   </div>
                   <div style={{ fontSize: "12px", fontWeight: 600, color: "white" }}>{item.titre}</div>
@@ -274,7 +287,7 @@ function LandingPage() {
       {/* ══════════════════════════════
           SECTION CTA FINAL
       ══════════════════════════════ */}
-      <section style={{ background: "#3b0764", minHeight: "440px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "60px 48px", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: c.footerGradient, minHeight: "440px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "60px 48px", position: "relative", overflow: "hidden" }}>
         {/* Carte monde en fond */}
         <svg style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", opacity: 0.06 }} viewBox="0 0 1000 440" preserveAspectRatio="xMidYMid slice">
           <ellipse cx="200" cy="200" rx="170" ry="180" fill="white"/>
@@ -291,8 +304,8 @@ function LandingPage() {
           { top: "90px", left: "24%", label: "LY" },
         ].map(p => (
           <div key={p.label} style={{ position: "absolute", top: p.top, left: p.left, right: p.right, zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
-            <div style={{ width: "34px", height: "34px", borderRadius: "50%", background: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 700, color: "#3b0764" }}>{p.label}</div>
-            <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#7c3aed" }}></div>
+            <div style={{ width: "34px", height: "34px", borderRadius: "50%", background: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 700, color: c.deep }}>{p.label}</div>
+            <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: c.primary }}></div>
           </div>
         ))}
 
@@ -305,7 +318,7 @@ function LandingPage() {
           </p>
           <button
             onClick={() => navigate("/register")}
-            style={{ padding: "15px 36px", background: "#1e1b4b", border: "none", borderRadius: "6px", color: "white", fontSize: "13px", fontWeight: 700, cursor: "pointer", letterSpacing: "0.8px", textTransform: "uppercase" }}
+            style={{ padding: "15px 36px", background: c.primaryDark, border: "none", borderRadius: "6px", color: "white", fontSize: "13px", fontWeight: 700, cursor: "pointer", letterSpacing: "0.8px", textTransform: "uppercase", boxShadow: c.softGlow }}
           >
             CRÉER VOTRE BLOG
           </button>
@@ -315,12 +328,12 @@ function LandingPage() {
       {/* ══════════════════════════════
           FOOTER
       ══════════════════════════════ */}
-      <footer style={{ background: "#1e1b4b", padding: "18px 48px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <footer style={{ background: c.deep, padding: "18px 48px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <div style={{ width: "26px", height: "26px", borderRadius: "6px", background: "#7c3aed", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700, color: "white" }}>B</div>
-          <span style={{ color: "rgba(196,181,253,0.5)", fontSize: "12px" }}>MonBlog © 2026</span>
+          <div style={{ width: "26px", height: "26px", borderRadius: "6px", background: c.primary, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700, color: "white" }}>B</div>
+          <span style={{ color: "rgba(148,163,184,0.6)", fontSize: "12px" }}>MonBlog © 2026</span>
         </div>
-        <span style={{ color: "rgba(167,139,250,0.3)", fontSize: "11px" }}>Projet ISI DSIA — Blog Personnel · React + Flask</span>
+        <span style={{ color: "rgba(148,163,184,0.65)", fontSize: "11px" }}>Projet ISI DSIA — Blog Personnel · React + Flask</span>
       </footer>
 
     </div>
