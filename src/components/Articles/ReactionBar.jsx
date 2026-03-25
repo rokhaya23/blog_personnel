@@ -44,7 +44,7 @@ function ReactionBar({ articleId, reactionsCount, currentUserReaction }) {
 
   return (
     <div>
-      <p className={`text-xs mb-2 ${isDark ? "text-purple-300/50" : "text-violet-900/60"}`}>
+      <p className={`text-xs mb-2 ${isDark ? "text-blue-200/60" : "text-blue-800/65"}`}>
         Réagir à cet article :
       </p>
       <div className="flex items-center gap-1.5 flex-wrap">
@@ -61,28 +61,28 @@ function ReactionBar({ articleId, reactionsCount, currentUserReaction }) {
               className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-sm transition disabled:opacity-70 ${
                 isActive
                   ? isDark
-                    ? "bg-violet-500/25 border border-violet-300/50 text-white"
-                    : "bg-violet-200 border border-violet-400 text-violet-950"
+                    ? "bg-blue-700/25 border border-blue-400/50 text-white"
+                    : "bg-blue-200 border border-blue-400 text-blue-950"
                   : hasReactions
                   ? isDark
-                    ? "bg-purple-500/15 border border-purple-400/30"
-                    : "bg-violet-50 border border-violet-200"
+                    ? "bg-blue-500/15 border border-blue-400/30"
+                    : "bg-blue-50 border border-blue-200"
                   : isDark
                   ? "bg-white/5 border border-white/10 hover:bg-white/15"
-                  : "bg-white border border-violet-200 hover:bg-violet-50"
+                  : "bg-white border border-blue-200 hover:bg-blue-50"
               }`}
               title={emojiData.label}
             >
               <span className="text-base">{emojiData.emoji}</span>
               {hasReactions && (
-                <span className={`text-xs font-medium ${isDark ? "text-white/80" : "text-violet-900"}`}>{count}</span>
+                <span className={`text-xs font-medium ${isDark ? "text-white/80" : "text-blue-900"}`}>{count}</span>
               )}
             </button>
           )
         })}
 
         {totalReactions > 0 && (
-          <span className={`text-xs ml-2 ${isDark ? "text-purple-300/40" : "text-violet-800/55"}`}>
+          <span className={`text-xs ml-2 ${isDark ? "text-blue-200/60" : "text-blue-800/60"}`}>
             {totalReactions} reaction{totalReactions !== 1 ? "s" : ""}
           </span>
         )}

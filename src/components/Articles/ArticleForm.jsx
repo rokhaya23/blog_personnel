@@ -80,20 +80,20 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
   // Classes dynamiques
   const cardClass = isDark
     ? "bg-white/10 backdrop-blur-lg border-white/10"
-    : "bg-white/92 border-violet-200/70 shadow-[0_16px_34px_rgba(29,78,216,0.08)]"
+    : "bg-white/92 border-blue-200/70 shadow-[0_16px_34px_rgba(29,78,216,0.08)]"
   const titleClass = isDark ? "text-white" : "text-gray-800"
-  const labelClass = isDark ? "text-purple-200" : "text-violet-900/80"
+  const labelClass = isDark ? "text-blue-100" : "text-blue-900/80"
   const inputClass = isDark
     ? "bg-white/10 border-white/20 text-white placeholder-white/50"
-    : "bg-white border-violet-200 text-gray-800 placeholder:text-violet-500/55"
-  const checkLabel = isDark ? "text-purple-200" : "text-violet-900/80"
-  const hintClass = isDark ? "text-purple-300/50" : "text-violet-800/55"
+    : "bg-white border-blue-200 text-gray-800 placeholder:text-blue-500/55"
+  const checkLabel = isDark ? "text-blue-100" : "text-blue-900/80"
+  const hintClass = isDark ? "text-blue-200/60" : "text-blue-800/60"
   const primaryButton = isDark
-    ? "bg-slate-800 hover:bg-slate-700 text-white shadow-[0_14px_30px_rgba(15,23,42,0.32)]"
-    : "bg-slate-900 hover:bg-slate-800 text-white shadow-[0_12px_28px_rgba(15,23,42,0.20)]"
+    ? "bg-blue-700 hover:bg-blue-600 text-white shadow-[0_14px_30px_rgba(37,99,235,0.30)]"
+    : "bg-blue-700 hover:bg-blue-800 text-white shadow-[0_12px_28px_rgba(37,99,235,0.18)]"
   const neutralButton = isDark
-    ? "bg-white/10 text-white/60 hover:bg-white/20"
-    : "bg-white text-slate-600 hover:bg-violet-50 border border-violet-200"
+    ? "bg-blue-900/30 text-white/80 hover:bg-blue-800/40 border border-blue-800"
+    : "bg-blue-50 text-blue-900 hover:bg-blue-100 border border-blue-200"
 
   return (
     <div className={`rounded-xl p-6 border ${cardClass}`}>
@@ -112,7 +112,7 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:border-purple-400 transition ${inputClass}`}
+            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:border-blue-400 transition ${inputClass}`}
             placeholder="Un titre accrocheur..."
           />
         </div>
@@ -123,7 +123,7 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={6}
-            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:border-purple-400 transition resize-y ${inputClass}`}
+            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:border-blue-400 transition resize-y ${inputClass}`}
             placeholder="Ecrivez votre article ici..."
           />
         </div>
@@ -137,11 +137,11 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
               <label
                 htmlFor="media-upload"
                 className={`flex items-center justify-center gap-2 w-full py-4 border-2 border-dashed rounded-lg cursor-pointer transition ${
-                  isDark ? "border-white/20 hover:border-purple-400 hover:bg-white/5" : "border-violet-200 hover:border-violet-400 hover:bg-violet-50/60"
+                  isDark ? "border-white/20 hover:border-blue-400 hover:bg-white/5" : "border-blue-200 hover:border-blue-400 hover:bg-blue-50/60"
                 }`}
               >
                 <span className="text-2xl">📎</span>
-                <span className={isDark ? "text-purple-200/70" : "text-violet-800/70"}>Cliquer pour ajouter des photos ou videos</span>
+                <span className={isDark ? "text-blue-100/80" : "text-blue-800/70"}>Cliquer pour ajouter des photos ou videos</span>
               </label>
             </div>
 
@@ -170,12 +170,12 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
         {/* Options */}
         <div className="flex flex-col gap-3 mb-6">
           <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} className="w-5 h-5 rounded accent-violet-600" />
+            <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} className="w-5 h-5 rounded accent-blue-600" />
             <span className={checkLabel}>Article public</span>
             <span className={`text-sm ${hintClass}`}>{isPublic ? "(visible par vos amis)" : "(visible uniquement par vous)"}</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" checked={allowComments} onChange={(e) => setAllowComments(e.target.checked)} className="w-5 h-5 rounded accent-violet-600" />
+            <input type="checkbox" checked={allowComments} onChange={(e) => setAllowComments(e.target.checked)} className="w-5 h-5 rounded accent-blue-600" />
             <span className={checkLabel}>Autoriser les commentaires</span>
           </label>
         </div>

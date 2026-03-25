@@ -18,20 +18,20 @@ function FriendRequests() {
   }
 
   const titleClass = isDark ? "text-white" : "text-slate-800"
-  const countClass = isDark ? "text-purple-300/50" : "text-violet-800/55"
-  const emptyPrimary = isDark ? "text-purple-200/60" : "text-violet-900/70"
-  const emptySecondary = isDark ? "text-purple-300/40" : "text-violet-800/55"
+  const countClass = isDark ? "text-blue-200/60" : "text-blue-800/60"
+  const emptyPrimary = isDark ? "text-blue-100/70" : "text-blue-900/70"
+  const emptySecondary = isDark ? "text-blue-200/50" : "text-blue-800/55"
   const cardClass = isDark
     ? "bg-white/5 border-white/10"
-    : "bg-white/90 border-violet-200/70 shadow-sm hover:shadow-[0_14px_28px_rgba(29,78,216,0.08)]"
+    : "bg-white/90 border-blue-200/70 shadow-sm hover:shadow-[0_14px_28px_rgba(29,78,216,0.08)]"
   const avatarClass = isDark
-    ? "bg-purple-600/40 text-purple-200"
-    : "bg-violet-100 text-violet-800"
+    ? "bg-blue-600/40 text-blue-100"
+    : "bg-blue-100 text-blue-800"
   const nameClass = isDark ? "text-white" : "text-slate-800"
-  const usernameClass = isDark ? "text-purple-300/60" : "text-violet-900/55"
+  const usernameClass = isDark ? "text-blue-200/60" : "text-blue-900/55"
   const acceptButton = isDark
-    ? "bg-slate-800 hover:bg-slate-700 text-white"
-    : "bg-slate-900 hover:bg-slate-800 text-white"
+    ? "bg-blue-700 hover:bg-blue-600 text-white"
+    : "bg-blue-700 hover:bg-blue-800 text-white"
   const rejectButton = isDark
     ? "bg-white/10 hover:bg-white/20 text-red-400"
     : "bg-white hover:bg-red-50 text-red-600 border border-red-200"
@@ -64,7 +64,7 @@ function FriendRequests() {
                   <img
                     src={`http://localhost:5000/api/auth/avatar/${demande.avatar}`}
                     alt={demande.full_name}
-                    className="w-9 h-9 rounded-full object-cover border-2 border-purple-500 flex-shrink-0"
+                    className="w-9 h-9 rounded-full object-cover border-2 border-blue-500 flex-shrink-0"
                   />
                 ) : (
                   <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 ${avatarClass}`}>

@@ -168,8 +168,8 @@ function Dashboard() {
     ? "bg-white/10 border-white/20 text-white placeholder-white/40"
     : "bg-white border-slate-200 text-gray-800 placeholder:text-slate-400"
   const btnActive = isDark
-    ? "bg-slate-800 text-white shadow-[0_14px_30px_rgba(15,23,42,0.35)] hover:bg-slate-700"
-    : "bg-slate-900 text-white shadow-[0_14px_30px_rgba(15,23,42,0.18)] hover:bg-slate-800"
+    ? "bg-blue-700 text-white shadow-[0_14px_30px_rgba(37,99,235,0.28)] hover:bg-blue-600"
+    : "bg-blue-700 text-white shadow-[0_14px_30px_rgba(37,99,235,0.18)] hover:bg-blue-800"
   const btnInactive = isDark
     ? "bg-white/10 text-blue-200 hover:bg-white/20"
     : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200/80 shadow-sm"
@@ -177,8 +177,8 @@ function Dashboard() {
     ? "bg-white/5 border-white/10"
     : "bg-white/90 border-slate-200/80 shadow-[0_12px_28px_rgba(15,23,42,0.06)] backdrop-blur-xl"
   const primaryButton = isDark
-    ? "bg-slate-800 hover:bg-slate-700 text-white shadow-[0_14px_30px_rgba(15,23,42,0.32)]"
-    : "bg-slate-900 hover:bg-slate-800 text-white shadow-[0_12px_28px_rgba(15,23,42,0.18)]"
+    ? "bg-blue-700 hover:bg-blue-600 text-white shadow-[0_14px_30px_rgba(37,99,235,0.30)]"
+    : "bg-blue-700 hover:bg-blue-800 text-white shadow-[0_12px_28px_rgba(37,99,235,0.18)]"
   const toggleButton = isDark
     ? "bg-white/10 hover:bg-white/20 text-blue-200"
     : "bg-slate-100 hover:bg-slate-200 text-slate-700"
@@ -274,7 +274,7 @@ function Dashboard() {
           <div className={`mt-auto border-t pt-3 ${isDark ? "border-white/10" : "border-slate-200/80"}`}>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-400 hover:bg-red-500/10 transition w-full"
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition w-full bg-red-500 text-white border border-red-600"
             >
               <span>🚪</span>
               Déconnexion

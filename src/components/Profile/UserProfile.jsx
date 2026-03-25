@@ -87,20 +87,20 @@ function UserProfile() {
     ? "bg-gradient-to-r from-blue-900 via-indigo-700 to-blue-900"
     : "bg-gradient-to-r from-blue-900 via-indigo-700 to-blue-500"
   const primaryText = isDark ? "text-white" : "text-slate-800"
-  const secondaryText = isDark ? "text-purple-300/60" : "text-violet-900/65"
-  const mutedText = isDark ? "text-purple-300/40" : "text-violet-800/55"
+  const secondaryText = isDark ? "text-blue-200/70" : "text-blue-900/65"
+  const mutedText = isDark ? "text-blue-200/50" : "text-blue-800/60"
   const primaryButton = isDark
-    ? "bg-slate-800 hover:bg-slate-700 text-white shadow-[0_14px_30px_rgba(15,23,42,0.32)]"
-    : "bg-slate-900 hover:bg-slate-800 text-white shadow-[0_12px_28px_rgba(15,23,42,0.20)]"
+    ? "bg-blue-700 hover:bg-blue-600 text-white shadow-[0_14px_30px_rgba(37,99,235,0.30)]"
+    : "bg-blue-700 hover:bg-blue-800 text-white shadow-[0_12px_28px_rgba(37,99,235,0.18)]"
   const neutralButton = isDark
-    ? "bg-white/10 hover:bg-white/20 text-purple-200"
-    : "bg-white hover:bg-violet-50 text-violet-900 border border-violet-200"
-  const tabActive = isDark ? "border-purple-500 text-white" : "border-violet-700 text-violet-900"
-  const tabInactive = isDark ? "border-transparent text-purple-300/60 hover:text-purple-200" : "border-transparent text-violet-900/55 hover:text-violet-900"
+    ? "bg-blue-900/30 hover:bg-blue-800/40 text-white border border-blue-800"
+    : "bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200"
+  const tabActive = isDark ? "border-blue-500 text-white" : "border-blue-700 text-blue-900"
+  const tabInactive = isDark ? "border-transparent text-blue-200/60 hover:text-white" : "border-transparent text-blue-900/60 hover:text-blue-900"
 
   if (loading) return (
     <div className={`min-h-screen flex items-center justify-center ${pageBg}`}>
-      <p className={`text-lg ${isDark ? "text-purple-200" : "text-violet-900/70"}`}>Chargement...</p>
+      <p className={`text-lg ${isDark ? "text-blue-200" : "text-blue-900/70"}`}>Chargement...</p>
     </div>
   )
 
@@ -119,7 +119,7 @@ function UserProfile() {
       <div className={`border-b px-6 py-4 flex items-center gap-4 ${topBarBg}`}>
         <button
           onClick={() => navigate("/dashboard")}
-          className={`transition text-sm flex items-center gap-2 ${isDark ? "text-purple-300 hover:text-white" : "text-violet-900/70 hover:text-violet-900"}`}
+          className={`transition text-sm flex items-center gap-2 ${isDark ? "text-blue-200 hover:text-white" : "text-blue-900/70 hover:text-blue-900"}`}
         >
           ← Retour
         </button>
@@ -147,7 +147,7 @@ function UserProfile() {
                 className={`w-20 h-20 rounded-full object-cover border-4 flex-shrink-0 ${isDark ? "border-slate-900" : "border-white"}`}
               />
             ) : (
-              <div className={`w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-violet-700 border-4 flex items-center justify-center text-2xl font-bold text-white flex-shrink-0 ${isDark ? "border-slate-900" : "border-white"}`}>
+              <div className={`w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-blue-800 border-4 flex items-center justify-center text-2xl font-bold text-white flex-shrink-0 ${isDark ? "border-slate-900" : "border-white"}`}>
                 {initiales}
               </div>
             )}
@@ -174,7 +174,7 @@ function UserProfile() {
 
                 {/* Demande reçue de cet utilisateur */}
                 {statut === "demande_recue" && (
-                  <span className={`px-4 py-2 rounded-lg text-sm ${isDark ? "bg-purple-500/20 text-purple-300" : "bg-violet-100 text-violet-900"}`}>
+                  <span className={`px-4 py-2 rounded-lg text-sm ${isDark ? "bg-blue-600/20 text-blue-200" : "bg-blue-100 text-blue-900"}`}>
                     Demande reçue — allez dans "Demandes" pour répondre
                   </span>
                 )}
@@ -228,7 +228,7 @@ function UserProfile() {
             </div>
 
             {/* Stats rapides */}
-            <div className={`flex gap-6 mt-4 pt-4 border-t ${isDark ? "border-white/10" : "border-violet-200/70"}`}>
+        <div className={`flex gap-6 mt-4 pt-4 border-t ${isDark ? "border-white/10" : "border-blue-200/70"}`}>
               <div className="text-center">
                 <div className={`text-xl font-bold ${primaryText}`}>{articles.length}</div>
                 <div className={`text-xs ${secondaryText}`}>Articles</div>
@@ -252,7 +252,7 @@ function UserProfile() {
         {/* ════════════════════════════════
             ONGLETS Articles / Amis
         ════════════════════════════════ */}
-        <div className={`flex gap-2 mb-6 border-b ${isDark ? "border-white/10" : "border-violet-200/70"}`}>
+        <div className={`flex gap-2 mb-6 border-b ${isDark ? "border-white/10" : "border-blue-200/70"}`}>
           {[
             { id: "articles", label: `Articles (${articles.length})` },
             { id: "amis",     label: `Amis (${friends.length})` },
@@ -282,7 +282,7 @@ function UserProfile() {
               articles.map(article => (
                 <div
                   key={article.id || article._id}
-                  className={`border rounded-xl p-5 transition ${isDark ? "bg-white/5 border-white/10 hover:bg-white/10" : "bg-white/92 border-violet-200/70 hover:bg-white shadow-sm"}`}
+                  className={`border rounded-xl p-5 transition ${isDark ? "bg-white/5 border-white/10 hover:bg-white/10" : "bg-white/92 border-blue-200/70 hover:bg-white shadow-sm"}`}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <h3 className={`font-semibold text-base ${primaryText}`}>{article.title}</h3>
@@ -293,7 +293,7 @@ function UserProfile() {
                     </span>
                   </div>
                   {/* Aperçu du contenu — limité à 3 lignes */}
-                  <p className={`text-sm line-clamp-3 ${isDark ? "text-purple-300/70" : "text-slate-600"}`}>{article.content}</p>
+                  <p className={`text-sm line-clamp-3 ${isDark ? "text-blue-100/75" : "text-slate-600"}`}>{article.content}</p>
                 </div>
               ))
             )}
@@ -314,16 +314,16 @@ function UserProfile() {
                   <button
                     key={ami._id}
                     onClick={() => navigate(`/profile/${ami._id}`)}
-                    className={`flex items-center gap-3 p-3 border rounded-xl transition text-left ${isDark ? "bg-white/5 border-white/10 hover:bg-white/10" : "bg-white/92 border-violet-200/70 hover:bg-white shadow-sm"}`}
+                    className={`flex items-center gap-3 p-3 border rounded-xl transition text-left ${isDark ? "bg-white/5 border-white/10 hover:bg-white/10" : "bg-white/92 border-blue-200/70 hover:bg-white shadow-sm"}`}
                   >
                     {ami.avatar ? (
                     <img
                       src={`http://localhost:5000/api/auth/avatar/${ami.avatar}`}
                       alt={ami.full_name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-purple-500 flex-shrink-0"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-blue-500 flex-shrink-0"
                     />
                   ) : (
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 ${isDark ? "bg-purple-600/50 text-purple-200" : "bg-violet-100 text-violet-800"}`}>
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 ${isDark ? "bg-blue-600/50 text-blue-100" : "bg-blue-100 text-blue-800"}`}>
                       {ami.full_name?.slice(0, 2).toUpperCase()}
                     </div>
                   )}

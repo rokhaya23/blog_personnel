@@ -26,16 +26,16 @@ function FriendsList() {
   }
 
   const titleClass     = isDark ? "text-white" : "text-slate-800"
-  const countClass     = isDark ? "text-purple-300/50" : "text-violet-800/55"
-  const emptyPrimary   = isDark ? "text-purple-200/60" : "text-violet-900/70"
-  const emptySecondary = isDark ? "text-purple-300/40" : "text-violet-800/55"
-  const cardClass      = isDark ? "bg-white/5 border-white/10" : "bg-white/90 border-violet-200/70 shadow-sm"
-  const avatarClass    = isDark ? "bg-purple-600/40 text-purple-200" : "bg-violet-100 text-violet-800"
+  const countClass     = isDark ? "text-blue-200/60" : "text-blue-800/60"
+  const emptyPrimary   = isDark ? "text-blue-100/70" : "text-blue-900/70"
+  const emptySecondary = isDark ? "text-blue-200/50" : "text-blue-800/55"
+  const cardClass      = isDark ? "bg-white/5 border-white/10" : "bg-white/90 border-blue-200/70 shadow-sm"
+  const avatarClass    = isDark ? "bg-blue-600/40 text-blue-100" : "bg-blue-100 text-blue-800"
   const nameClass      = isDark ? "text-white" : "text-slate-800"
-  const usernameClass  = isDark ? "text-purple-300/60" : "text-violet-900/55"
-  const removeButton   = isDark ? "bg-white/10 hover:bg-white/20 text-purple-200" : "bg-white hover:bg-violet-50 text-violet-900 border border-violet-200"
-  const blockButton    = isDark ? "bg-red-500/20 hover:bg-red-500/30 text-red-400" : "bg-red-50 hover:bg-red-100 text-red-600 border border-red-200"
-  const sectionBorder  = isDark ? "border-white/10" : "border-violet-200/70"
+  const usernameClass  = isDark ? "text-blue-200/60" : "text-blue-900/55"
+  const removeButton   = isDark ? "bg-blue-700 hover:bg-blue-600 text-white border border-blue-600" : "bg-blue-700 hover:bg-blue-800 text-white border border-blue-800"
+  const blockButton    = isDark ? "bg-red-600/80 hover:bg-red-500 text-white border border-red-500/60" : "bg-red-700 text-white hover:bg-red-600 border border-red-700"
+  const sectionBorder  = isDark ? "border-white/10" : "border-blue-200/70"
 
   return (
     <div>
@@ -63,7 +63,7 @@ function FriendsList() {
                   <img
                     src={`http://localhost:5000/api/auth/avatar/${ami.avatar}`}
                     alt={ami.full_name}
-                    className="w-10 h-10 rounded-full object-cover border-2 border-purple-500 flex-shrink-0"
+                    className="w-10 h-10 rounded-full object-cover border-2 border-blue-500 flex-shrink-0"
                   />
                 ) : (
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 ${avatarClass}`}>

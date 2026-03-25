@@ -84,7 +84,7 @@ function ToastContainer({ toasts }) {
       case "info":
         return "bg-blue-500/90 border-blue-400"
       default:
-        return "bg-purple-500/90 border-purple-400"
+        return "bg-blue-500/90 border-blue-400"
     }
   }
 
@@ -98,7 +98,7 @@ function ToastContainer({ toasts }) {
       case "info":
         return "ℹ️"
       default:
-        return "💬"
+        return "ℹ️"
     }
   }
 

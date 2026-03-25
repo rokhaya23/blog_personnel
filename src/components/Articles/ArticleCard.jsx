@@ -42,19 +42,19 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
   }
 
   const cardClass = isDark
-    ? "bg-white/10 backdrop-blur-lg border-white/10 hover:border-purple-500/30"
-    : "bg-white/92 border-violet-200/70 shadow-sm hover:shadow-[0_18px_34px_rgba(29,78,216,0.08)] hover:border-violet-300"
-  const accentText = isDark ? "text-purple-300/60" : "text-violet-900/70"
-  const authorText = isDark ? "text-purple-300/70" : "text-violet-900/65"
-  const bodyText = isDark ? "text-purple-200/80" : "text-slate-600"
-  const metaText = isDark ? "text-purple-300/50" : "text-violet-800/55"
-  const actionText = isDark ? "text-purple-400 hover:text-purple-300" : "text-violet-700 hover:text-violet-900"
+    ? "bg-white/10 backdrop-blur-lg border-white/10 hover:border-blue-500/30"
+    : "bg-white/92 border-blue-200/70 shadow-sm hover:shadow-[0_18px_34px_rgba(29,78,216,0.08)] hover:border-blue-300"
+  const accentText = isDark ? "text-blue-200/70" : "text-blue-900/70"
+  const authorText = isDark ? "text-blue-200/80" : "text-blue-900/65"
+  const bodyText = isDark ? "text-slate-100/85" : "text-slate-600"
+  const metaText = isDark ? "text-blue-200/60" : "text-blue-800/60"
+  const actionText = isDark ? "text-blue-300 hover:text-blue-200" : "text-blue-700 hover:text-blue-900"
   const editButton = isDark
-    ? "bg-purple-500/30 text-purple-200 hover:bg-purple-500/40"
-    : "bg-violet-100 text-violet-950 hover:bg-violet-200 border border-violet-300"
+    ? "bg-blue-700 hover:bg-blue-600 text-white border border-blue-600"
+    : "bg-blue-700 hover:bg-blue-800 text-white border border-blue-800"
   const neutralButton = isDark
-    ? "bg-white/10 text-white/60 hover:bg-white/20"
-    : "bg-white text-slate-600 hover:bg-violet-50 border border-violet-200"
+    ? "bg-blue-900/30 text-white/80 hover:bg-blue-800/40 border border-blue-800"
+    : "bg-blue-50 text-blue-900 hover:bg-blue-100 border border-blue-200"
 
   return (
     <div className={`rounded-xl p-6 border transition duration-300 ${cardClass}`}>
@@ -86,7 +86,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
                   className="w-6 h-6 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-xs">
+                <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
                   {article.author_name.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -101,11 +101,11 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
         <div className="flex gap-2 flex-shrink-0">
           {article.is_public ? (
             <span className={`px-2 py-1 text-xs rounded-full border ${
-              isDark ? "bg-green-500/30 text-green-200 border-green-400/40" : "bg-green-100 text-green-800 border-green-300"
+              isDark ? "bg-green-600/70 text-white border-green-400/60" : "bg-green-500 text-white border-green-600"
             }`}>Public</span>
           ) : (
             <span className={`px-2 py-1 text-xs rounded-full border ${
-              isDark ? "bg-amber-500/30 text-amber-200 border-amber-400/40" : "bg-amber-100 text-amber-800 border-amber-300"
+              isDark ? "bg-amber-600/70 text-white border-amber-400/60" : "bg-amber-500 text-white border-amber-600"
             }`}>Prive</span>
           )}
         </div>
@@ -203,7 +203,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
 
       {/* Boutons Modifier / Supprimer */}
       {isOwner && (
-        <div className={`flex gap-3 pt-3 border-t flex-wrap ${isDark ? "border-white/10" : "border-violet-200/70"}`}>
+        <div className={`flex gap-3 pt-3 border-t flex-wrap ${isDark ? "border-white/10" : "border-blue-200/70"}`}>
           {!article.repost_of && (
             <button
               onClick={() => onEdit(article)}

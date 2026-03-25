@@ -132,7 +132,7 @@ export function AuthProvider({ children }) {
     return (
       <AuthContext.Provider value={value}>
         <div className="min-h-screen flex items-center justify-center bg-slate-900">
-          <p className="text-purple-200 text-lg">Chargement...</p>
+          <p className="text-blue-200 text-lg">Chargement...</p>
         </div>
       </AuthContext.Provider>
     )

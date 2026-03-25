@@ -96,27 +96,27 @@ function FriendSearch() {
 
   const inputClass = isDark
     ? "bg-white/10 border-white/20 text-white placeholder-white/40"
-    : "bg-white border-violet-200 text-slate-800 placeholder:text-violet-500/50 shadow-sm"
-  const iconClass = isDark ? "text-purple-300/50" : "text-violet-800/45"
-  const feedbackClass = isDark ? "text-purple-300" : "text-violet-900"
+    : "bg-white border-blue-200 text-slate-800 placeholder:text-blue-500/50 shadow-sm"
+  const iconClass = isDark ? "text-blue-200/60" : "text-blue-800/45"
+  const feedbackClass = isDark ? "text-blue-200" : "text-blue-900"
   const dropdownClass = isDark
     ? "bg-slate-800 border border-white/10 shadow-xl"
-    : "bg-white/95 border border-violet-200 shadow-[0_18px_40px_rgba(29,78,216,0.12)] backdrop-blur-xl"
+    : "bg-white/95 border border-blue-200 shadow-[0_18px_40px_rgba(29,78,216,0.12)] backdrop-blur-xl"
   const rowClass = isDark
     ? "bg-white/5 hover:bg-white/10"
-    : "bg-violet-50/40 hover:bg-violet-100/70"
+    : "bg-blue-50/40 hover:bg-blue-100/70"
   const avatarClass = isDark
-    ? "bg-purple-600/40 text-purple-200"
-    : "bg-violet-100 text-violet-800"
+    ? "bg-blue-600/40 text-blue-100"
+    : "bg-blue-100 text-blue-800"
   const nameClass = isDark ? "text-white" : "text-slate-800"
-  const usernameClass = isDark ? "text-purple-300/60" : "text-violet-900/55"
+  const usernameClass = isDark ? "text-blue-200/60" : "text-blue-900/55"
   const secondaryButton = isDark
-    ? "bg-white/10 hover:bg-white/20 text-purple-200"
-    : "bg-white hover:bg-violet-50 text-violet-900 border border-violet-200"
+    ? "bg-blue-700 hover:bg-blue-600 text-white border border-blue-600"
+    : "bg-blue-700 hover:bg-blue-800 text-white border border-blue-800"
   const primaryButton = isDark
-    ? "bg-slate-800 hover:bg-slate-700 text-white"
-    : "bg-slate-900 hover:bg-slate-800 text-white"
-  const emptyClass = isDark ? "text-purple-300/60" : "text-violet-900/60"
+    ? "bg-blue-700 hover:bg-blue-600 text-white"
+    : "bg-blue-700 hover:bg-blue-800 text-white"
+  const emptyClass = isDark ? "text-blue-200/60" : "text-blue-900/60"
 
   return (
     // ref sur le conteneur pour détecter les clics dehors
@@ -134,7 +134,7 @@ function FriendSearch() {
             value={query}
             onChange={e => setQuery(e.target.value)}
             onFocus={() => resultats.length > 0 && setShowDrop(true)}
-            className={`w-full pl-9 pr-4 py-2 rounded-lg border focus:outline-none focus:border-violet-400 transition text-sm ${inputClass}`}
+            className={`w-full pl-9 pr-4 py-2 rounded-lg border focus:outline-none focus:border-blue-400 transition text-sm ${inputClass}`}
           />
           {/* Spinner de chargement */}
           {loading && (
@@ -146,7 +146,7 @@ function FriendSearch() {
           {query && !loading && (
             <button
               onClick={() => { setQuery(""); setResultats([]); setShowDrop(false) }}
-              className={`absolute right-3 top-1/2 -translate-y-1/2 transition ${iconClass} ${isDark ? "hover:text-white" : "hover:text-violet-900"}`}
+              className={`absolute right-3 top-1/2 -translate-y-1/2 transition ${iconClass} ${isDark ? "hover:text-white" : "hover:text-blue-900"}`}
             >✕</button>
           )}
         </div>
@@ -161,7 +161,7 @@ function FriendSearch() {
       {showDrop && resultats.length > 0 && (
         <div className={`absolute top-14 left-4 rounded-xl p-2 min-w-80 z-50 flex flex-col gap-1 ${dropdownClass}`}>
 
-          <div className={`text-xs px-2 py-1 ${isDark ? "text-purple-300/40" : "text-violet-900/45"}`}>
+          <div className={`text-xs px-2 py-1 ${isDark ? "text-blue-200/50" : "text-blue-900/50"}`}>
             {resultats.length} résultat{resultats.length > 1 ? "s" : ""}
           </div>
 

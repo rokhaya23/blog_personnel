@@ -95,7 +95,7 @@ function AdminMonitoring() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <p className="text-purple-200 text-lg">Chargement du monitoring...</p>
+        <p className="text-blue-200 text-lg">Chargement du monitoring...</p>
       </div>
     )
   }
@@ -109,23 +109,23 @@ function AdminMonitoring() {
           <div className="flex items-center gap-4">
             <span className="text-2xl">📊</span>
             <h1
-              className="text-2xl font-black bg-gradient-to-r from-purple-400 via-violet-300 to-purple-500 bg-clip-text text-transparent"
+              className="text-2xl font-black bg-gradient-to-r from-blue-400 via-blue-300 to-blue-600 bg-clip-text text-transparent"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
               Daily Post
             </h1>
-            <span className="text-purple-300/50 text-sm">Monitoring</span>
+            <span className="text-blue-200/60 text-sm">Monitoring</span>
             <span className="px-2 py-1 text-xs bg-green-500/20 text-green-300 rounded-full border border-green-500/30 animate-pulse">
               En direct
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-purple-300/40 text-xs">
+            <span className="text-blue-200/50 text-xs">
               Derniere MAJ : {lastRefresh.toLocaleTimeString("fr-FR")}
             </span>
             <button
               onClick={loadData}
-              className="px-4 py-2 bg-white/10 text-purple-200 rounded-lg hover:bg-white/20 transition text-sm"
+              className="px-4 py-2 bg-white/10 text-blue-200 rounded-lg hover:bg-white/20 transition text-sm"
             >
               🔄 Rafraichir
             </button>
@@ -146,8 +146,8 @@ function AdminMonitoring() {
         ══════════════════════════════════════════════ */}
         {stats && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-gradient-to-br from-purple-500/20 to-purple-900/20 rounded-xl p-5 border border-purple-500/20">
-              <p className="text-purple-300/70 text-sm mb-1">Utilisateurs inscrits</p>
+            <div className="bg-gradient-to-br from-blue-500/20 to-blue-900/20 rounded-xl p-5 border border-blue-500/20">
+              <p className="text-blue-200/70 text-sm mb-1">Utilisateurs inscrits</p>
               <p className="text-4xl font-bold text-white">{stats.total_users}</p>
               <p className="text-green-400 text-sm mt-2">🟢 {stats.online_users} en ligne</p>
             </div>
@@ -189,7 +189,7 @@ function AdminMonitoring() {
               </span>
             </div>
             {onlineUsers.length === 0 ? (
-              <p className="text-purple-300/40 text-sm text-center py-6">Aucun utilisateur en ligne</p>
+              <p className="text-blue-200/50 text-sm text-center py-6">Aucun utilisateur en ligne</p>
             ) : (
               <div className="flex flex-col gap-2">
                 {onlineUsers.map((user) => (
@@ -201,13 +201,13 @@ function AdminMonitoring() {
                         className="w-8 h-8 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-xs">
+                      <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
                         {user.full_name.charAt(0).toUpperCase()}
                       </div>
                     )}
                     <div>
                       <span className="text-white text-sm">{user.full_name}</span>
-                      <span className="text-purple-300/50 text-xs ml-2">@{user.username}</span>
+                      <span className="text-blue-200/60 text-xs ml-2">@{user.username}</span>
                     </div>
                     <span className="ml-auto w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                   </div>
@@ -230,18 +230,18 @@ function AdminMonitoring() {
                         className="w-8 h-8 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-xs">
+                      <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
                         {user.full_name.charAt(0).toUpperCase()}
                       </div>
                     )}
                     <div>
                       <span className="text-white text-sm">{user.full_name}</span>
-                      <span className="text-purple-300/50 text-xs ml-2">@{user.username}</span>
+                      <span className="text-blue-200/60 text-xs ml-2">@{user.username}</span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="text-purple-300/50 text-xs">{user.article_count} articles</span>
-                    <p className="text-purple-300/30 text-xs">{formatDate(user.created_at)}</p>
+                    <span className="text-blue-200/60 text-xs">{user.article_count} articles</span>
+                    <p className="text-blue-200/40 text-xs">{formatDate(user.created_at)}</p>
                   </div>
                 </div>
               ))}
@@ -268,8 +268,8 @@ function AdminMonitoring() {
                       <span className="px-1.5 py-0.5 text-xs bg-yellow-500/20 text-yellow-300 rounded">Prive</span>
                     )}
                   </div>
-                  <p className="text-purple-200/50 text-xs mb-1">{article.content}</p>
-                  <div className="flex items-center gap-3 text-xs text-purple-300/40">
+                  <p className="text-blue-100/70 text-xs mb-1">{article.content}</p>
+                  <div className="flex items-center gap-3 text-xs text-blue-200/50">
                     <span>Par @{article.author_username}</span>
                     <span>💬 {article.comment_count}</span>
                     {article.media_count > 0 && <span>📎 {article.media_count}</span>}
@@ -285,17 +285,17 @@ function AdminMonitoring() {
             <h2 className="text-lg font-bold text-white mb-4">💬 Derniers commentaires</h2>
             <div className="flex flex-col gap-3">
               {recentComments.length === 0 ? (
-                <p className="text-purple-300/40 text-sm text-center py-6">Aucun commentaire</p>
+                <p className="text-blue-200/50 text-sm text-center py-6">Aucun commentaire</p>
               ) : (
                 recentComments.map((comment) => (
                   <div key={comment.id} className="py-3 px-3 rounded-lg bg-white/5">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-purple-300 font-medium text-xs">{comment.author_name}</span>
-                      <span className="text-purple-300/30 text-xs">sur</span>
-                      <span className="text-purple-300/70 text-xs">{comment.article_title}</span>
+                      <span className="text-blue-200 font-medium text-xs">{comment.author_name}</span>
+                      <span className="text-blue-200/40 text-xs">sur</span>
+                      <span className="text-blue-200/70 text-xs">{comment.article_title}</span>
                     </div>
-                    <p className="text-purple-100/70 text-sm">{comment.content}</p>
-                    <span className="text-purple-300/30 text-xs">{timeAgo(comment.created_at)}</span>
+                    <p className="text-blue-100/80 text-sm">{comment.content}</p>
+                    <span className="text-blue-200/40 text-xs">{timeAgo(comment.created_at)}</span>
                   </div>
                 ))
               )}

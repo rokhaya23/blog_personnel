@@ -38,12 +38,12 @@ function AdminLogin() {
         <div className="text-center mb-8">
           <span className="text-4xl mb-4 block">📊</span>
           <h1
-            className="text-3xl font-black bg-gradient-to-r from-purple-400 via-violet-300 to-purple-500 bg-clip-text text-transparent mb-2"
+            className="text-3xl font-black bg-gradient-to-r from-blue-400 via-blue-300 to-blue-600 bg-clip-text text-transparent mb-2"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
             Daily Post
           </h1>
-          <p className="text-purple-300/60 text-sm">Panel de monitoring</p>
+          <p className="text-blue-200/70 text-sm">Panel de monitoring</p>
         </div>
 
         {error && (
@@ -54,27 +54,27 @@ function AdminLogin() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-purple-200 text-sm mb-2">
+            <label className="block text-blue-200 text-sm mb-2">
               Nom d'utilisateur admin
             </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-400 transition"
+              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-blue-400 transition"
               placeholder="Entrez votre username"
             />
           </div>
 
           <div className="mb-6">
-            <label className="block text-purple-200 text-sm mb-2">
+            <label className="block text-blue-200 text-sm mb-2">
               Mot de passe
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-400 transition"
+              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-blue-400 transition"
               placeholder="Entrez votre mot de passe"
             />
           </div>
@@ -82,13 +82,13 @@ function AdminLogin() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition duration-200 shadow-lg disabled:opacity-50"
+            className="w-full py-3 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg transition duration-200 shadow-lg disabled:opacity-50"
           >
             {isLoading ? "Connexion en cours..." : "Acceder au monitoring"}
           </button>
         </form>
 
-        <p className="text-purple-300/40 text-xs text-center mt-6">
+        <p className="text-blue-200/60 text-xs text-center mt-6">
           Acces reserve aux administrateurs de Daily Post
         </p>
       </div>

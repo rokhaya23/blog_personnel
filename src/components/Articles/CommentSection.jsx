@@ -42,17 +42,16 @@ function SingleComment({ comment, allComments, articleId, articleAuthorId, curre
     })
   }
 
-  const borderClass = isDark ? "border-purple-500/20" : "border-violet-300/70"
-  const commentBg = isDark ? "bg-white/5" : "bg-white border border-violet-200/70 shadow-sm"
-  const nameClass = isDark ? "text-purple-300" : "text-violet-900/80"
-  const dateClass = isDark ? "text-purple-300/40" : "text-violet-800/55"
-  const contentClass = isDark ? "text-purple-100/80" : "text-gray-700"
+  const borderClass = isDark ? "border-blue-500/30" : "border-blue-200/80"
+  const commentBg = isDark ? "bg-white/5" : "bg-white border border-blue-200/80 shadow-sm"
+  const nameClass = isDark ? "text-blue-100" : "text-slate-900"
+  const dateClass = isDark ? "text-blue-200/55" : "text-slate-600"
+  const contentClass = isDark ? "text-slate-100/85" : "text-slate-700"
   const inputClass = isDark
     ? "bg-white/10 border-white/20 text-white placeholder-white/40"
-    : "bg-white border-violet-200 text-gray-800 placeholder:text-violet-500/55"
-  const linkClass = isDark ? "text-purple-400 hover:text-purple-300" : "text-violet-700 hover:text-violet-900"
-  const secondaryAction = isDark ? "text-purple-400/50 hover:text-purple-300" : "text-violet-800/50 hover:text-violet-900"
-  const primaryButton = isDark ? "bg-slate-800 hover:bg-slate-700 text-white" : "bg-slate-900 hover:bg-slate-800 text-white"
+    : "bg-white border-blue-200 text-gray-800 placeholder:text-blue-500/55"
+  const secondaryAction = isDark ? "text-blue-200/70 hover:text-blue-100" : "text-blue-700/70 hover:text-blue-800"
+  const primaryButton = isDark ? "bg-blue-600 hover:bg-blue-500 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"
 
   return (
     <div className={`${depth > 0 ? `ml-8 pl-4 border-l-2 ${borderClass}` : ""}`}>
@@ -64,8 +63,10 @@ function SingleComment({ comment, allComments, articleId, articleAuthorId, curre
         <p className={`text-sm leading-relaxed ${contentClass}`}>{comment.content}</p>
         <div className="flex gap-3 mt-3">
           {depth < 2 && (
-            <button onClick={() => setShowReplyForm(!showReplyForm)}
-              className={`text-xs transition ${linkClass}`}>
+            <button
+              onClick={() => setShowReplyForm(!showReplyForm)}
+              className={`text-xs px-3 py-1 rounded-md transition ${primaryButton}`}
+            >
               {showReplyForm ? "Annuler" : "Répondre"}
             </button>
           )}
@@ -74,10 +75,12 @@ function SingleComment({ comment, allComments, articleId, articleAuthorId, curre
               {showConfirmDelete ? (
                 <div className="flex gap-2">
                   <button onClick={handleDelete} className="text-xs text-red-400 hover:text-red-300 transition">Confirmer</button>
-                  <button onClick={() => setShowConfirmDelete(false)} className={`text-xs transition ${secondaryAction}`}>Annuler</button>
+                  <button onClick={() => setShowConfirmDelete(false)} className={`text-xs px-3 py-1 rounded-md transition ${secondaryAction}`}>Annuler</button>
                 </div>
               ) : (
-                <button onClick={() => setShowConfirmDelete(true)} className="text-xs text-red-400/60 hover:text-red-300 transition">Supprimer</button>
+                <button onClick={() => setShowConfirmDelete(true)} className="text-xs px-3 py-1 rounded-md bg-red-600/80 hover:bg-red-500 text-white transition">
+                  Supprimer
+                </button>
               )}
             </>
           )}
@@ -86,7 +89,7 @@ function SingleComment({ comment, allComments, articleId, articleAuthorId, curre
           <form onSubmit={handleReply} className="mt-3">
             <div className="flex gap-2">
               <input type="text" value={replyContent} onChange={(e) => setReplyContent(e.target.value)}
-                className={`flex-1 px-3 py-2 text-sm rounded-lg border focus:outline-none focus:border-purple-400 transition ${inputClass}`}
+                className={`flex-1 px-3 py-2 text-sm rounded-lg border focus:outline-none focus:border-blue-400 transition ${inputClass}`}
                 placeholder={`Répondre à ${comment.author_name}...`} />
               <button type="submit" className={`px-4 py-2 text-sm rounded-lg transition ${primaryButton}`}>Envoyer</button>
             </div>
@@ -144,14 +147,14 @@ function CommentSection({ articleId, articleAuthorId }) {
   }
 
   const rootComments = comments.filter((c) => !c.parent_id)
-  const borderTop = isDark ? "border-white/10" : "border-violet-200/70"
+  const borderTop = isDark ? "border-white/10" : "border-blue-200/70"
   const titleClass = isDark ? "text-white" : "text-gray-800"
-  const countClass = isDark ? "text-purple-300/50" : "text-violet-800/55"
+  const countClass = isDark ? "text-blue-200/60" : "text-blue-800/60"
   const inputClass = isDark
     ? "bg-white/10 border-white/20 text-white placeholder-white/40"
-    : "bg-white border-violet-200 text-gray-800 placeholder:text-violet-500/55"
-  const emptyClass = isDark ? "text-purple-300/40" : "text-violet-800/55"
-  const primaryButton = isDark ? "bg-slate-800 hover:bg-slate-700 text-white" : "bg-slate-900 hover:bg-slate-800 text-white"
+    : "bg-white border-blue-200 text-gray-800 placeholder:text-blue-500/55"
+  const emptyClass = isDark ? "text-blue-200/50" : "text-blue-800/60"
+  const primaryButton = isDark ? "bg-blue-600 hover:bg-blue-500 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"
 
   return (
     <div className={`mt-6 pt-6 border-t ${borderTop}`}>
@@ -167,7 +170,7 @@ function CommentSection({ articleId, articleAuthorId }) {
       <form onSubmit={handleSubmit} className="mb-6">
         <div className="flex gap-2">
           <input type="text" value={newComment} onChange={(e) => setNewComment(e.target.value)}
-            className={`flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:border-purple-400 transition ${inputClass}`}
+            className={`flex-1 px-4 py-3 rounded-lg border focus:outline-none focus:border-blue-400 transition ${inputClass}`}
             placeholder="Ecrire un commentaire..." />
           <button type="submit" className={`px-5 py-3 font-medium rounded-lg transition ${primaryButton}`}>Envoyer</button>
         </div>
