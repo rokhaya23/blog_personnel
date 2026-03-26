@@ -33,8 +33,8 @@ function FriendRequests() {
     ? "bg-blue-700 hover:bg-blue-600 text-white"
     : "bg-blue-700 hover:bg-blue-800 text-white"
   const rejectButton = isDark
-    ? "bg-white/10 hover:bg-white/20 text-red-400"
-    : "bg-white hover:bg-red-50 text-red-600 border border-red-200"
+    ? "bg-white/10 hover:bg-white/20 text-blue-200"
+    : "bg-white hover:bg-slate-100 text-slate-800 border border-slate-300"
 
   return (
     <div>

@@ -102,7 +102,7 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
       </h3>
 
       {error && (
-        <div className="bg-red-500/20 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4">{error}</div>
+        <div className="bg-blue-500/15 border border-blue-400 text-blue-900 px-4 py-3 rounded-lg mb-4">{error}</div>
       )}
 
       <form onSubmit={handleSubmit}>
@@ -155,7 +155,7 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
                       <video src={preview.url} className="w-full h-32 object-cover rounded-lg" />
                     )}
                     <button type="button" onClick={() => removeFile(index)}
-                      className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">✕</button>
+                      className="absolute top-1 right-1 w-6 h-6 bg-slate-800 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">✕</button>
                     {preview.type === "video" && (
                       <span className="absolute bottom-1 left-1 px-2 py-0.5 text-xs bg-black/60 text-white rounded">Video</span>
                     )}

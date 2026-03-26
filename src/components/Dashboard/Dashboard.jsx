@@ -274,7 +274,7 @@ function Dashboard() {
           <div className={`mt-auto border-t pt-3 ${isDark ? "border-white/10" : "border-slate-200/80"}`}>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition w-full bg-red-500 text-white border border-red-600"
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition w-full text-white hover:bg-white/50"
             >
               <span>🚪</span>
               Déconnexion
@@ -462,8 +462,8 @@ function Dashboard() {
                       </div>
 
                       <div className="mb-2 flex flex-col items-end gap-2">
-                        <span className="flex items-center gap-1.5 px-3 py-1 bg-green-500/15 border border-green-500/30 text-green-400 rounded-full text-xs">
-                          <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+                        <span className="flex items-center gap-1.5 px-3 py-1 border  text-blue-400 rounded-full text-xs">
+                          <span className="w-1.5 h-1.5 rounded-full inline-block"></span>
                           En ligne
                         </span>
                       </div>

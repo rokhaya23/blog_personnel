@@ -115,8 +115,8 @@ function AdminMonitoring() {
               Daily Post
             </h1>
             <span className="text-blue-200/60 text-sm">Monitoring</span>
-            <span className="px-2 py-1 text-xs bg-green-500/20 text-green-300 rounded-full border border-green-500/30 animate-pulse">
-              En direct
+            <span className="px-2 py-1 text-xs bg-blue-500/20 text-blue-200 rounded-full border border-blue-400/40 animate-pulse">
+              Direct
             </span>
           </div>
           <div className="flex items-center gap-4">
@@ -131,7 +131,7 @@ function AdminMonitoring() {
             </button>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition text-sm"
+              className="px-4 py-2 bg-slate-800/60 text-blue-100 rounded-lg hover:bg-slate-700 transition text-sm"
             >
               Quitter
             </button>
@@ -146,31 +146,31 @@ function AdminMonitoring() {
         ══════════════════════════════════════════════ */}
         {stats && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-gradient-to-br from-blue-500/20 to-blue-900/20 rounded-xl p-5 border border-blue-500/20">
+            <div className="bg-gradient-to-br from-blue-500/15 to-blue-900/25 rounded-xl p-5 border border-blue-500/25">
               <p className="text-blue-200/70 text-sm mb-1">Utilisateurs inscrits</p>
               <p className="text-4xl font-bold text-white">{stats.total_users}</p>
-              <p className="text-green-400 text-sm mt-2">🟢 {stats.online_users} en ligne</p>
+              <p className="text-blue-200 text-sm mt-2">🔵 {stats.online_users} en ligne</p>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-500/20 to-blue-900/20 rounded-xl p-5 border border-blue-500/20">
+            <div className="bg-gradient-to-br from-blue-500/15 to-blue-900/25 rounded-xl p-5 border border-blue-500/25">
               <p className="text-blue-300/70 text-sm mb-1">Articles publies</p>
               <p className="text-4xl font-bold text-white">{stats.total_articles}</p>
               <div className="flex gap-3 mt-2 text-sm">
-                <span className="text-green-400">🌍 {stats.public_articles}</span>
-                <span className="text-yellow-400">🔒 {stats.private_articles}</span>
+                <span className="text-blue-200">🌍 {stats.public_articles}</span>
+                <span className="text-blue-300">🔒 {stats.private_articles}</span>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-cyan-500/20 to-cyan-900/20 rounded-xl p-5 border border-cyan-500/20">
-              <p className="text-cyan-300/70 text-sm mb-1">Commentaires</p>
+            <div className="bg-gradient-to-br from-blue-500/12 to-blue-900/25 rounded-xl p-5 border border-blue-500/25">
+              <p className="text-blue-200/70 text-sm mb-1">Commentaires</p>
               <p className="text-4xl font-bold text-white">{stats.total_comments}</p>
-              <p className="text-cyan-300/50 text-sm mt-2">💬 Discussions actives</p>
+              <p className="text-blue-200/60 text-sm mt-2">💬 Discussions actives</p>
             </div>
 
-            <div className="bg-gradient-to-br from-pink-500/20 to-pink-900/20 rounded-xl p-5 border border-pink-500/20">
-              <p className="text-pink-300/70 text-sm mb-1">Relations</p>
+            <div className="bg-gradient-to-br from-slate-800/40 via-blue-800/30 to-blue-900/25 rounded-xl p-5 border border-blue-500/25">
+              <p className="text-blue-200/70 text-sm mb-1">Relations</p>
               <p className="text-4xl font-bold text-white">{stats.total_friendships}</p>
-              <p className="text-yellow-400 text-sm mt-2">⏳ {stats.pending_friendships} en attente</p>
+              <p className="text-blue-300 text-sm mt-2">⏳ {stats.pending_friendships} en attente</p>
             </div>
           </div>
         )}
@@ -183,8 +183,8 @@ function AdminMonitoring() {
           {/* Utilisateurs en ligne */}
           <div className="bg-white/5 rounded-xl p-6 border border-white/10">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-white">🟢 En ligne maintenant</h2>
-              <span className="text-green-400 text-sm font-medium">
+              <h2 className="text-lg font-bold text-white">🔵 En ligne maintenant</h2>
+              <span className="text-blue-200 text-sm font-medium">
                 {onlineUsers.length} utilisateur{onlineUsers.length !== 1 ? "s" : ""}
               </span>
             </div>
@@ -209,7 +209,7 @@ function AdminMonitoring() {
                       <span className="text-white text-sm">{user.full_name}</span>
                       <span className="text-blue-200/60 text-xs ml-2">@{user.username}</span>
                     </div>
-                    <span className="ml-auto w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                    <span className="ml-auto w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
                   </div>
                 ))}
               </div>
@@ -263,9 +263,9 @@ function AdminMonitoring() {
                   <div className="flex items-center justify-between mb-1">
                     <h3 className="text-white text-sm font-medium">{article.title}</h3>
                     {article.is_public ? (
-                      <span className="px-1.5 py-0.5 text-xs bg-green-500/20 text-green-300 rounded">Public</span>
+                      <span className="px-1.5 py-0.5 text-xs bg-blue-500/20 text-blue-100 rounded border border-blue-400/30">Public</span>
                     ) : (
-                      <span className="px-1.5 py-0.5 text-xs bg-yellow-500/20 text-yellow-300 rounded">Prive</span>
+                      <span className="px-1.5 py-0.5 text-xs bg-slate-600/30 text-blue-100 rounded border border-slate-500/40">Prive</span>
                     )}
                   </div>
                   <p className="text-blue-100/70 text-xs mb-1">{article.content}</p>

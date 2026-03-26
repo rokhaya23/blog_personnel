@@ -1,341 +1,360 @@
 import { useNavigate } from "react-router-dom"
 
+const c = {
+  blue: "#1d4ed8",
+  blueDark: "#0b1d3a",
+  blueSoft: "#e8f0ff",
+  gray: "#f1f4f9",
+  graySoft: "#eef2f6",
+  text: "#0b1220",
+  muted: "#4b5563",
+  border: "#d7deea",
+  shadow: "0 12px 28px rgba(11,29,58,0.12)",
+  softShadow: "0 8px 18px rgba(11,29,58,0.08)",
+  heroGradient: "linear-gradient(150deg, #f8fbff 0%, #dfe9ff 55%, #1d4ed8 100%)",
+  ctaGradient: "linear-gradient(145deg, #0b1d3a 0%, #1d4ed8 70%)",
+}
+
+const Section = ({ bg = "#fff", children }) => (
+  <section style={{ background: bg, padding: "72px 48px" }}>
+    <div style={{ maxWidth: "1100px", margin: "0 auto" }}>{children}</div>
+  </section>
+)
+
 function LandingPage() {
   const navigate = useNavigate()
-  const c = {
-    primary: "#2563eb",
-    primaryDark: "#1d4ed8",
-    deep: "#0f172a",
-    border: "#e2e8f0",
-    heroGradient: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #2563eb 100%)",
-    sectionGradient: "linear-gradient(140deg, #0f172a 0%, #1d4ed8 55%, #2563eb 100%)",
-    altGradient: "linear-gradient(140deg, #0b1f3d 0%, #1e3a8a 60%, #2563eb 100%)",
-    footerGradient: "linear-gradient(160deg, #0f172a 0%, #1e3a8a 60%, #0b1f3d 100%)",
-    glow: "0 24px 60px rgba(15,23,42,0.35)",
-    softGlow: "0 18px 40px rgba(15,23,42,0.25)",
-  }
 
   return (
-    <div style={{ fontFamily: "sans-serif" }}>
+    <div style={{ fontFamily: "'Poppins', sans-serif", background: c.graySoft, color: c.text }}>
 
-      {/* ══════════════════════════════
-          NAVBAR
-      ══════════════════════════════ */}
+      {/* NAVBAR */}
       <nav style={{
-        background: "white", display: "flex", alignItems: "center",
-        justifyContent: "space-between", padding: "16px 48px",
-        borderBottom: `1px solid ${c.border}`, position: "sticky", top: 0, zIndex: 10
+        background: "#ffffff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "16px 48px",
+        borderBottom: `1px solid ${c.border}`,
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+        boxShadow: c.softShadow,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <div style={{
-            width: "34px", height: "34px", borderRadius: "8px",
-            background: c.primary, display: "flex", alignItems: "center",
-            justifyContent: "center", fontWeight: 800, fontSize: "16px", color: "white"
-          }}>B</div>
-          <span style={{ fontWeight: 700, fontSize: "17px", color: c.deep }}>MonBlog</span>
+          <span style={{ fontWeight: 700, fontSize: "30px", color: c.text }}>DailyBlog</span>
         </div>
-        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
           <button
             onClick={() => navigate("/login")}
-            style={{ background: "transparent", border: "none", fontSize: "13px", color: "#4b5563", cursor: "pointer", fontWeight: 500 }}
+            style={{ background: "transparent", border: "none", fontSize: "13px", color: c.muted, cursor: "pointer", fontWeight: 500 }}
           >
-            CONNEXION
+            Connexion
           </button>
           <button
             onClick={() => navigate("/register")}
             style={{
-              padding: "10px 20px", background: c.primary, border: "none",
-              borderRadius: "6px", color: "white", fontSize: "13px",
-              fontWeight: 700, cursor: "pointer", letterSpacing: "0.5px", textTransform: "uppercase",
-              boxShadow: c.softGlow
+              padding: "10px 18px",
+              background: c.blue,
+              border: "none",
+              borderRadius: "6px",
+              color: "white",
+              fontSize: "13px",
+              fontWeight: 700,
+              cursor: "pointer",
+              letterSpacing: "0.4px",
+              boxShadow: c.shadow
             }}
           >
-            CRÉER VOTRE BLOG
+            Créer votre blog
           </button>
         </div>
       </nav>
 
-      {/* ══════════════════════════════
-          SECTION 1 — HERO
-      ══════════════════════════════ */}
+      {/* HERO */}
       <section style={{
-        background: c.heroGradient, minHeight: "600px", display: "flex",
-        flexDirection: "column", alignItems: "center", justifyContent: "center",
-        textAlign: "center", padding: "60px 48px", position: "relative", overflow: "hidden"
+        background: c.heroGradient,
+        minHeight: "420px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "64px 48px",
       }}>
-        {/* Décorations fond */}
-        <div style={{ position: "absolute", top: "30px", left: "60px", opacity: 0.12 }}>
-          <svg width="80" height="80" viewBox="0 0 80 80">
-            <circle cx="40" cy="40" r="35" fill="none" stroke="white" strokeWidth="3"/>
-            <circle cx="40" cy="40" r="18" fill="none" stroke="white" strokeWidth="2"/>
-          </svg>
-        </div>
-        <div style={{ position: "absolute", bottom: "80px", left: "80px", opacity: 0.1 }}>
-          <svg width="60" height="60" viewBox="0 0 60 60">
-            <polygon points="30,5 55,50 5,50" fill="none" stroke="white" strokeWidth="3"/>
-          </svg>
-        </div>
-        <div style={{ position: "absolute", bottom: "50px", right: "100px", opacity: 0.08 }}>
-          <svg width="80" height="80" viewBox="0 0 80 80">
-            <circle cx="40" cy="40" r="35" fill="white"/>
-          </svg>
-        </div>
-
-        <h1 style={{
-          fontSize: "46px", fontWeight: 700, color: "white",
-          lineHeight: 1.2, maxWidth: "700px", marginBottom: "16px", position: "relative", zIndex: 1
-        }}>
-          Parlez de ce qui vous passionne,<br/>à votre manière
-        </h1>
-        <p style={{ color: "rgba(226,232,240,0.82)", fontSize: "17px", marginBottom: "36px", position: "relative", zIndex: 1 }}>
-          Créez un blog unique et de qualité.
-        </p>
-        <button
-          onClick={() => navigate("/register")}
-          style={{
-            padding: "16px 40px", background: c.primary, border: "none",
-            borderRadius: "6px", color: "white", fontSize: "14px", fontWeight: 700,
-            cursor: "pointer", letterSpacing: "0.8px", textTransform: "uppercase",
-            position: "relative", zIndex: 1
-          }}
-        >
-          CRÉER VOTRE BLOG
-        </button>
-
-        {/* Aperçu blog flottant */}
         <div style={{
-          marginTop: "48px", background: "white", borderRadius: "14px",
-          padding: "20px", maxWidth: "460px", width: "100%",
-          position: "relative", zIndex: 1, boxShadow: c.glow
+          maxWidth: "1100px",
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "1.1fr 0.9fr",
+          gap: "40px",
+          alignItems: "center"
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px", paddingBottom: "12px", borderBottom: `1px solid ${c.border}` }}>
-            <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: c.primary, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: 700, color: "white" }}>RB</div>
-            <div>
-              <div style={{ fontSize: "12px", fontWeight: 600, color: "#1f2937" }}>Nos aventures au Sénégal</div>
-              <div style={{ fontSize: "10px", color: "#64748b" }}>Vendredi 14 mars 2026 · Public</div>
+          <div>
+            <p style={{ color: "rgba(11,18,32,0.65)", letterSpacing: "1px", fontSize: "12px", textTransform: "uppercase", marginBottom: "12px", fontWeight: 600 }}>
+              Blog personnel, simple et clair
+            </p>
+            <h1 style={{
+              fontSize: "44px",
+              fontWeight: 800,
+              lineHeight: 1.1,
+              color: c.blueDark,
+              margin: "0 0 18px"
+            }}>
+              Écrivez, partagez, restez proche de vos amis.
+            </h1>
+            <p style={{ color: "rgba(11,18,32,0.7)", fontSize: "16px", maxWidth: "540px", lineHeight: 1.6, marginBottom: "24px" }}>
+              Une interface nette, uniquement en bleu, gris, blanc et noir. Pas de fioritures : vous publiez, vos proches réagissent, tout simplement.
+            </p>
+            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+              <button
+                onClick={() => navigate("/register")}
+                style={{
+                  padding: "12px 22px",
+                  background: c.blue,
+                  color: "white",
+                  border: "none",
+                  borderRadius: "0px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  boxShadow: c.shadow
+                }}
+              >
+                Démarrer maintenant
+              </button>
+              <button
+                onClick={() => navigate("/login")}
+                style={{
+                  padding: "12px 18px",
+                  background: "white",
+                  color: c.text,
+                  border: `1px solid ${c.border}`,
+                  borderRadius: "6px",
+                  fontWeight: 600,
+                  cursor: "pointer"
+                }}
+              >
+                Se connecter
+              </button>
             </div>
-            <div style={{ marginLeft: "auto", width: "7px", height: "7px", borderRadius: "50%", background: "#22c55e" }}></div>
           </div>
-          <div style={{ fontSize: "13px", color: "#374151", fontWeight: 600, marginBottom: "8px" }}>Escapade à Saint-Louis</div>
-          <div style={{ background: "#f9fafb", borderRadius: "8px", height: "72px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "12px" }}>
-            <svg width="40" height="36" viewBox="0 0 40 36">
-              <rect width="40" height="36" rx="5" fill="#f3f4f6"/>
-              <circle cx="13" cy="13" r="4" fill="#d1d5db"/>
-              <path d="M0 28 L10 18 L18 24 L26 14 L40 28Z" fill="#e5e7eb"/>
-            </svg>
+
+          <div style={{
+            background: "white",
+            borderRadius: "14px",
+            padding: "18px",
+            boxShadow: c.shadow,
+            border: `1px solid ${c.border}`,
+            maxWidth: "420px",
+            marginLeft: "auto"
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px", paddingBottom: "12px", borderBottom: `1px solid ${c.border}` }}>
+              <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: c.blue, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: 700, color: "white" }}>RB</div>
+              <div>
+                <div style={{ fontSize: "12px", fontWeight: 600, color: c.text }}>Nos aventures au Sénégal</div>
+                <div style={{ fontSize: "10px", color: c.muted }}>Vendredi 14 mars 2026 · Public</div>
+              </div>
+              <div style={{ marginLeft: "auto", width: "7px", height: "7px", borderRadius: "50%", background: c.blue }}></div>
+            </div>
+            <div style={{ fontSize: "13px", color: c.text, fontWeight: 600, marginBottom: "8px" }}>Escapade à Saint-Louis</div>
+            <div style={{ background: c.gray, borderRadius: "10px", height: "64px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "12px", border: `1px dashed ${c.border}` }}>
+              <span style={{ color: c.muted, fontSize: "12px" }}>Image en attente</span>
+            </div>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              {["👍 12", "❤️ 5", "💬 4"].map(r => (
+                <span key={r} style={{ padding: "4px 10px", background: c.blueSoft, borderRadius: "999px", fontSize: "11px", color: c.blueDark, border: `1px solid ${c.border}` }}>{r}</span>
+              ))}
+            </div>
           </div>
-          <div style={{ display: "flex", gap: "8px" }}>
-            {["👍 12", "❤️ 5", "💬 4 commentaires"].map(r => (
-              <span key={r} style={{ padding: "3px 10px", background: "#f3f4f6", borderRadius: "999px", fontSize: "11px", color: "#374151" }}>{r}</span>
+        </div>
+      </section>
+
+      {/* ÉCRIRE & PUBLIER */}
+      <Section bg="#ffffff">
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "36px", alignItems: "center" }}>
+          <div>
+            <h2 style={{ fontSize: "32px", fontWeight: 700, margin: "0 0 14px", color: c.text }}>
+              Écrivez et publiez facilement
+            </h2>
+            <p style={{ fontSize: "15px", color: c.muted, lineHeight: 1.7, maxWidth: "480px" }}>
+              Un éditeur net, des boutons simples, aucune couleur superflue. Choisissez public ou privé, activez ou non les commentaires.
+            </p>
+          </div>
+          <div style={{
+            background: "white",
+            borderRadius: "14px",
+            padding: "20px",
+            boxShadow: c.softShadow,
+            border: `1px solid ${c.border}`,
+            maxWidth: "440px",
+            marginLeft: "auto"
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+              <span style={{ fontSize: "13px", fontWeight: 600, color: c.text }}>Nouvel article</span>
+              <span style={{ fontSize: "11px", color: c.muted }}>Public</span>
+            </div>
+            <div style={{ height: "46px", background: c.blueSoft, borderRadius: "6px", border: `1px solid ${c.border}`, marginBottom: "10px" }} />
+            <div style={{ height: "70px", background: "#fff", borderRadius: "6px", border: `1px dashed ${c.border}`, marginBottom: "12px" }} />
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button style={{ flex: 1, padding: "10px", background: c.blue, color: "white", border: "none", borderRadius: "6px", fontWeight: 700, boxShadow: c.softShadow }}>Publier</button>
+              <button style={{ flex: 1, padding: "10px", background: "white", color: c.text, border: `1px solid ${c.border}`, borderRadius: "6px", fontWeight: 600 }}>Brouillon</button>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* AMIS */}
+      <Section bg={c.gray}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "36px", alignItems: "center" }}>
+          <div>
+            <h2 style={{ fontSize: "32px", fontWeight: 700, margin: "0 0 14px", color: c.text }}>
+              Connectez-vous avec vos amis
+            </h2>
+            <p style={{ fontSize: "15px", color: c.muted, lineHeight: 1.7, maxWidth: "480px" }}>
+              Recherchez, ajoutez, bloquez si besoin. Les indicateurs restent bleus et gris, pour un fil visuel cohérent.
+            </p>
+          </div>
+          <div style={{
+            background: "white",
+            borderRadius: "14px",
+            padding: "18px",
+            boxShadow: c.softShadow,
+            border: `1px solid ${c.border}`,
+            maxWidth: "420px",
+            marginLeft: "auto"
+          }}>
+            {[{ init: "RB", name: "Rokhaya Beye" }, { init: "IB", name: "Ibrahima Beye" }, { init: "AD", name: "Awa Diop" }].map((u, i) => (
+              <div key={u.init} style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                padding: "10px",
+                borderRadius: "10px",
+                border: `1px solid ${c.border}`,
+                background: i === 0 ? c.blueSoft : "#fff",
+                marginBottom: i === 2 ? 0 : "10px"
+              }}>
+                <div style={{ width: "32px", height: "32px", borderRadius: "10px", background: c.blue, color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "12px" }}>{u.init}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "13px", fontWeight: 600, color: c.text }}>{u.name}</div>
+                  <div style={{ fontSize: "11px", color: c.muted }}>En ligne</div>
+                </div>
+                <button style={{ padding: "8px 12px", background: "white", border: `1px solid ${c.border}`, borderRadius: "0px", fontWeight: 600, color: c.text }}>
+                  + Ajouter
+                </button>
+              </div>
             ))}
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* ══════════════════════════════
-          SECTION 2 — Écrire et publier
-      ══════════════════════════════ */}
-      <section style={{ background: c.sectionGradient, minHeight: "520px", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 48px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "60px", maxWidth: "1000px", width: "100%" }}>
-          <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: "36px", fontWeight: 700, color: "white", lineHeight: 1.25, marginBottom: "18px" }}>
-              Écrivez et publiez facilement
-            </h2>
-            <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.7)", lineHeight: 1.8, maxWidth: "420px" }}>
-              Rédigez vos articles, choisissez de les publier en public ou de les garder privés. Activez ou désactivez les commentaires selon vos préférences.
-            </p>
-          </div>
-          <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-            <svg width="320" height="230" viewBox="0 0 320 230">
-              <rect x="20" y="10" width="280" height="210" rx="12" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5"/>
-              <rect x="20" y="10" width="280" height="34" rx="12" fill="rgba(255,255,255,0.18)"/>
-              <rect x="20" y="34" width="280" height="6" fill="rgba(255,255,255,0.18)"/>
-              <circle cx="38" cy="27" r="5" fill="rgba(255,255,255,0.45)"/>
-              <circle cx="54" cy="27" r="5" fill="rgba(255,255,255,0.45)"/>
-              <circle cx="70" cy="27" r="5" fill="rgba(255,255,255,0.45)"/>
-              <rect x="36" y="56" width="180" height="12" rx="3" fill="rgba(255,255,255,0.55)"/>
-              <rect x="36" y="78" width="248" height="7" rx="2" fill="rgba(255,255,255,0.25)"/>
-              <rect x="36" y="91" width="200" height="7" rx="2" fill="rgba(255,255,255,0.25)"/>
-              <rect x="36" y="104" width="220" height="7" rx="2" fill="rgba(255,255,255,0.25)"/>
-              <rect x="36" y="117" width="170" height="7" rx="2" fill="rgba(255,255,255,0.25)"/>
-              <rect x="36" y="140" width="110" height="28" rx="6" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" strokeWidth="1"/>
-              <text x="91" y="159" fontSize="11" fill="rgba(255,255,255,0.9)" textAnchor="middle">Public ✓</text>
-              <rect x="156" y="140" width="110" height="28" rx="6" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" strokeWidth="1"/>
-              <text x="211" y="159" fontSize="11" fill="rgba(255,255,255,0.4)" textAnchor="middle">Privé</text>
-              <rect x="36" y="180" width="100" height="28" rx="6" fill="rgba(255,255,255,0.9)"/>
-              <text x="86" y="199" fontSize="12" fontWeight="700" fill={c.primaryDark} textAnchor="middle">Publier</text>
-            </svg>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════
-          SECTION 3 — Amis
-      ══════════════════════════════ */}
-      <section style={{ background: c.altGradient, minHeight: "520px", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 48px" }}>
-        <div style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "60px", maxWidth: "1000px", width: "100%" }}>
-          <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: "36px", fontWeight: 700, color: "white", lineHeight: 1.25, marginBottom: "18px" }}>
-              Connectez-vous avec vos amis
-            </h2>
-            <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.7)", lineHeight: 1.8, maxWidth: "420px" }}>
-              Recherchez des utilisateurs, envoyez des demandes d'amis et suivez leurs publications. Bloquez ceux que vous ne souhaitez plus voir.
-            </p>
-          </div>
-          <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-            <svg width="300" height="250" viewBox="0 0 300 250">
-              <rect width="300" height="250" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" strokeWidth="1"/>
-              <ellipse cx="75" cy="120" rx="55" ry="65" fill="rgba(255,255,255,0.07)"/>
-              <ellipse cx="155" cy="95" rx="50" ry="58" fill="rgba(255,255,255,0.07)"/>
-              <ellipse cx="235" cy="105" rx="42" ry="52" fill="rgba(255,255,255,0.07)"/>
-              <line x1="88" y1="75" x2="158" y2="58" stroke="rgba(167,139,250,0.45)" strokeWidth="1.5" strokeDasharray="5,3"/>
-              <line x1="158" y1="58" x2="238" y2="82" stroke="rgba(167,139,250,0.45)" strokeWidth="1.5" strokeDasharray="5,3"/>
-              <line x1="88" y1="75" x2="55" y2="155" stroke="rgba(167,139,250,0.35)" strokeWidth="1.5" strokeDasharray="5,3"/>
-              {[
-                { cx: 88, cy: 75, label: "RB" },
-                { cx: 158, cy: 58, label: "IB" },
-                { cx: 238, cy: 82, label: "AD" },
-                { cx: 55, cy: 155, label: "LY" },
-              ].map(u => (
-                <g key={u.label}>
-                  <circle cx={u.cx} cy={u.cy} r="16" fill="white"/>
-                  <text x={u.cx} y={u.cy + 4} textAnchor="middle" fontSize="10" fontWeight="700" fill={c.deep}>{u.label}</text>
-                  <circle cx={u.cx} cy={u.cy + 20} r="8" fill={c.primary}/>
-                  <text x={u.cx} y={u.cy + 24} textAnchor="middle" fontSize="8" fontWeight="700" fill="white">B</text>
-                </g>
-              ))}
-            </svg>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════
-          SECTION 4 — Réactions
-      ══════════════════════════════ */}
-      <section style={{ background: c.sectionGradient, minHeight: "520px", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 48px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "60px", maxWidth: "1000px", width: "100%" }}>
-          <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: "36px", fontWeight: 700, color: "white", lineHeight: 1.25, marginBottom: "18px" }}>
+      {/* RÉACTIONS */}
+      <Section bg="#ffffff">
+        <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: "36px", alignItems: "center" }}>
+          <div>
+            <h2 style={{ fontSize: "32px", fontWeight: 700, margin: "0 0 14px", color: c.text }}>
               Réagissez et commentez
             </h2>
-            <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.7)", lineHeight: 1.8, maxWidth: "420px" }}>
-              Exprimez-vous sur les articles de vos amis avec des réactions emoji. Répondez aux commentaires et créez de vraies discussions.
+            <p style={{ fontSize: "15px", color: c.muted, lineHeight: 1.7, maxWidth: "480px" }}>
+              Les réactions restent lisibles : fond blanc, puces bleu clair, texte gris. Les rectangles sont courts pour éviter l'effet « bandeau ».
             </p>
           </div>
-          <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "280px" }}>
-              <div style={{ background: "rgba(255,255,255,0.1)", border: "0.5px solid rgba(255,255,255,0.2)", borderRadius: "12px", padding: "16px" }}>
-                <div style={{ fontSize: "13px", fontWeight: 600, color: "white", marginBottom: "6px" }}>Les tendances tech en 2026</div>
-                <div style={{ fontSize: "11px", color: "rgba(221,214,254,0.65)", marginBottom: "12px", lineHeight: 1.5 }}>L'IA continue de transformer notre quotidien...</div>
-                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                  {["👍 12", "❤️ 8", "😮 3", "💬 4"].map(r => (
-                    <span key={r} style={{ padding: "4px 10px", background: "rgba(255,255,255,0.15)", borderRadius: "999px", fontSize: "12px", color: "white" }}>{r}</span>
-                  ))}
-                </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div style={{ background: c.blueSoft, border: `1px solid ${c.border}`, borderRadius: "12px", padding: "14px", boxShadow: c.softShadow }}>
+              <div style={{ fontSize: "13px", fontWeight: 600, color: c.text, marginBottom: "6px" }}>Les tendances tech en 2026</div>
+              <div style={{ fontSize: "12px", color: c.muted, marginBottom: "10px", lineHeight: 1.5 }}>L'IA continue de transformer notre quotidien...</div>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                {["👍 12", "❤️ 8", "😮 3", "💬 4"].map(r => (
+                  <span key={r} style={{ padding: "5px 10px", background: "white", borderRadius: "999px", border: `1px solid ${c.border}`, fontSize: "12px", color: c.text }}>{r}</span>
+                ))}
               </div>
-              <div style={{ background: "rgba(255,255,255,0.07)", border: "0.5px solid rgba(255,255,255,0.12)", borderRadius: "10px", padding: "12px", marginLeft: "20px" }}>
-                <div style={{ fontSize: "10px", color: "rgba(221,214,254,0.5)", marginBottom: "4px" }}>Ibrahima Beye</div>
-                <div style={{ fontSize: "12px", color: "white" }}>Super article, très instructif !</div>
-              </div>
-              <div style={{ background: "rgba(255,255,255,0.05)", border: "0.5px solid rgba(255,255,255,0.08)", borderRadius: "10px", padding: "12px", marginLeft: "40px" }}>
-                <div style={{ fontSize: "10px", color: "rgba(221,214,254,0.5)", marginBottom: "4px" }}>Rokhaya Beye · auteur</div>
-                <div style={{ fontSize: "12px", color: "white" }}>Merci beaucoup 😊</div>
-              </div>
+            </div>
+            <div style={{ background: "white", border: `1px solid ${c.border}`, borderRadius: "12px", padding: "12px", marginLeft: "22px", boxShadow: c.softShadow }}>
+              <div style={{ fontSize: "10px", color: c.muted, marginBottom: "4px" }}>Ibrahima Beye</div>
+              <div style={{ fontSize: "12px", color: c.text }}>Super article, très instructif !</div>
+            </div>
+            <div style={{ background: "white", border: `1px solid ${c.border}`, borderRadius: "12px", padding: "12px", marginLeft: "44px", boxShadow: c.softShadow }}>
+              <div style={{ fontSize: "10px", color: c.muted, marginBottom: "4px" }}>Rokhaya Beye · auteur</div>
+              <div style={{ fontSize: "12px", color: c.text }}>Merci beaucoup 😊</div>
             </div>
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* ══════════════════════════════
-          SECTION 5 — Fil d'actualité
-      ══════════════════════════════ */}
-      <section style={{ background: c.heroGradient, minHeight: "520px", display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 48px" }}>
-        <div style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "60px", maxWidth: "1000px", width: "100%" }}>
-          <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: "36px", fontWeight: 700, color: "white", lineHeight: 1.25, marginBottom: "18px" }}>
+      {/* FIL D'ACTUALITÉ */}
+      <Section bg={c.gray}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "36px", alignItems: "center" }}>
+          <div>
+            <h2 style={{ fontSize: "32px", fontWeight: 700, margin: "0 0 14px", color: c.text }}>
               Découvrez le fil de vos amis
             </h2>
-            <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.7)", lineHeight: 1.8, maxWidth: "420px" }}>
-              Retrouvez tous les articles publics de vos amis sur votre tableau de bord. Réagissez, commentez et échangez en temps réel.
+            <p style={{ fontSize: "15px", color: c.muted, lineHeight: 1.7, maxWidth: "480px" }}>
+              Les cartes sont compactes et faciles à lire. Tout reste dans la même palette bleu/gris pour éviter les ruptures visuelles.
             </p>
           </div>
-          <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "280px" }}>
-              {[
-                { init: "RB", titre: "Les tendances tech en 2026", time: "il y a 1h" },
-                { init: "IB", titre: "Recette du thiéboudienne", time: "il y a 3h" },
-                { init: "AD", titre: "Mon expérience à l'ISI", time: "il y a 5h" },
-              ].map((item, i) => (
-                <div key={item.init} style={{
-                  background: `rgba(255,255,255,${0.1 - i * 0.025})`,
-                  border: `0.5px solid rgba(255,255,255,${0.2 - i * 0.04})`,
-                  borderRadius: "12px", padding: "14px",
-                  opacity: 1 - i * 0.15
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                    <div style={{ width: "26px", height: "26px", borderRadius: "50%", background: c.primary, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 700, color: "white" }}>{item.init}</div>
-                    <div style={{ fontSize: "10px", color: "rgba(221,214,254,0.65)" }}>{item.time} · Public</div>
-                  </div>
-                  <div style={{ fontSize: "12px", fontWeight: 600, color: "white" }}>{item.titre}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "420px", marginLeft: "auto" }}>
+            {[
+              { init: "RB", titre: "Les tendances tech en 2026", time: "il y a 1h" },
+              { init: "IB", titre: "Recette du thiéboudienne", time: "il y a 3h" },
+              { init: "AD", titre: "Mon expérience à l'ISI", time: "il y a 5h" },
+            ].map((item, i) => (
+              <div key={item.init} style={{
+                background: "white",
+                border: `1px solid ${c.border}`,
+                borderRadius: "12px",
+                padding: "12px",
+                boxShadow: c.softShadow,
+                opacity: 1 - i * 0.12
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                  <div style={{ width: "26px", height: "26px", borderRadius: "8px", background: c.blue, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 700, color: "white" }}>{item.init}</div>
+                  <div style={{ fontSize: "10px", color: c.muted }}>{item.time} · Public</div>
                 </div>
-              ))}
-            </div>
+                <div style={{ fontSize: "13px", fontWeight: 600, color: c.text }}>{item.titre}</div>
+              </div>
+            ))}
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* ══════════════════════════════
-          SECTION CTA FINAL
-      ══════════════════════════════ */}
-      <section style={{ background: c.footerGradient, minHeight: "440px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "60px 48px", position: "relative", overflow: "hidden" }}>
-        {/* Carte monde en fond */}
-        <svg style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", opacity: 0.06 }} viewBox="0 0 1000 440" preserveAspectRatio="xMidYMid slice">
-          <ellipse cx="200" cy="200" rx="170" ry="180" fill="white"/>
-          <ellipse cx="500" cy="160" rx="155" ry="165" fill="white"/>
-          <ellipse cx="780" cy="190" rx="140" ry="155" fill="white"/>
-          <ellipse cx="680" cy="340" rx="90" ry="95" fill="white"/>
-        </svg>
-
-        {/* Pins utilisateurs */}
-        {[
-          { top: "50px", left: "12%", label: "RB" },
-          { top: "35px", left: "38%", label: "IB" },
-          { top: "55px", right: "18%", label: "AD" },
-          { top: "90px", left: "24%", label: "LY" },
-        ].map(p => (
-          <div key={p.label} style={{ position: "absolute", top: p.top, left: p.left, right: p.right, zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
-            <div style={{ width: "34px", height: "34px", borderRadius: "50%", background: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 700, color: c.deep }}>{p.label}</div>
-            <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: c.primary }}></div>
-          </div>
-        ))}
-
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <h2 style={{ fontSize: "36px", fontWeight: 700, color: "white", lineHeight: 1.3, maxWidth: "580px", margin: "0 auto 14px" }}>
-            Rejoignez notre communauté de blogueurs
+      {/* CTA FINAL */}
+      <section style={{
+        background: c.ctaGradient,
+        padding: "72px 48px",
+        color: "white",
+        textAlign: "center"
+      }}>
+        <div style={{ maxWidth: "720px", margin: "0 auto" }}>
+          <h2 style={{ fontSize: "34px", fontWeight: 800, lineHeight: 1.3, margin: "0 0 12px" }}>
+            Rejoignez une plateforme lisible et cohérente
           </h2>
-          <p style={{ color: "rgba(221,214,254,0.65)", fontSize: "15px", maxWidth: "480px", margin: "0 auto 32px", lineHeight: 1.75 }}>
-            Que ce soit pour partager votre expertise, vos aventures ou vos idées, MonBlog est la plateforme qu'il vous faut.
+          <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "15px", lineHeight: 1.7, marginBottom: "26px" }}>
+            Vous écrivez, vos amis réagissent, tout reste simple.
           </p>
           <button
             onClick={() => navigate("/register")}
-            style={{ padding: "15px 36px", background: c.primaryDark, border: "none", borderRadius: "6px", color: "white", fontSize: "13px", fontWeight: 700, cursor: "pointer", letterSpacing: "0.8px", textTransform: "uppercase", boxShadow: c.softGlow }}
+            style={{
+              padding: "13px 30px",
+              background: "#ffffff",
+              color: c.blueDark,
+              border: "none",
+              borderRadius: "12px",
+              fontWeight: 800,
+              letterSpacing: "0.6px",
+              cursor: "pointer",
+              boxShadow: c.shadow
+            }}
           >
-            CRÉER VOTRE BLOG
+            Créer votre blog
           </button>
         </div>
       </section>
 
-      {/* ══════════════════════════════
-          FOOTER
-      ══════════════════════════════ */}
-      <footer style={{ background: c.deep, padding: "18px 48px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      {/* FOOTER */}
+      <footer style={{ background: c.blueDark, padding: "18px 48px", display: "flex", alignItems: "center", justifyContent: "space-between", color: "#cbd5e1" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <div style={{ width: "26px", height: "26px", borderRadius: "6px", background: c.primary, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700, color: "white" }}>B</div>
-          <span style={{ color: "rgba(148,163,184,0.6)", fontSize: "12px" }}>MonBlog © 2026</span>
+          <div style={{ width: "26px", height: "26px", borderRadius: "6px", background: c.blue, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700, color: "white" }}>B</div>
+          <span style={{ fontSize: "12px" }}>MonBlog © 2026</span>
         </div>
-        <span style={{ color: "rgba(148,163,184,0.65)", fontSize: "11px" }}>Projet ISI DSIA — Blog Personnel · React + Flask</span>
+        <span style={{ fontSize: "11px" }}>Projet ISI DSIA — Blog Personnel · React + Flask</span>
       </footer>
-
     </div>
   )
 }

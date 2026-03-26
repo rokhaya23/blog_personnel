@@ -61,7 +61,7 @@ function Register() {
         </p>
 
         {error && (
-          <div className="bg-red-500/20 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4">
+          <div className="bg-blue-500/15 border border-blue-400 text-blue-900 px-4 py-3 rounded-lg mb-4">
             {error}
           </div>
         )}

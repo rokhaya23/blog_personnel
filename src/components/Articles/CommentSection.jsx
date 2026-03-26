@@ -74,11 +74,11 @@ function SingleComment({ comment, allComments, articleId, articleAuthorId, curre
             <>
               {showConfirmDelete ? (
                 <div className="flex gap-2">
-                  <button onClick={handleDelete} className="text-xs text-red-400 hover:text-red-300 transition">Confirmer</button>
+                  <button onClick={handleDelete} className="text-xs text-blue-300 hover:text-blue-100 transition">Confirmer</button>
                   <button onClick={() => setShowConfirmDelete(false)} className={`text-xs px-3 py-1 rounded-md transition ${secondaryAction}`}>Annuler</button>
                 </div>
               ) : (
-                <button onClick={() => setShowConfirmDelete(true)} className="text-xs px-3 py-1 rounded-md bg-red-600/80 hover:bg-red-500 text-white transition">
+                <button onClick={() => setShowConfirmDelete(true)} className="text-xs px-3 py-1 rounded-md bg-slate-800/70 hover:bg-slate-700 text-white transition">
                   Supprimer
                 </button>
               )}
@@ -164,7 +164,7 @@ function CommentSection({ articleId, articleAuthorId }) {
       </h4>
 
       {error && (
-        <div className="bg-red-500/20 border border-red-500 text-red-200 px-3 py-2 rounded-lg mb-3 text-sm">{error}</div>
+        <div className="bg-blue-500/15 border border-blue-400 text-blue-900 px-3 py-2 rounded-lg mb-3 text-sm">{error}</div>
       )}
 
       <form onSubmit={handleSubmit} className="mb-6">

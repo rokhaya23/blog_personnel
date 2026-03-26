@@ -160,12 +160,12 @@ function UserProfile() {
                 {/* Déjà ami */}
                 {statut === "ami" && (
                   <>
-                    <span className="flex items-center gap-1 px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-sm">
+                    <span className="flex items-center gap-1 px-4 py-2 bg-blue-500/15 text-blue-200 rounded-lg text-sm border border-blue-300/40">
                       ✓ Ami
                     </span>
                       <button
                         onClick={handleBloquer}
-                        className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg text-sm transition"
+                        className="px-4 py-2 bg-slate-800/60 hover:bg-slate-700 text-white rounded-lg text-sm transition"
                     >
                       Bloquer
                     </button>
@@ -184,7 +184,7 @@ function UserProfile() {
                   <>
                     {demandeEnvoyee ? (
                       // ── Après envoi ── bouton désactivé avec confirmation visuelle
-                      <span className="flex items-center gap-2 px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-sm">
+                      <span className="flex items-center gap-2 px-4 py-2 bg-blue-500/15 text-blue-200 rounded-lg text-sm border border-blue-300/40">
                         ✓ Demande envoyée
                       </span>
                     ) : (
@@ -213,8 +213,8 @@ function UserProfile() {
               <div className={`text-sm mb-2 ${secondaryText}`}>@{user?.username}</div>
               <div className="flex items-center gap-1 text-sm">
                 {user?.is_online ? (
-                  <span className="flex items-center gap-1 text-green-400">
-                    <span className="w-2 h-2 rounded-full bg-green-400 inline-block"></span>
+                  <span className="flex items-center gap-1 text-blue-300">
+                    <span className="w-2 h-2 rounded-full bg-blue-400 inline-block"></span>
                     En ligne
                   </span>
                 ) : (
@@ -223,7 +223,7 @@ function UserProfile() {
               </div>
               {/* Message d'erreur si envoi échoue */}
               {message && (
-                <p className="text-red-400 text-sm mt-2">{message}</p>
+                <p className="text-blue-200 text-sm mt-2">{message}</p>
               )}
             </div>
 
@@ -332,7 +332,7 @@ function UserProfile() {
                       <div className={`text-xs flex items-center gap-1 ${secondaryText}`}>
                         @{ami.username}
                         {ami.is_online && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block ml-1"></span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block ml-1"></span>
                         )}
                       </div>
                     </div>

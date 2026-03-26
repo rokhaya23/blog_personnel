@@ -1,41 +1,237 @@
+/* ═══════════════════════════════════════════════
+   index.css — Source unique de vérité
+   Toute l'app lit ces variables. Ne touche plus
+   aux couleurs dans les composants.
+═══════════════════════════════════════════════ */
+
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* ── TOKENS DE BASE ─────────────────────────────── */
 :root {
-  --accent: #2563eb;
-  --accent-strong: #1d4ed8;
-  --accent-gradient: linear-gradient(110deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
+  /* Couleurs principales — uniquement bleu / gris / blanc / noir */
+  --blue-strong:   #1d4ed8;
+  --blue-deep:     #010409;
+  --blue-soft:     #e8f0ff;
+  --gray-50:       #f7f9fc;
+  --gray-100:      #f1f4f9;
+  --gray-200:      #e5e7eb;
+  --gray-400:      #94a3b8;
+  --gray-500:      #6b7280;
+  --navy:          #0b1d3a;
+  --accent:        #1d4ed8;
+  --accent-hover:  #153ea8;
+  --accent-light:  #e8f0ff;
+
+  /* Typographie */
+  --font-display: 'Playfair Display', serif;
+  --font-body:    'Poppins', sans-serif;
+
+  /* Rayons */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-pill: 999px;
+
+  /* Transitions */
+  --transition: 150ms ease;
 }
+
+/* ── THÈME CLAIR ─────────────────────────────────── */
+.theme-light {
+  --bg-page:       var(--gray-50);   /* fond de toute la page */
+  --bg-card:       #ffffff;          /* cards, modales */
+  --bg-sidebar:    #102a4c;          /* sidebar bleu profond */
+  --bg-topbar:     #ffffff;          /* barre du haut */
+  --bg-input:      #ffffff;          /* champs de saisie */
+  --bg-hover:      var(--accent-light); /* hover sur items nav */
+
+  --text-primary:   #0b1220;        /* titres, texte principal */
+  --text-secondary: #334155;        /* texte secondaire */
+  --text-muted:     var(--gray-500);/* hints, placeholders */
+  --text-on-dark:   #ffffff;        /* texte sur fond navy/accent */
+  --text-sidebar:   #cbd5e1;        /* texte inactif dans sidebar */
+
+  --border:        #d7deea;  /* bordures générales */
+  --border-input:  #dfe4ee;  /* bordures champs */
+
+  --shadow-card:  0 4px 18px rgba(16,42,76,0.08);
+  --shadow-btn:   0 10px 24px rgba(29,78,216,0.18);
+}
+
+/* ── THÈME SOMBRE ────────────────────────────────── */
+.theme-dark {
+  --bg-page:       #0b1220;
+  --bg-card:       rgba(255,255,255,0.04);
+  --bg-sidebar:    rgba(16,42,76,0.35);
+  --bg-topbar:     rgba(15,23,42,0.6);
+  --bg-input:      rgba(255,255,255,0.08);
+  --bg-hover:      rgba(255,255,255,0.08);
+
+  --text-primary:   #e5e7eb;
+  --text-secondary: #cfd8e3;
+  --text-muted:     #9fb3d3;
+  --text-on-dark:   #ffffff;
+  --text-sidebar:   #dbeafe;
+
+  --border:        rgba(59,130,246,0.25);
+  --border-input:  rgba(255,255,255,0.15);
+
+  --shadow-card:  0 4px 18px rgba(0,0,0,0.35);
+  --shadow-btn:   0 10px 24px rgba(29,78,216,0.32);
+}
+
+/* ── BASE GLOBALE ────────────────────────────────── */
+* { box-sizing: border-box; }
 
 body {
+  font-family: var(--font-body);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  transition: background var(--transition), color var(--transition);
   margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: var(--bg-primary, #f0f4f8);
-  color: var(--text-primary, #111827);
-  transition: background-color 180ms ease, color 180ms ease;
 }
 
-.theme-dark {
-  --bg-primary: #0f172a;
-  --bg-secondary: rgba(15, 23, 42, 0.82);
-  --bg-card: rgba(255, 255, 255, 0.08);
-  --border-color: rgba(255, 255, 255, 0.12);
-  --text-primary: #e2e8f0;
-  --text-secondary: rgba(147, 197, 253, 0.75);
-  --text-muted: rgba(147, 197, 253, 0.55);
+/* Boutons arrondis légèrement par défaut */
+button { border-radius: 6px; }
+
+/* ── COMPOSANTS RÉUTILISABLES ────────────────────── */
+
+/* Navbar / topbar */
+.app-topbar {
+  background: var(--bg-topbar);
+  border-bottom: 0.5px solid var(--border);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(12px);
 }
 
-.theme-light {
-  --bg-primary: #f0f4f8;
-  --bg-secondary: #ffffff;
-  --bg-card: #ffffff;
-  --border-color: #e2e8f0;
-  --text-primary: #1f2937;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
+/* Sidebar */
+.app-sidebar {
+  background: var(--bg-sidebar);
+  border-right: 0.5px solid var(--border);
 }
 
-.theme-dark,
-.theme-light {
-  min-height: 100vh;
+/* Card générique */
+.app-card {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 1.25rem;
 }
+
+/* Bouton principal */
+.btn-primary {
+  background: var(--accent);
+  color: var(--text-on-dark);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 20px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  transition: background var(--transition), opacity var(--transition);
+}
+.btn-primary:hover  { background: var(--accent-hover); }
+.btn-primary:active { opacity: 0.88; }
+
+/* Bouton secondaire */
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 0.5px solid var(--border-input);
+  border-radius: var(--radius-md);
+  padding: 10px 20px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.btn-secondary:hover { background: var(--bg-hover); }
+
+/* Nav item sidebar */
+.nav-item {
+  color: var(--text-sidebar);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background var(--transition), color var(--transition);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+}
+.nav-item:hover  { background: rgba(255,255,255,0.1); color: #fff; }
+.nav-item.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: var(--shadow-btn);
+}
+
+/* Champ de saisie */
+.app-input {
+  background: var(--bg-input);
+  border: 0.5px solid var(--border-input);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  width: 100%;
+  transition: border-color var(--transition);
+  outline: none;
+}
+.app-input::placeholder { color: var(--text-muted); }
+.app-input:focus       { border-color: var(--accent); }
+
+/* Badges */
+.badge-public  { background: var(--accent-light); color: var(--blue-deep); }
+.badge-private { background: var(--gray-100);    color: var(--gray-500); }
+.badge-pending { background: var(--accent-light); color: var(--accent); }
+.badge-blocked { background: #111827;             color: #e5e7eb; }
+.badge-online  { background: var(--accent-light); color: var(--accent); }
+
+.badge-public, .badge-private, .badge-pending,
+.badge-blocked, .badge-online {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  display: inline-block;
+}
+
+/* Logo / titre principal */
+.app-brand {
+  font-family: var(--font-display);
+  font-weight: 900;
+  background: linear-gradient(110deg, var(--navy), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.theme-dark .app-brand {
+  background: linear-gradient(110deg, #cbd5e1, #93c5fd, #1d4ed8);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Textes utilitaires */
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted     { color: var(--text-muted); }
+
+/* Séparateur */
+.app-divider {
+  border: none;
+  border-top: 0.5px solid var(--border);
+  margin: 1rem 0;
+}
+

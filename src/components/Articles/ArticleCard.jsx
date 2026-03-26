@@ -90,7 +90,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
                   {article.author_name.charAt(0).toUpperCase()}
                 </div>
               )}
-              <span className={`w-2 h-2 rounded-full ${article.author_is_online ? "bg-green-400" : "bg-gray-400"}`} />
+              <span className={`w-2 h-2 rounded-full ${article.author_is_online ? "bg-blue-400" : "bg-gray-400"}`} />
               <span className={`text-sm ${authorText}`}>
                 {article.author_name}
               </span>
@@ -101,12 +101,12 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
         <div className="flex gap-2 flex-shrink-0">
           {article.is_public ? (
             <span className={`px-2 py-1 text-xs rounded-full border ${
-              isDark ? "bg-green-600/70 text-white border-green-400/60" : "bg-green-500 text-white border-green-600"
+              isDark ? "bg-blue-600/70 text-white border-blue-400/60" : "bg-blue-700 text-white border-blue-800"
             }`}>Public</span>
           ) : (
             <span className={`px-2 py-1 text-xs rounded-full border ${
-              isDark ? "bg-amber-600/70 text-white border-amber-400/60" : "bg-amber-500 text-white border-amber-600"
-            }`}>Prive</span>
+              isDark ? "bg-slate-700/70 text-white border-slate-500/60" : "bg-slate-200 text-slate-900 border-slate-300"
+            }`}>Privé</span>
           )}
         </div>
       </div>
@@ -214,27 +214,27 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
           )}
           {showConfirmDelete ? (
             <div className="flex gap-2">
-              <button
-                onClick={handleDelete}
-                className={`px-4 py-2 text-sm rounded-lg transition ${isDark ? "bg-red-500/35 text-red-200 hover:bg-red-500/45" : "bg-red-100 text-red-700 hover:bg-red-200 border border-red-300"}`}
-              >
-                Confirmer
-              </button>
-              <button
-                onClick={() => setShowConfirmDelete(false)}
-                className={`px-4 py-2 text-sm rounded-lg transition ${neutralButton}`}
-              >
-                Annuler
-              </button>
-            </div>
-          ) : (
             <button
-              onClick={() => setShowConfirmDelete(true)}
-              className={`px-4 py-2 text-sm rounded-lg transition ${isDark ? "bg-red-500/30 text-red-200 hover:bg-red-500/40" : "bg-red-100 text-red-700 hover:bg-red-200 border border-red-300"}`}
+              onClick={handleDelete}
+              className={`px-4 py-2 text-sm rounded-lg transition ${isDark ? "bg-blue-800/50 text-white hover:bg-blue-700/60" : "bg-blue-50 text-blue-900 hover:bg-blue-100 border border-blue-200"}`}
             >
-              Supprimer
+              Confirmer
             </button>
-          )}
+            <button
+              onClick={() => setShowConfirmDelete(false)}
+              className={`px-4 py-2 text-sm rounded-lg transition ${neutralButton}`}
+            >
+              Annuler
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setShowConfirmDelete(true)}
+            className={`px-4 py-2 text-sm rounded-lg transition ${isDark ? "bg-slate-800/60 text-white hover:bg-slate-700/60" : "bg-slate-100 text-slate-900 hover:bg-slate-200 border border-slate-300"}`}
+          >
+            Supprimer
+          </button>
+        )}
         </div>
       )}
 

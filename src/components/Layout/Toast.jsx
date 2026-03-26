@@ -78,13 +78,13 @@ function ToastContainer({ toasts }) {
   const getStyle = (type) => {
     switch (type) {
       case "success":
-        return "bg-green-500/90 border-green-400"
+        return "bg-blue-600/90 border-blue-300"
       case "error":
-        return "bg-red-500/90 border-red-400"
+        return "bg-slate-800/90 border-slate-500"
       case "info":
-        return "bg-blue-500/90 border-blue-400"
+        return "bg-blue-500/90 border-blue-300"
       default:
-        return "bg-blue-500/90 border-blue-400"
+        return "bg-blue-500/90 border-blue-300"
     }
   }
 

@@ -34,7 +34,7 @@ function FriendsList() {
   const nameClass      = isDark ? "text-white" : "text-slate-800"
   const usernameClass  = isDark ? "text-blue-200/60" : "text-blue-900/55"
   const removeButton   = isDark ? "bg-blue-700 hover:bg-blue-600 text-white border border-blue-600" : "bg-blue-700 hover:bg-blue-800 text-white border border-blue-800"
-  const blockButton    = isDark ? "bg-red-600/80 hover:bg-red-500 text-white border border-red-500/60" : "bg-red-700 text-white hover:bg-red-600 border border-red-700"
+  const blockButton    = isDark ? "bg-slate-800 hover:bg-slate-700 text-white border border-slate-600" : "bg-slate-200 text-slate-900 hover:bg-slate-300 border border-slate-400"
   const sectionBorder  = isDark ? "border-white/10" : "border-blue-200/70"
 
   return (
@@ -75,8 +75,8 @@ function FriendsList() {
                   <div className={`text-xs flex items-center gap-1 ${usernameClass}`}>
                     @{ami.username}
                     {ami.is_online && (
-                      <span className="flex items-center gap-1 text-green-400 ml-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+                      <span className="flex items-center gap-1 text-blue-400 ml-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block"></span>
                         en ligne
                       </span>
                     )}
@@ -106,24 +106,24 @@ function FriendsList() {
 
           <div className="flex flex-col gap-3">
             {bloques.map(bloque => (
-              <div key={bloque._id} className={`flex justify-between items-center px-4 py-3 border rounded-xl ${isDark ? "bg-red-500/5 border-red-500/20" : "bg-red-50/50 border-red-200/70"}`}>
+              <div key={bloque._id} className={`flex justify-between items-center px-4 py-3 border rounded-xl ${isDark ? "bg-slate-800/30 border-slate-600/40" : "bg-slate-100 border-slate-300"}`}>
                 <div className="flex items-center gap-3">
                   {bloque.avatar ? (
                     <img
                       src={`http://localhost:5000/api/auth/avatar/${bloque.avatar}`}
                       alt={bloque.full_name}
-                      className="w-10 h-10 rounded-full object-cover border-2 border-red-400/50 flex-shrink-0 opacity-70"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-blue-300/50 flex-shrink-0 opacity-70"
                     />
                   ) : (
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 opacity-70 ${isDark ? "bg-red-500/20 text-red-300" : "bg-red-100 text-red-600"}`}>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 opacity-70 ${isDark ? "bg-slate-700/40 text-blue-200" : "bg-slate-200 text-slate-800"}`}>
                       {bloque.full_name?.slice(0, 2).toUpperCase()}
                     </div>
                   )}
                   <div>
-                    <div className={`text-sm font-medium ${isDark ? "text-red-300/80" : "text-red-700"}`}>
+                    <div className={`text-sm font-medium ${isDark ? "text-blue-100" : "text-slate-800"}`}>
                       {bloque.full_name}
                     </div>
-                    <div className={`text-xs ${isDark ? "text-red-400/60" : "text-red-500/70"}`}>
+                    <div className={`text-xs ${isDark ? "text-blue-200/70" : "text-slate-600"}`}>
                       @{bloque.username} · bloqué
                     </div>
                   </div>

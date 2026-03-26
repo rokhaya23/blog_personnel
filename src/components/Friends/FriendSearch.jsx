@@ -186,8 +186,8 @@ function FriendSearch() {
                   <div className={`text-xs flex items-center gap-1 ${usernameClass}`}>
                     @{user.username}
                     {user.is_online && (
-                      <span className="flex items-center gap-1 text-green-400 ml-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+                      <span className="flex items-center gap-1 text-blue-400 ml-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block"></span>
                         en ligne
                       </span>
                     )}
@@ -206,7 +206,7 @@ function FriendSearch() {
 
                 {/* Vérifier si déjà ami avant d'afficher le bouton */}
                 {amis.find(a => a._id === user._id) ? (
-                    <span className="text-xs px-2 py-1.5 bg-green-500/20 text-green-400 rounded-lg">
+                    <span className="text-xs px-2 py-1.5 bg-blue-500/15 text-blue-600 rounded-lg border border-blue-200">
                     ✓ Ami
                     </span>
                 ) : (
