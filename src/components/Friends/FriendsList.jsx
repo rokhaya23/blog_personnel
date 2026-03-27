@@ -52,9 +52,9 @@ function FriendsList() {
           <p className={emptySecondary}>Utilise la barre de recherche en haut pour en ajouter !</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
           {amis.map(ami => (
-            <div key={ami._id} className={`flex justify-between items-center px-4 py-3 border rounded-xl transition ${cardClass}`}>
+            <div key={ami._id} className={`flex flex-col sm:flex-row justify-between items-start sm:items-center px-4 py-3 border rounded-xl transition ${cardClass}`}>
               <button
                 onClick={() => navigate(`/profile/${ami._id}`)}
                 className="flex items-center gap-3 text-left hover:opacity-80 transition flex-1"
@@ -83,7 +83,7 @@ function FriendsList() {
                   </div>
                 </div>
               </button>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
                 <button onClick={() => navigate(`/profile/${ami._id}`)} className={`text-xs px-3 py-1.5 rounded-lg transition ${removeButton}`}>Voir profil</button>
                 <button onClick={() => handleSupprimer(ami._id)} className={`text-xs px-3 py-1.5 rounded-lg transition ${removeButton}`}>Supprimer</button>
                 <button onClick={() => handleBloquer(ami._id)} className={`text-xs px-3 py-1.5 rounded-lg transition ${blockButton}`}>Bloquer</button>

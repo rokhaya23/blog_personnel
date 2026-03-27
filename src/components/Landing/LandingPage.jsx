@@ -15,346 +15,242 @@ const c = {
   ctaGradient: "linear-gradient(145deg, #0b1d3a 0%, #1d4ed8 70%)",
 }
 
-const Section = ({ bg = "#fff", children }) => (
-  <section style={{ background: bg, padding: "72px 48px" }}>
-    <div style={{ maxWidth: "1100px", margin: "0 auto" }}>{children}</div>
-  </section>
-)
-
 function LandingPage() {
   const navigate = useNavigate()
 
   return (
-    <div style={{ fontFamily: "'Poppins', sans-serif", background: c.graySoft, color: c.text }}>
+    <div className="font-sans min-h-screen" style={{ background: c.graySoft, color: c.text }}>
 
-      {/* NAVBAR */}
-      <nav style={{
-        background: "#ffffff",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "16px 48px",
-        borderBottom: `1px solid ${c.border}`,
-        position: "sticky",
-        top: 0,
-        zIndex: 10,
-        boxShadow: c.softShadow,
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontWeight: 700, fontSize: "30px", color: c.text }}>DailyBlog</span>
-        </div>
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+      {/* ══ NAVBAR ══ */}
+      <nav className="bg-white sticky top-0 z-10 flex items-center justify-between px-4 md:px-12 py-4"
+        style={{ borderBottom: `1px solid ${c.border}`, boxShadow: c.softShadow }}>
+        <span className="font-bold text-2xl" style={{ color: c.text }}>DailyBlog</span>
+        <div className="flex items-center gap-2">
           <button
             onClick={() => navigate("/login")}
-            style={{ background: "transparent", border: "none", fontSize: "13px", color: c.muted, cursor: "pointer", fontWeight: 500 }}
+            className="text-sm font-medium px-3 py-2 hidden sm:block"
+            style={{ color: c.muted }}
           >
             Connexion
           </button>
           <button
             onClick={() => navigate("/register")}
-            style={{
-              padding: "10px 18px",
-              background: c.blue,
-              border: "none",
-              borderRadius: "6px",
-              color: "white",
-              fontSize: "13px",
-              fontWeight: 700,
-              cursor: "pointer",
-              letterSpacing: "0.4px",
-              boxShadow: c.shadow
-            }}
+            className="text-sm font-bold px-4 py-2 rounded-lg text-white"
+            style={{ background: c.blue, boxShadow: c.softShadow }}
           >
-            Créer votre blog
+            Créer mon blog
           </button>
         </div>
       </nav>
 
-      {/* HERO */}
-      <section style={{
-        background: c.heroGradient,
-        minHeight: "420px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "64px 48px",
-      }}>
-        <div style={{
-          maxWidth: "1100px",
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "1.1fr 0.9fr",
-          gap: "40px",
-          alignItems: "center"
-        }}>
-          <div>
-            <p style={{ color: "rgba(11,18,32,0.65)", letterSpacing: "1px", fontSize: "12px", textTransform: "uppercase", marginBottom: "12px", fontWeight: 600 }}>
+      {/* ══ HERO ══ */}
+      <section className="flex items-center justify-center px-4 md:px-12 py-12 md:py-16"
+        style={{ background: c.heroGradient, minHeight: "420px" }}>
+        <div className="max-w-5xl w-full mx-auto flex flex-col md:flex-row items-center gap-10">
+
+          {/* Texte */}
+          <div className="flex-1 text-center md:text-left">
+            <p className="text-xs uppercase tracking-widest font-semibold mb-3"
+              style={{ color: "rgba(11,18,32,0.55)" }}>
               Blog personnel, simple et clair
             </p>
-            <h1 style={{
-              fontSize: "44px",
-              fontWeight: 800,
-              lineHeight: 1.1,
-              color: c.blueDark,
-              margin: "0 0 18px"
-            }}>
-              Écrivez, partagez, restez proche de vos amis.
+            <h1 className="text-3xl md:text-5xl font-extrabold leading-tight mb-4"
+              style={{ color: c.blueDark }}>
+              Écrivez, partagez,<br className="hidden md:block"/> restez proche de vos amis.
             </h1>
-            <p style={{ color: "rgba(11,18,32,0.7)", fontSize: "16px", maxWidth: "540px", lineHeight: 1.6, marginBottom: "24px" }}>
-              Une interface nette, uniquement en bleu, gris, blanc et noir. Pas de fioritures : vous publiez, vos proches réagissent, tout simplement.
+            <p className="text-sm md:text-base leading-relaxed mb-6 max-w-md mx-auto md:mx-0"
+              style={{ color: "rgba(11,18,32,0.65)" }}>
+              Une interface nette, en bleu, gris, blanc et noir. Vous publiez, vos proches réagissent, tout simplement.
             </p>
-            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-              <button
-                onClick={() => navigate("/register")}
-                style={{
-                  padding: "12px 22px",
-                  background: c.blue,
-                  color: "white",
-                  border: "none",
-                  borderRadius: "0px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  boxShadow: c.shadow
-                }}
-              >
+            <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+              <button onClick={() => navigate("/register")}
+                className="px-6 py-3 text-sm font-bold text-white rounded-lg"
+                style={{ background: c.blue, boxShadow: c.shadow }}>
                 Démarrer maintenant
               </button>
-              <button
-                onClick={() => navigate("/login")}
-                style={{
-                  padding: "12px 18px",
-                  background: "white",
-                  color: c.text,
-                  border: `1px solid ${c.border}`,
-                  borderRadius: "6px",
-                  fontWeight: 600,
-                  cursor: "pointer"
-                }}
-              >
+              <button onClick={() => navigate("/login")}
+                className="px-6 py-3 text-sm font-semibold rounded-lg bg-white"
+                style={{ color: c.text, border: `1px solid ${c.border}` }}>
                 Se connecter
               </button>
             </div>
           </div>
 
-          <div style={{
-            background: "white",
-            borderRadius: "14px",
-            padding: "18px",
-            boxShadow: c.shadow,
-            border: `1px solid ${c.border}`,
-            maxWidth: "420px",
-            marginLeft: "auto"
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px", paddingBottom: "12px", borderBottom: `1px solid ${c.border}` }}>
-              <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: c.blue, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: 700, color: "white" }}>RB</div>
+          {/* Carte aperçu */}
+          <div className="w-full max-w-sm flex-shrink-0 bg-white rounded-2xl p-4"
+            style={{ boxShadow: c.shadow, border: `1px solid ${c.border}` }}>
+            <div className="flex items-center gap-3 pb-3 mb-3"
+              style={{ borderBottom: `1px solid ${c.border}` }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                style={{ background: c.blue }}>RB</div>
               <div>
-                <div style={{ fontSize: "12px", fontWeight: 600, color: c.text }}>Nos aventures au Sénégal</div>
-                <div style={{ fontSize: "10px", color: c.muted }}>Vendredi 14 mars 2026 · Public</div>
+                <div className="text-xs font-semibold" style={{ color: c.text }}>Nos aventures au Sénégal</div>
+                <div className="text-xs" style={{ color: c.muted }}>14 mars 2026 · Public</div>
               </div>
-              <div style={{ marginLeft: "auto", width: "7px", height: "7px", borderRadius: "50%", background: c.blue }}></div>
+              <div className="ml-auto w-2 h-2 rounded-full" style={{ background: c.blue }}></div>
             </div>
-            <div style={{ fontSize: "13px", color: c.text, fontWeight: 600, marginBottom: "8px" }}>Escapade à Saint-Louis</div>
-            <div style={{ background: c.gray, borderRadius: "10px", height: "64px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "12px", border: `1px dashed ${c.border}` }}>
-              <span style={{ color: c.muted, fontSize: "12px" }}>Image en attente</span>
+            <div className="text-sm font-semibold mb-2" style={{ color: c.text }}>Escapade à Saint-Louis</div>
+            <div className="rounded-lg h-14 flex items-center justify-center mb-3"
+              style={{ background: c.gray, border: `1px dashed ${c.border}` }}>
+              <span className="text-xs" style={{ color: c.muted }}>Image en attente</span>
             </div>
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <div className="flex gap-2 flex-wrap">
               {["👍 12", "❤️ 5", "💬 4"].map(r => (
-                <span key={r} style={{ padding: "4px 10px", background: c.blueSoft, borderRadius: "999px", fontSize: "11px", color: c.blueDark, border: `1px solid ${c.border}` }}>{r}</span>
+                <span key={r} className="px-3 py-1 rounded-full text-xs"
+                  style={{ background: c.blueSoft, color: c.blueDark, border: `1px solid ${c.border}` }}>
+                  {r}
+                </span>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ÉCRIRE & PUBLIER */}
-      <Section bg="#ffffff">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "36px", alignItems: "center" }}>
-          <div>
-            <h2 style={{ fontSize: "32px", fontWeight: 700, margin: "0 0 14px", color: c.text }}>
-              Écrivez et publiez facilement
-            </h2>
-            <p style={{ fontSize: "15px", color: c.muted, lineHeight: 1.7, maxWidth: "480px" }}>
-              Un éditeur net, des boutons simples, aucune couleur superflue. Choisissez public ou privé, activez ou non les commentaires.
-            </p>
-          </div>
-          <div style={{
-            background: "white",
-            borderRadius: "14px",
-            padding: "20px",
-            boxShadow: c.softShadow,
-            border: `1px solid ${c.border}`,
-            maxWidth: "440px",
-            marginLeft: "auto"
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-              <span style={{ fontSize: "13px", fontWeight: 600, color: c.text }}>Nouvel article</span>
-              <span style={{ fontSize: "11px", color: c.muted }}>Public</span>
+      {/* ══ SECTIONS FEATURES ══ */}
+      {[
+        {
+          bg: "#ffffff",
+          reverse: false,
+          titre: "Écrivez et publiez facilement",
+          desc: "Un éditeur net, des boutons simples. Choisissez public ou privé, activez ou non les commentaires.",
+          illus: (
+            <div className="w-full max-w-sm bg-white rounded-2xl p-5"
+              style={{ boxShadow: c.softShadow, border: `1px solid ${c.border}` }}>
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-sm font-semibold" style={{ color: c.text }}>Nouvel article</span>
+                <span className="text-xs" style={{ color: c.muted }}>Public</span>
+              </div>
+              <div className="h-10 rounded-lg mb-2" style={{ background: c.blueSoft, border: `1px solid ${c.border}` }}/>
+              <div className="h-16 rounded-lg mb-3" style={{ background: "#fff", border: `1px dashed ${c.border}` }}/>
+              <div className="flex gap-2">
+                <button className="flex-1 py-2 text-sm font-bold text-white rounded-lg"
+                  style={{ background: c.blue, boxShadow: c.softShadow }}>Publier</button>
+                <button className="flex-1 py-2 text-sm font-semibold rounded-lg bg-white"
+                  style={{ color: c.text, border: `1px solid ${c.border}` }}>Brouillon</button>
+              </div>
             </div>
-            <div style={{ height: "46px", background: c.blueSoft, borderRadius: "6px", border: `1px solid ${c.border}`, marginBottom: "10px" }} />
-            <div style={{ height: "70px", background: "#fff", borderRadius: "6px", border: `1px dashed ${c.border}`, marginBottom: "12px" }} />
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button style={{ flex: 1, padding: "10px", background: c.blue, color: "white", border: "none", borderRadius: "6px", fontWeight: 700, boxShadow: c.softShadow }}>Publier</button>
-              <button style={{ flex: 1, padding: "10px", background: "white", color: c.text, border: `1px solid ${c.border}`, borderRadius: "6px", fontWeight: 600 }}>Brouillon</button>
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      {/* AMIS */}
-      <Section bg={c.gray}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "36px", alignItems: "center" }}>
-          <div>
-            <h2 style={{ fontSize: "32px", fontWeight: 700, margin: "0 0 14px", color: c.text }}>
-              Connectez-vous avec vos amis
-            </h2>
-            <p style={{ fontSize: "15px", color: c.muted, lineHeight: 1.7, maxWidth: "480px" }}>
-              Recherchez, ajoutez, bloquez si besoin. Les indicateurs restent bleus et gris, pour un fil visuel cohérent.
-            </p>
-          </div>
-          <div style={{
-            background: "white",
-            borderRadius: "14px",
-            padding: "18px",
-            boxShadow: c.softShadow,
-            border: `1px solid ${c.border}`,
-            maxWidth: "420px",
-            marginLeft: "auto"
-          }}>
-            {[{ init: "RB", name: "Rokhaya Beye" }, { init: "IB", name: "Ibrahima Beye" }, { init: "AD", name: "Awa Diop" }].map((u, i) => (
-              <div key={u.init} style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                padding: "10px",
-                borderRadius: "10px",
-                border: `1px solid ${c.border}`,
-                background: i === 0 ? c.blueSoft : "#fff",
-                marginBottom: i === 2 ? 0 : "10px"
-              }}>
-                <div style={{ width: "32px", height: "32px", borderRadius: "10px", background: c.blue, color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "12px" }}>{u.init}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "13px", fontWeight: 600, color: c.text }}>{u.name}</div>
-                  <div style={{ fontSize: "11px", color: c.muted }}>En ligne</div>
+          )
+        },
+        {
+          bg: c.gray,
+          reverse: true,
+          titre: "Connectez-vous avec vos amis",
+          desc: "Recherchez, ajoutez, bloquez si besoin. Les indicateurs restent bleus et gris.",
+          illus: (
+            <div className="w-full max-w-sm bg-white rounded-2xl p-4"
+              style={{ boxShadow: c.softShadow, border: `1px solid ${c.border}` }}>
+              {[
+                { init: "RB", name: "Rokhaya Beye" },
+                { init: "IB", name: "Ibrahima Beye" },
+                { init: "AD", name: "Awa Diop" }
+              ].map((u, i) => (
+                <div key={u.init} className={`flex items-center gap-3 p-3 rounded-xl ${i < 2 ? "mb-2" : ""}`}
+                  style={{ background: i === 0 ? c.blueSoft : "#fff", border: `1px solid ${c.border}` }}>
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                    style={{ background: c.blue }}>{u.init}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold truncate" style={{ color: c.text }}>{u.name}</div>
+                    <div className="text-xs" style={{ color: c.muted }}>En ligne</div>
+                  </div>
+                  <button className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-white flex-shrink-0"
+                    style={{ border: `1px solid ${c.border}`, color: c.text }}>
+                    + Ajouter
+                  </button>
                 </div>
-                <button style={{ padding: "8px 12px", background: "white", border: `1px solid ${c.border}`, borderRadius: "0px", fontWeight: 600, color: c.text }}>
-                  + Ajouter
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      {/* RÉACTIONS */}
-      <Section bg="#ffffff">
-        <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: "36px", alignItems: "center" }}>
-          <div>
-            <h2 style={{ fontSize: "32px", fontWeight: 700, margin: "0 0 14px", color: c.text }}>
-              Réagissez et commentez
-            </h2>
-            <p style={{ fontSize: "15px", color: c.muted, lineHeight: 1.7, maxWidth: "480px" }}>
-              Les réactions restent lisibles : fond blanc, puces bleu clair, texte gris. Les rectangles sont courts pour éviter l'effet « bandeau ».
-            </p>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            <div style={{ background: c.blueSoft, border: `1px solid ${c.border}`, borderRadius: "12px", padding: "14px", boxShadow: c.softShadow }}>
-              <div style={{ fontSize: "13px", fontWeight: 600, color: c.text, marginBottom: "6px" }}>Les tendances tech en 2026</div>
-              <div style={{ fontSize: "12px", color: c.muted, marginBottom: "10px", lineHeight: 1.5 }}>L'IA continue de transformer notre quotidien...</div>
-              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                {["👍 12", "❤️ 8", "😮 3", "💬 4"].map(r => (
-                  <span key={r} style={{ padding: "5px 10px", background: "white", borderRadius: "999px", border: `1px solid ${c.border}`, fontSize: "12px", color: c.text }}>{r}</span>
-                ))}
-              </div>
+              ))}
             </div>
-            <div style={{ background: "white", border: `1px solid ${c.border}`, borderRadius: "12px", padding: "12px", marginLeft: "22px", boxShadow: c.softShadow }}>
-              <div style={{ fontSize: "10px", color: c.muted, marginBottom: "4px" }}>Ibrahima Beye</div>
-              <div style={{ fontSize: "12px", color: c.text }}>Super article, très instructif !</div>
-            </div>
-            <div style={{ background: "white", border: `1px solid ${c.border}`, borderRadius: "12px", padding: "12px", marginLeft: "44px", boxShadow: c.softShadow }}>
-              <div style={{ fontSize: "10px", color: c.muted, marginBottom: "4px" }}>Rokhaya Beye · auteur</div>
-              <div style={{ fontSize: "12px", color: c.text }}>Merci beaucoup 😊</div>
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      {/* FIL D'ACTUALITÉ */}
-      <Section bg={c.gray}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "36px", alignItems: "center" }}>
-          <div>
-            <h2 style={{ fontSize: "32px", fontWeight: 700, margin: "0 0 14px", color: c.text }}>
-              Découvrez le fil de vos amis
-            </h2>
-            <p style={{ fontSize: "15px", color: c.muted, lineHeight: 1.7, maxWidth: "480px" }}>
-              Les cartes sont compactes et faciles à lire. Tout reste dans la même palette bleu/gris pour éviter les ruptures visuelles.
-            </p>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "420px", marginLeft: "auto" }}>
-            {[
-              { init: "RB", titre: "Les tendances tech en 2026", time: "il y a 1h" },
-              { init: "IB", titre: "Recette du thiéboudienne", time: "il y a 3h" },
-              { init: "AD", titre: "Mon expérience à l'ISI", time: "il y a 5h" },
-            ].map((item, i) => (
-              <div key={item.init} style={{
-                background: "white",
-                border: `1px solid ${c.border}`,
-                borderRadius: "12px",
-                padding: "12px",
-                boxShadow: c.softShadow,
-                opacity: 1 - i * 0.12
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                  <div style={{ width: "26px", height: "26px", borderRadius: "8px", background: c.blue, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 700, color: "white" }}>{item.init}</div>
-                  <div style={{ fontSize: "10px", color: c.muted }}>{item.time} · Public</div>
+          )
+        },
+        {
+          bg: "#ffffff",
+          reverse: false,
+          titre: "Réagissez et commentez",
+          desc: "Les réactions restent lisibles : fond blanc, puces bleu clair. Répondez aux commentaires en temps réel.",
+          illus: (
+            <div className="w-full max-w-sm flex flex-col gap-3">
+              <div className="rounded-xl p-4" style={{ background: c.blueSoft, border: `1px solid ${c.border}`, boxShadow: c.softShadow }}>
+                <div className="text-sm font-semibold mb-2" style={{ color: c.text }}>Les tendances tech en 2026</div>
+                <div className="text-xs mb-3 leading-relaxed" style={{ color: c.muted }}>L'IA continue de transformer notre quotidien...</div>
+                <div className="flex gap-2 flex-wrap">
+                  {["👍 12", "❤️ 8", "😮 3", "💬 4"].map(r => (
+                    <span key={r} className="px-2 py-1 rounded-full text-xs bg-white"
+                      style={{ border: `1px solid ${c.border}`, color: c.text }}>{r}</span>
+                  ))}
                 </div>
-                <div style={{ fontSize: "13px", fontWeight: 600, color: c.text }}>{item.titre}</div>
               </div>
-            ))}
+              <div className="rounded-xl p-3 ml-4 bg-white" style={{ border: `1px solid ${c.border}` }}>
+                <div className="text-xs mb-1" style={{ color: c.muted }}>Ibrahima Beye</div>
+                <div className="text-sm" style={{ color: c.text }}>Super article !</div>
+              </div>
+            </div>
+          )
+        },
+        {
+          bg: c.gray,
+          reverse: true,
+          titre: "Découvrez le fil de vos amis",
+          desc: "Les cartes sont compactes et faciles à lire. Tout reste dans la même palette bleu/gris.",
+          illus: (
+            <div className="w-full max-w-sm flex flex-col gap-3">
+              {[
+                { init: "RB", titre: "Les tendances tech en 2026", time: "il y a 1h" },
+                { init: "IB", titre: "Recette du thiéboudienne", time: "il y a 3h" },
+                { init: "AD", titre: "Mon expérience à l'ISI", time: "il y a 5h" },
+              ].map((item, i) => (
+                <div key={item.init} className="bg-white rounded-xl p-3"
+                  style={{ border: `1px solid ${c.border}`, boxShadow: c.softShadow, opacity: 1 - i * 0.12 }}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                      style={{ background: c.blue }}>{item.init}</div>
+                    <span className="text-xs" style={{ color: c.muted }}>{item.time} · Public</span>
+                  </div>
+                  <div className="text-sm font-semibold" style={{ color: c.text }}>{item.titre}</div>
+                </div>
+              ))}
+            </div>
+          )
+        }
+      ].map((section, i) => (
+        <section key={i} className="px-4 md:px-12 py-12 md:py-16" style={{ background: section.bg }}>
+          <div className={`max-w-5xl mx-auto flex flex-col ${section.reverse ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-10`}>
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4" style={{ color: c.text }}>{section.titre}</h2>
+              <p className="text-sm md:text-base leading-relaxed" style={{ color: c.muted }}>{section.desc}</p>
+            </div>
+            <div className="flex-1 flex justify-center w-full">{section.illus}</div>
           </div>
-        </div>
-      </Section>
+        </section>
+      ))}
 
-      {/* CTA FINAL */}
-      <section style={{
-        background: c.ctaGradient,
-        padding: "72px 48px",
-        color: "white",
-        textAlign: "center"
-      }}>
-        <div style={{ maxWidth: "720px", margin: "0 auto" }}>
-          <h2 style={{ fontSize: "34px", fontWeight: 800, lineHeight: 1.3, margin: "0 0 12px" }}>
+      {/* ══ CTA FINAL ══ */}
+      <section className="px-4 md:px-12 py-16 text-center text-white"
+        style={{ background: c.ctaGradient }}>
+        <div className="max-w-xl mx-auto">
+          <h2 className="text-2xl md:text-4xl font-extrabold leading-tight mb-4">
             Rejoignez une plateforme lisible et cohérente
           </h2>
-          <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "15px", lineHeight: 1.7, marginBottom: "26px" }}>
+          <p className="text-sm md:text-base mb-8 leading-relaxed" style={{ color: "rgba(255,255,255,0.8)" }}>
             Vous écrivez, vos amis réagissent, tout reste simple.
           </p>
-          <button
-            onClick={() => navigate("/register")}
-            style={{
-              padding: "13px 30px",
-              background: "#ffffff",
-              color: c.blueDark,
-              border: "none",
-              borderRadius: "12px",
-              fontWeight: 800,
-              letterSpacing: "0.6px",
-              cursor: "pointer",
-              boxShadow: c.shadow
-            }}
-          >
+          <button onClick={() => navigate("/register")}
+            className="px-8 py-3 text-sm font-bold rounded-xl bg-white"
+            style={{ color: c.blueDark, boxShadow: c.shadow }}>
             Créer votre blog
           </button>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer style={{ background: c.blueDark, padding: "18px 48px", display: "flex", alignItems: "center", justifyContent: "space-between", color: "#cbd5e1" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <div style={{ width: "26px", height: "26px", borderRadius: "6px", background: c.blue, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700, color: "white" }}>B</div>
-          <span style={{ fontSize: "12px" }}>MonBlog © 2026</span>
+      {/* ══ FOOTER ══ */}
+      <footer className="px-4 md:px-12 py-5 flex flex-col md:flex-row items-center justify-between gap-2"
+        style={{ background: c.blueDark }}>
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold text-white"
+            style={{ background: c.blue }}>B</div>
+          <span className="text-xs" style={{ color: "#cbd5e1" }}>MonBlog © 2026</span>
         </div>
-        <span style={{ fontSize: "11px" }}>Projet ISI DSIA — Blog Personnel · React + Flask</span>
+        <span className="text-xs" style={{ color: "#94a3b8" }}>Projet ISI DSIA — Blog Personnel · React + Flask</span>
       </footer>
+
     </div>
   )
 }
