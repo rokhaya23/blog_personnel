@@ -115,12 +115,12 @@ function Dashboard() {
   }
 
   const handleEdit = (article) => {
-    console.log("Editer article :", article)
     setArticleToEdit(article)
     setShowForm(true)
-    setActivePage("articles")
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
+    setTimeout(() => {
+      document.getElementById("article-form-anchor")?.scrollIntoView({ behavior: "smooth" })
+    }, 50)
+}
 
   const handleFormDone = () => { setShowForm(false); setArticleToEdit(null) }
 
@@ -365,7 +365,7 @@ function Dashboard() {
                 ) : (
                   <div className="flex flex-col gap-4">
                     {paginateArticles(filterArticles(feedArticles)).map((article) => (
-                      <ArticleCard key={article._id || article.id} article={article} isOwner={false} onReload={loadArticles} />
+                      <ArticleCard key={article.id} article={article} isOwner={false} onReload={loadArticles} />
                     ))}
                   </div>
                 )}
@@ -400,8 +400,8 @@ function Dashboard() {
                   </div>
 
                   {showForm && (
-                    <div className="mb-2">
-                      <ArticleForm articleToEdit={articleToEdit} onCreate={handleCreateArticle} onUpdate={handleUpdateArticle} onDone={handleFormDone} />
+                    <div id="article-form-anchor" className="mb-2">
+                      <ArticleForm articleToEdit={articleToEdit}  key={articleToEdit?.id || "new"} onCreate={handleCreateArticle} onUpdate={handleUpdateArticle} onDone={handleFormDone} />
                     </div>
                   )}
 
@@ -410,7 +410,7 @@ function Dashboard() {
                   ) : (
                     <div className="flex flex-col gap-4">
                       {myArticles.map((article) => (
-                        <ArticleCard key={article._id || article.id} article={article} isOwner={true} onEdit={handleEdit} onDelete={handleDeleteArticle} onReload={loadArticles} />
+                        <ArticleCard key={article.id} article={article} isOwner={true} onEdit={handleEdit} onDelete={handleDeleteArticle} onReload={loadArticles} />
                       ))}
                     </div>
                   )}

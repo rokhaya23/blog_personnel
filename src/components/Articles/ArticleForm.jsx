@@ -54,7 +54,7 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
     let result
 
     if (isEditMode) {
-      result = await onUpdate(articleToEdit._id, {
+      result = await onUpdate(articleToEdit.id, {
         title: title.trim(), content: content.trim(), is_public: isPublic, allow_comments: allowComments,
       })
     } else {
