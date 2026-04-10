@@ -236,11 +236,18 @@ def get_feed():
 # GET /api/articles/media/<filename> — Servir un fichier uploadé
 # ========================
 @article_bp.route("/media/<filename>", methods=["GET"])
-@jwt_required()
 def serve_media(filename):
     from flask import send_from_directory
 
-    viewer_id = get_jwt_identity()
+    # Token optionnel : si présent, on l'utilise pour vérifier les droits privés.
+    # Sinon, on autorise seulement les médias d'articles publics.
+    try:
+        from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+        verify_jwt_in_request(optional=True)
+        viewer_id = get_jwt_identity()
+    except Exception:
+        viewer_id = None
+
     from database.db import get_db
     db = get_db()
 
@@ -248,8 +255,13 @@ def serve_media(filename):
     if not article:
         return jsonify({"message": "Media introuvable"}), 404
 
-    if not can_view_article(article, viewer_id, db):
-        return jsonify({"message": "Acces refuse"}), 403
+    # Si pas de token, n'autoriser que les articles publics
+    if viewer_id is None:
+        if not article.get("is_public", False):
+            return jsonify({"message": "Acces refuse"}), 403
+    else:
+        if not can_view_article(article, viewer_id, db):
+            return jsonify({"message": "Acces refuse"}), 403
 
     return send_from_directory(UPLOAD_FOLDER, filename)
 

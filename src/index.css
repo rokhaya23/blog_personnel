@@ -90,10 +90,24 @@ body {
   color: var(--text-primary);
   transition: background var(--transition), color var(--transition);
   margin: 0;
+  overflow-wrap: anywhere; /* évite tout débordement sur petits écrans */
 }
 
 /* Boutons arrondis légèrement par défaut */
 button { border-radius: 6px; }
+
+/* Conteneur réactif commun : gère les espacements horizontaux sans débordement */
+.page-shell {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  padding-left: clamp(1rem, 4vw, 2.5rem);
+  padding-right: clamp(1rem, 4vw, 2.5rem);
+}
+
+.section-gap {
+  margin-top: clamp(1rem, 3vw, 1.8rem);
+  margin-bottom: clamp(1rem, 3vw, 1.8rem);
+}
 
 /* ── COMPOSANTS RÉUTILISABLES ────────────────────── */
 
@@ -234,4 +248,3 @@ button { border-radius: 6px; }
   border-top: 0.5px solid var(--border);
   margin: 1rem 0;
 }
-

@@ -7,7 +7,7 @@ import { useTheme } from "../../context/ThemeContext"
 function UserProfile() {
   const { userId }  = useParams()
   const navigate    = useNavigate()
-  const { amis, demandes, envoyerDemande, bloquerUser } = useFriends()
+  const { amis, demandes, envoyerDemande, bloquerUser, pendingSent, annulerDemande } = useFriends()
   const { isDark } = useTheme()
 
   const [user,           setUser]           = useState(null)
@@ -16,7 +16,9 @@ function UserProfile() {
   const [loading,        setLoading]        = useState(true)
   const [message,        setMessage]        = useState("")
   const [activeTab,      setActiveTab]      = useState("articles")
-  const [demandeEnvoyee, setDemandeEnvoyee] = useState(false) // ← nouveau
+  const [demandeEnvoyee, setDemandeEnvoyee] = useState(false)
+  const [successMsg, setSuccessMsg] = useState("")
+  const [expandedId, setExpandedId] = useState(null)
 
   // ════════════════════════════════
   // CALCULER LE STATUT DE RELATION
@@ -24,6 +26,7 @@ function UserProfile() {
   const statutRelation = () => {
     if (amis.find(a => a._id === userId))           return "ami"
     if (demandes.find(d => d.sender_id === userId)) return "demande_reçue"
+    if (pendingSent.find(p => p._id === userId))    return "demande_envoyee"
     return "aucun"
   }
 
@@ -61,6 +64,17 @@ function UserProfile() {
       // Changer l'état du bouton au lieu d'afficher un message temporaire
       setDemandeEnvoyee(true)
       setMessage("")
+      setSuccessMsg("Demande envoyée")
+    } else {
+      setMessage(result.message)
+    }
+  }
+
+  const handleAnnuler = async () => {
+    const result = await annulerDemande(userId)
+    if (result.success) {
+      setDemandeEnvoyee(false)
+      setSuccessMsg("Invitation annulée")
     } else {
       setMessage(result.message)
     }
@@ -70,10 +84,13 @@ function UserProfile() {
   // BLOQUER UN UTILISATEUR
   // ════════════════════════════════
   const handleBloquer = async () => {
-    if (!confirm("Bloquer cet utilisateur ?")) return
     const result = await bloquerUser(userId)
-    if (result.success) navigate("/dashboard")
-    else setMessage(result.message)
+    if (result.success) {
+      setSuccessMsg("Utilisateur bloqué")
+      setTimeout(() => navigate("/dashboard"), 1200)
+    } else {
+      setMessage(result.message)
+    }
   }
 
   const pageBg = isDark ? "bg-slate-900" : "bg-[#f0f4f8]"
@@ -161,11 +178,11 @@ function UserProfile() {
                 {statut === "ami" && (
                   <>
                     <span className="flex items-center gap-1 px-4 py-2 bg-blue-500/15 text-blue-200 rounded-lg text-sm border border-blue-300/40">
-                      ✓ Ami
+                      ✓ Ajouté
                     </span>
-                      <button
-                        onClick={handleBloquer}
-                        className="px-4 py-2 bg-slate-800/60 hover:bg-slate-700 text-white rounded-lg text-sm transition"
+                    <button
+                      onClick={handleBloquer}
+                      className="px-4 py-2 bg-slate-800/60 hover:bg-slate-700 text-white rounded-lg text-sm transition"
                     >
                       Bloquer
                     </button>
@@ -180,22 +197,26 @@ function UserProfile() {
                 )}
 
                 {/* Aucune relation */}
-                {statut === "aucun" && (
+                {statut === "demande_envoyee" || demandeEnvoyee ? (
+                  <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 px-4 py-2 bg-blue-500/15 text-blue-200 rounded-lg text-sm border border-blue-300/40">
+                      Demande envoyée
+                    </span>
+                    <button
+                      onClick={handleAnnuler}
+                      className={`px-4 py-2 rounded-lg text-sm transition ${neutralButton}`}
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                ) : statut === "aucun" && (
                   <>
-                    {demandeEnvoyee ? (
-                      // ── Après envoi ── bouton désactivé avec confirmation visuelle
-                      <span className="flex items-center gap-2 px-4 py-2 bg-blue-500/15 text-blue-200 rounded-lg text-sm border border-blue-300/40">
-                        ✓ Demande envoyée
-                      </span>
-                    ) : (
-                      // ── Avant envoi ── bouton normal
-                      <button
-                        onClick={handleAjouter}
-                        className={`px-4 py-2 rounded-lg text-sm transition font-medium ${primaryButton}`}
-                      >
-                        + Ajouter en ami
-                      </button>
-                    )}
+                    <button
+                      onClick={handleAjouter}
+                      className={`px-4 py-2 rounded-lg text-sm transition font-medium ${primaryButton}`}
+                    >
+                      + Ajouter en ami
+                    </button>
                     <button
                       onClick={handleBloquer}
                       className={`px-4 py-2 rounded-lg text-sm transition ${neutralButton}`}
@@ -221,9 +242,10 @@ function UserProfile() {
                   <span className={mutedText}>Hors ligne</span>
                 )}
               </div>
-              {/* Message d'erreur si envoi échoue */}
-              {message && (
-                <p className="text-blue-200 text-sm mt-2">{message}</p>
+              {(message || successMsg) && (
+                <p className={`text-sm mt-2 ${successMsg ? "text-green-400" : "text-blue-200"}`}>
+                  {message || successMsg}
+                </p>
               )}
             </div>
 
@@ -279,23 +301,30 @@ function UserProfile() {
                 <p className={secondaryText}>Vous n'avez aucun article public pour l'instant</p>
               </div>
             ) : (
-              articles.map(article => (
-                <div
-                  key={article.id || article._id}
-                  className={`border rounded-xl p-5 transition ${isDark ? "bg-white/5 border-white/10 hover:bg-white/10" : "bg-white/92 border-blue-200/70 hover:bg-white shadow-sm"}`}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className={`font-semibold text-base ${primaryText}`}>{article.title}</h3>
-                    <span className={`text-xs flex-shrink-0 ml-4 ${mutedText}`}>
-                      {new Date(article.created_at).toLocaleDateString("fr-FR", {
-                        day: "numeric", month: "short", year: "numeric"
-                      })}
-                    </span>
-                  </div>
-                  {/* Aperçu du contenu — limité à 3 lignes */}
-                  <p className={`text-sm line-clamp-3 ${isDark ? "text-blue-100/75" : "text-slate-600"}`}>{article.content}</p>
-                </div>
-              ))
+              articles.map(article => {
+                const key = article.id || article._id
+                const isOpen = expandedId === key
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setExpandedId(isOpen ? null : key)}
+                    className={`border rounded-xl p-5 text-left transition w-full ${isDark ? "bg-white/5 border-white/10 hover:bg-white/10" : "bg-white/92 border-blue-200/70 hover:bg-white shadow-sm"}`}
+                  >
+                    <div className="flex justify-between items-start mb-2 gap-3">
+                      <h3 className={`font-semibold text-base ${primaryText}`}>{article.title}</h3>
+                      <span className={`text-xs flex-shrink-0 ${mutedText}`}>
+                        {new Date(article.created_at).toLocaleDateString("fr-FR", {
+                          day: "numeric", month: "short", year: "numeric"
+                        })}
+                      </span>
+                    </div>
+                    <p className={`text-sm ${isDark ? "text-blue-100/80" : "text-slate-600"}`}>
+                      {isOpen ? article.content : (article.content || "").slice(0, 160) + (article.content?.length > 160 ? "…" : "")}
+                    </p>
+                    <div className={`text-xs mt-2 ${mutedText}`}>{isOpen ? "Clique pour refermer" : "Clique pour lire"}</div>
+                  </button>
+                )
+              })
             )}
           </div>
         )}
@@ -308,13 +337,12 @@ function UserProfile() {
                 <p className={secondaryText}>Aucun ami pour l'instant</p>
               </div>
             ) : (
-              // Grille 2 colonnes comme Facebook
-              <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-3">
                 {friends.map(ami => (
                   <button
                     key={ami._id}
                     onClick={() => navigate(`/profile/${ami._id}`)}
-                    className={`flex items-center gap-3 p-3 border rounded-xl transition text-left ${isDark ? "bg-white/5 border-white/10 hover:bg-white/10" : "bg-white/92 border-blue-200/70 hover:bg-white shadow-sm"}`}
+                    className={`flex items-center gap-3 p-3 border rounded-xl transition text-left w-full ${isDark ? "bg-white/5 border-white/10 hover:bg-white/10" : "bg-white/92 border-blue-200/70 hover:bg-white shadow-sm"}`}
                   >
                     {ami.avatar ? (
                     <img

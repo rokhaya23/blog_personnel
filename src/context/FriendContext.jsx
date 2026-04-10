@@ -10,6 +10,7 @@ export function FriendProvider({ children }) {
   const [amis,     setAmis]     = useState([])
   const [demandes, setDemandes] = useState([])
   const [bloques, setBloques] = useState([])
+  const [pendingSent, setPendingSent] = useState([])
 
 
   // ════════════════════════════════
@@ -41,6 +42,19 @@ export function FriendProvider({ children }) {
     }
   }, [currentUser])
 
+  const chargerPendingSent = useCallback(async () => {
+    if (!currentUser) {
+      setPendingSent([])
+      return
+    }
+    try {
+      const res = await api.get("/friends/pending-sent")
+      setPendingSent(res.data.pending || [])
+    } catch (err) {
+      console.error("Erreur chargement demandes envoyées :", err)
+    }
+  }, [currentUser])
+
   // ════════════════════════════════
   // CHARGER AU DÉMARRAGE
   // ════════════════════════════════
@@ -64,13 +78,15 @@ export function FriendProvider({ children }) {
       setAmis([])
       setDemandes([])
       setBloques([])
+      setPendingSent([])
       return
     }
 
     chargerAmis()
     chargerDemandes()
     chargerBloques()
-  }, [currentUser, chargerAmis, chargerDemandes, chargerBloques])
+    chargerPendingSent()
+  }, [currentUser, chargerAmis, chargerDemandes, chargerBloques, chargerPendingSent])
 
   // ════════════════════════════════
   // RECHERCHER UN UTILISATEUR
@@ -91,6 +107,7 @@ export function FriendProvider({ children }) {
   const envoyerDemande = useCallback(async (receiverId) => {
     try {
       await api.post("/friends/request", { receiver_id: receiverId })
+      await chargerPendingSent()
       return { success: true }
     } catch (err) {
       return {
@@ -98,7 +115,7 @@ export function FriendProvider({ children }) {
         message: err.response?.data?.message || "Erreur"
       }
     }
-  }, [])
+  }, [chargerPendingSent])
 
   // ════════════════════════════════
   // ACCEPTER UNE DEMANDE
@@ -108,6 +125,7 @@ export function FriendProvider({ children }) {
       await api.put("/friends/accept", { sender_id: senderId })
       setDemandes(prev => prev.filter(d => d.sender_id !== senderId))
       await chargerAmis()
+      await chargerPendingSent()
       return { success: true }
     } catch (err) {
       return {
@@ -115,7 +133,7 @@ export function FriendProvider({ children }) {
         message: err.response?.data?.message || "Erreur"
       }
     }
-  }, [chargerAmis])
+  }, [chargerAmis, chargerPendingSent])
 
   // ════════════════════════════════
   // REFUSER UNE DEMANDE
@@ -124,6 +142,7 @@ export function FriendProvider({ children }) {
     try {
       await api.put("/friends/decline", { sender_id: senderId })
       setDemandes(prev => prev.filter(d => d.sender_id !== senderId))
+      await chargerPendingSent()
       return { success: true }
     } catch (err) {
       return {
@@ -131,7 +150,7 @@ export function FriendProvider({ children }) {
         message: err.response?.data?.message || "Erreur"
       }
     }
-  }, [])
+  }, [chargerPendingSent])
 
   // ════════════════════════════════
   // SUPPRIMER UN AMI
@@ -180,13 +199,31 @@ export function FriendProvider({ children }) {
   }
 }, [])
 
+  // ════════════════════════════════
+  // ANNULER UNE DEMANDE ENVOYÉE
+  // ════════════════════════════════
+  const annulerDemande = useCallback(async (receiverId) => {
+    try {
+      await api.delete(`/friends/request/${receiverId}`)
+      setPendingSent(prev => prev.filter(p => p.receiver_id !== receiverId))
+      return { success: true }
+    } catch (err) {
+      return {
+        success: false,
+        message: err.response?.data?.message || "Erreur"
+      }
+    }
+  }, [])
+
   const value = {
     amis,
     demandes,
     bloques,
+    pendingSent,
     chargerAmis,
     chargerDemandes,
     chargerBloques,
+    chargerPendingSent,
     rechercherUsers,
     envoyerDemande,
     accepterDemande,
@@ -194,6 +231,7 @@ export function FriendProvider({ children }) {
     supprimerAmi,
     bloquerUser,
     debloquerUser,
+    annulerDemande,
   }
 
   return (

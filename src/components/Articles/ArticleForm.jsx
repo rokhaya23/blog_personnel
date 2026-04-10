@@ -54,7 +54,7 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
     let result
 
     if (isEditMode) {
-      result = await onUpdate(articleToEdit.id, {
+      result = await onUpdate(articleToEdit._id, {
         title: title.trim(), content: content.trim(), is_public: isPublic, allow_comments: allowComments,
       })
     } else {
@@ -172,7 +172,7 @@ function ArticleForm({ articleToEdit, onCreate, onUpdate, onDone }) {
           <label className="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} className="w-5 h-5 rounded accent-blue-600" />
             <span className={checkLabel}>Article public</span>
-            <span className={`text-sm ${hintClass}`}>{isPublic ? "(visible par vos amis)" : "(visible uniquement par vous)"}</span>
+            <span className={`text-sm ${hintClass}`}>{isPublic ? "(visible pour vos amis)" : "(visible uniquement par vous)"}</span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" checked={allowComments} onChange={(e) => setAllowComments(e.target.checked)} className="w-5 h-5 rounded accent-blue-600" />

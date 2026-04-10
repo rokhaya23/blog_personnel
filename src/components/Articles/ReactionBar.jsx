@@ -25,7 +25,6 @@ function ReactionBar({ articleId, reactionsCount, currentUserReaction }) {
     setMyReaction(currentUserReaction || null)
   }, [currentUserReaction])
 
-  const totalReactions = Object.values(counts).reduce((sum, c) => sum + c, 0)
 
   const handleEmojiClick = async (emojiType) => {
     if (isSubmitting) return
@@ -43,50 +42,28 @@ function ReactionBar({ articleId, reactionsCount, currentUserReaction }) {
   }
 
   return (
-    <div>
-      <p className={`text-xs mb-2 ${isDark ? "text-blue-200/60" : "text-blue-800/65"}`}>
-        Réagir à cet article :
-      </p>
-      <div className="flex items-center gap-1.5 flex-wrap">
-        {AVAILABLE_EMOJIS.map((emojiData) => {
-          const count = counts[emojiData.type] || 0
-          const hasReactions = count > 0
-          const isActive = myReaction === emojiData.type
-
-          return (
-            <button
-              key={emojiData.type}
-              onClick={() => handleEmojiClick(emojiData.type)}
-              disabled={isSubmitting}
-              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-sm transition disabled:opacity-70 ${
-                isActive
-                  ? isDark
-                    ? "bg-blue-700/25 border border-blue-400/50 text-white"
-                    : "bg-blue-200 border border-blue-400 text-blue-950"
-                  : hasReactions
-                  ? isDark
-                    ? "bg-blue-500/15 border border-blue-400/30"
-                    : "bg-blue-50 border border-blue-200"
-                  : isDark
-                  ? "bg-white/5 border border-white/10 hover:bg-white/15"
-                  : "bg-white border border-blue-200 hover:bg-blue-50"
-              }`}
-              title={emojiData.label}
-            >
-              <span className="text-base">{emojiData.emoji}</span>
-              {hasReactions && (
-                <span className={`text-xs font-medium ${isDark ? "text-white/80" : "text-blue-900"}`}>{count}</span>
-              )}
-            </button>
-          )
-        })}
-
-        {totalReactions > 0 && (
-          <span className={`text-xs ml-2 ${isDark ? "text-blue-200/60" : "text-blue-800/60"}`}>
-            {totalReactions} reaction{totalReactions !== 1 ? "s" : ""}
-          </span>
-        )}
-      </div>
+    <div className="flex items-center gap-2 flex-wrap">
+      {AVAILABLE_EMOJIS.map((emojiData) => {
+        const count = counts[emojiData.type] || 0
+        const isActive = myReaction === emojiData.type
+        return (
+          <button
+            key={emojiData.type}
+            onClick={() => handleEmojiClick(emojiData.type)}
+            disabled={isSubmitting}
+            className="flex items-center gap-1 text-lg transition disabled:opacity-60"
+            title={emojiData.label}
+            style={{ background: "transparent", border: "none", padding: 0, color: isDark ? "#e5e7eb" : "#0f172a" }}
+          >
+            <span className={isActive ? "scale-110" : ""}>{emojiData.emoji}</span>
+            {count > 0 && (
+              <span className="text-xs font-semibold" style={{ color: isDark ? "#cbd5e1" : "#334155" }}>
+                {count}
+              </span>
+            )}
+          </button>
+        )
+      })}
     </div>
   )
 }

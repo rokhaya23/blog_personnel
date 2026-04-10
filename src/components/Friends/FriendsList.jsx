@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom"
+import { useState } from "react"
 import { useFriends } from "../../context/FriendContext"
 import { useTheme } from "../../context/ThemeContext"
 
@@ -6,6 +7,7 @@ function FriendsList() {
   const { amis, supprimerAmi, bloquerUser, bloques, debloquerUser } = useFriends()
   const { isDark } = useTheme()
   const navigate = useNavigate()
+  const [info, setInfo] = useState("")
 
   const handleSupprimer = async (amiId) => {
     if (!confirm("Supprimer cet ami ?")) return
@@ -14,15 +16,17 @@ function FriendsList() {
   }
 
   const handleBloquer = async (amiId) => {
-    if (!confirm("Bloquer cet utilisateur ?")) return
     const result = await bloquerUser(amiId)
-    if (!result.success) alert(result.message)
+    if (result.success) setInfo("Utilisateur bloqué")
+    else setInfo(result.message)
+    setTimeout(() => setInfo(""), 2000)
   }
 
   const handleDebloquer = async (userId) => {
-    if (!confirm("Débloquer cet utilisateur ?")) return
     const result = await debloquerUser(userId)
-    if (!result.success) alert(result.message)
+    if (result.success) setInfo("Débloqué")
+    else setInfo(result.message)
+    setTimeout(() => setInfo(""), 2000)
   }
 
   const titleClass     = isDark ? "text-white" : "text-slate-800"
@@ -39,6 +43,11 @@ function FriendsList() {
 
   return (
     <div>
+      {info && (
+        <div className={`mb-3 text-sm px-3 py-2 rounded-lg ${isDark ? "bg-blue-500/10 text-blue-100" : "bg-blue-50 text-blue-900"}`}>
+          {info}
+        </div>
+      )}
 
       {/* ══ MES AMIS ══ */}
       <h2 className={`text-2xl font-bold mb-6 ${titleClass}`}>
@@ -52,7 +61,7 @@ function FriendsList() {
           <p className={emptySecondary}>Utilise la barre de recherche en haut pour en ajouter !</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
+        <div className="flex flex-col gap-3 mb-10">
           {amis.map(ami => (
             <div key={ami._id} className={`flex flex-col sm:flex-row justify-between items-start sm:items-center px-4 py-3 border rounded-xl transition ${cardClass}`}>
               <button

@@ -73,8 +73,8 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
 
       {/* En-tête */}
       <div className="flex justify-between items-start mb-3">
-        <div className="flex-1 mr-4">
-          <h3 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-800"}`}>
+        <div className="flex-1 mr-4 min-w-0">
+          <h3 className={`text-xl font-bold break-words ${isDark ? "text-white" : "text-gray-800"}`}>
             {article.title}
           </h3>
           {!isOwner && article.author_name && (
@@ -115,36 +115,36 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
       {article.media && article.media.length > 0 && (
         <div className="mb-4">
           {article.media.length === 1 ? (
-            <div className="rounded-lg overflow-hidden">
+            <div className="rounded-lg overflow-hidden bg-white">
               {article.media[0].type === "image" ? (
                 <img
                   src={`http://localhost:5000/api/articles/media/${article.media[0].filename}`}
                   alt={article.media[0].original_name || "Image"}
-                  className={`w-full max-h-96 object-contain rounded-lg ${isDark ? "bg-black/20" : "bg-slate-100"}`}
+                  className="w-full h-auto max-h-[520px] object-contain"
                 />
               ) : (
                 <video
                   src={`http://localhost:5000/api/articles/media/${article.media[0].filename}`}
                   controls
-                  className="w-full max-h-96 rounded-lg"
+                  className="w-full max-h-[520px] rounded-lg bg-black"
                 />
               )}
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-2">
               {article.media.map((media, index) => (
-                <div key={index} className="rounded-lg overflow-hidden">
+                <div key={index} className="rounded-lg overflow-hidden bg-white">
                   {media.type === "image" ? (
                     <img
                       src={`http://localhost:5000/api/articles/media/${media.filename}`}
                       alt={media.original_name || "Image"}
-                      className="w-full h-48 object-cover rounded-lg hover:opacity-90 transition"
+                      className="w-full h-48 object-cover"
                     />
                   ) : (
                     <video
                       src={`http://localhost:5000/api/articles/media/${media.filename}`}
                       controls
-                      className="w-full h-48 object-cover rounded-lg"
+                      className="w-full h-48 object-cover bg-black"
                     />
                   )}
                 </div>
@@ -155,7 +155,7 @@ function ArticleCard({ article, isOwner, onEdit, onDelete, onReload }) {
       )}
 
       {/* Contenu */}
-      <p className={`mb-4 leading-relaxed ${bodyText}`}>
+      <p className={`mb-4 leading-relaxed break-words ${bodyText}`}>
         {article.content.length > 150
           ? article.content.slice(0, 150) + "..."
           : article.content}

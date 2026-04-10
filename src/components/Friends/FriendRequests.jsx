@@ -53,7 +53,7 @@ function FriendRequests() {
           {demandes.map(demande => (
             <div
               key={demande.sender_id}
-              className={`flex justify-between items-center px-4 py-3 border rounded-xl transition ${cardClass}`}
+              className={`flex justify-between items-center px-4 py-3 border rounded-2xl transition w-full ${cardClass}`}
             >
               {/* Infos — cliquable pour voir le profil */}
               <button

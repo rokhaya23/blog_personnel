@@ -10,9 +10,18 @@ function FriendSearch() {
   const [message,   setMessage]   = useState("")
   const [showDrop,  setShowDrop]  = useState(false)
 
-  const { rechercherUsers, envoyerDemande, amis } = useFriends()
+  const { rechercherUsers, envoyerDemande, annulerDemande, amis, pendingSent, chargerPendingSent } = useFriends()
   const { isDark } = useTheme()
   const navigate = useNavigate()
+  const [pendingLocal, setPendingLocal] = useState(new Set())
+
+  useEffect(() => {
+    chargerPendingSent()
+  }, [chargerPendingSent])
+
+  useEffect(() => {
+    setPendingLocal(new Set(pendingSent.map(p => p._id)))
+  }, [pendingSent])
 
   // useRef pour détecter le clic en dehors du dropdown
   const containerRef = useRef(null)
@@ -75,10 +84,33 @@ function FriendSearch() {
   }, [])
 
   const handleEnvoyer = async (userId) => {
+    if (amis.find(a => a._id === userId) || pendingLocal.has(userId)) {
+      setMessage("Déjà ajouté")
+      setTimeout(() => setMessage(""), 2000)
+      return
+    }
     const result = await envoyerDemande(userId)
     if (result.success) {
       setMessage("Demande envoyée !")
-      setResultats(prev => prev.filter(u => u._id !== userId))
+      setPendingLocal(prev => new Set(prev).add(userId))
+    } else {
+      setMessage(result.message)
+      if (result.message?.toLowerCase().includes("relation existe")) {
+        setPendingLocal(prev => new Set(prev).add(userId))
+      }
+    }
+    setTimeout(() => setMessage(""), 3000)
+  }
+
+  const handleAnnuler = async (userId) => {
+    const result = await annulerDemande(userId)
+    if (result.success) {
+      setMessage("Invitation annulée")
+      setPendingLocal(prev => {
+        const next = new Set(prev)
+        next.delete(userId)
+        return next
+      })
     } else {
       setMessage(result.message)
     }
@@ -116,6 +148,9 @@ function FriendSearch() {
   const primaryButton = isDark
     ? "bg-blue-700 hover:bg-blue-600 text-white"
     : "bg-blue-700 hover:bg-blue-800 text-white"
+  const passiveBadge = isDark
+    ? "text-xs px-2 py-1.5 rounded-lg bg-white/10 text-blue-100 border border-white/20"
+    : "text-xs px-2 py-1.5 rounded-lg bg-blue-50 text-blue-900 border border-blue-200"
   const emptyClass = isDark ? "text-blue-200/60" : "text-blue-900/60"
 
   return (
@@ -125,9 +160,7 @@ function FriendSearch() {
       {/* Barre de recherche — plus de bouton, recherche automatique */}
       <div className="relative flex gap-2">
         <div className="relative flex-1 max-w-sm">
-          <span className={`absolute left-3 top-1/2 -translate-y-1/2 text-sm ${iconClass}`}>
-            🔍
-          </span>
+
           <input
             type="text"
             placeholder="Rechercher un ami..."
@@ -196,28 +229,35 @@ function FriendSearch() {
               </button>
 
               {/* Boutons actions */}
-              <div className="flex gap-2 ml-2">
+              <div className="flex gap-2 ml-2 items-center">
                 <button
-                    onClick={() => voirProfil(user._id)}
-                    className={`text-xs px-2 py-1.5 rounded-lg transition ${secondaryButton}`}
+                  onClick={() => voirProfil(user._id)}
+                  className={`text-xs px-2 py-1.5 rounded-lg transition ${secondaryButton}`}
                 >
-                    Voir profil
+                  Voir profil
                 </button>
 
-                {/* Vérifier si déjà ami avant d'afficher le bouton */}
                 {amis.find(a => a._id === user._id) ? (
-                    <span className="text-xs px-2 py-1.5 bg-blue-500/15 text-blue-600 rounded-lg border border-blue-200">
-                    ✓ Ami
-                    </span>
-                ) : (
+                  <span className={passiveBadge}>✓ Ajouté</span>
+                ) : pendingLocal.has(user._id) ? (
+                  <>
+                    <span className={passiveBadge}>Demande envoyée</span>
                     <button
+                      onClick={() => handleAnnuler(user._id)}
+                      className="text-xs px-2 py-1.5 rounded-lg border border-slate-300 text-slate-700 bg-white hover:bg-slate-100"
+                    >
+                      Annuler
+                    </button>
+                  </>
+                ) : (
+                  <button
                     onClick={() => handleEnvoyer(user._id)}
                     className={`text-xs px-2 py-1.5 rounded-lg transition ${primaryButton}`}
-                    >
+                  >
                     + Ajouter
-                    </button>
+                  </button>
                 )}
-                </div>
+              </div>
             </div>
           ))}
         </div>

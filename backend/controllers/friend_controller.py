@@ -256,6 +256,61 @@ def decline_request():
 
 
 # ════════════════════════════════════════
+# ANNULER UNE DEMANDE ENVOYÉE
+# DELETE /api/friends/request/<receiver_id>
+# ════════════════════════════════════════
+@friend_bp.route("/api/friends/request/<receiver_id>", methods=["DELETE"])
+@jwt_required()
+def cancel_request(receiver_id):
+    db = get_db()
+    current_user_id = get_jwt_identity()
+    current_user_oid = to_object_id(current_user_id)
+    receiver_oid = to_object_id(receiver_id)
+
+    if not current_user_oid or not receiver_oid:
+        return jsonify({"message": "Identifiants invalides"}), 400
+
+    result = db.friendships.delete_one({
+        "sender_id": current_user_oid,
+        "receiver_id": receiver_oid,
+        "status": "pending"
+    })
+
+    if result.deleted_count == 0:
+        return jsonify({"message": "Aucune demande à annuler"}), 404
+
+    return jsonify({"message": "Demande annulée"}), 200
+
+
+# ════════════════════════════════════════
+# DEMANDES ENVOYÉES EN ATTENTE
+# GET /api/friends/pending-sent
+# ════════════════════════════════════════
+@friend_bp.route("/api/friends/pending-sent", methods=["GET"])
+@jwt_required()
+def pending_sent():
+    db = get_db()
+    current_user_id = get_jwt_identity()
+    current_user_oid = to_object_id(current_user_id)
+    if not current_user_oid:
+        return jsonify({"message": "Session invalide"}), 401
+
+    relations = list(db.friendships.find({
+        "sender_id": current_user_oid,
+        "status": "pending"
+    }))
+
+    pending = []
+    for r in relations:
+        user = db.users.find_one({"_id": r["receiver_id"]}, {"password_hash": 0})
+        if user:
+            user["_id"] = str(user["_id"])
+            pending.append(user)
+
+    return jsonify({"pending": pending}), 200
+
+
+# ════════════════════════════════════════
 # SUPPRIMER UN AMI
 # DELETE /api/friends/<ami_id>
 # ════════════════════════════════════════

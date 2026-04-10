@@ -77,6 +77,7 @@ function Dashboard() {
   const handleCreateArticle = async (data) => {
     try {
       await articlesAPI.create(data)
+      console.log("Nouvel article :", data)
       await loadArticles()
       setShowForm(false)
       showToast("Article publié avec succès !", "success")
@@ -89,11 +90,13 @@ function Dashboard() {
   const handleUpdateArticle = async (articleId, data) => {
     try {
       await articlesAPI.update(articleId, data)
+      console.log("Article modifié :", articleId, data)
       await loadArticles()
       setShowForm(false)
       setArticleToEdit(null)
       showToast("Article modifié avec succès !", "success")
     } catch (err) {
+      console.error("Erreur lors de la modification article :", err)
       return { success: false, message: err.response?.data?.message || "Erreur" }
     }
     return { success: true }
@@ -112,6 +115,7 @@ function Dashboard() {
   }
 
   const handleEdit = (article) => {
+    console.log("Editer article :", article)
     setArticleToEdit(article)
     setShowForm(true)
     setActivePage("articles")
@@ -185,6 +189,7 @@ function Dashboard() {
   const brandGradient = isDark
     ? "from-blue-400 via-indigo-300 to-blue-500"
     : "from-blue-900 via-indigo-700 to-blue-600"
+  const contentWidth = "page-shell max-w-5xl w-full"
 
   return (
     <div className={`h-screen ${bg} flex flex-col overflow-hidden`}>
@@ -298,27 +303,26 @@ function Dashboard() {
             <FriendSearch />
           </div>
 
-          <div className="flex-1 overflow-auto p-4 md:p-6">
+          <div className="flex-1 overflow-auto py-4 md:py-6">
+            <div className={`${contentWidth} space-y-10`}>
 
-            {/* ═══ PAGE : TABLEAU DE BORD (FIL D'ACTUALITÉ UNIQUEMENT) ═══ */}
-            {activePage === "dashboard" && (
-              <div>
-                {/* Bienvenue */}
-                <div className="mb-8">
-                  <h1 className={`text-2xl md:text-3xl font-bold ${textPrimary} mb-2`}>
-                    {getGreeting()}, {prenom} 👋
-                  </h1>
-                  <p className={textSecondary}>
-                    Bienvenue sur Daily Post. Découvrez les derniers articles de vos amis.
-                  </p>
-                </div>
+              {/* ═══ PAGE : TABLEAU DE BORD (FIL D'ACTUALITÉ UNIQUEMENT) ═══ */}
+              {activePage === "dashboard" && (
+                <div>
+                  {/* Bienvenue */}
+                  <div className="mb-8">
+                    <h1 className={`text-2xl md:text-3xl font-bold ${textPrimary} mb-2`}>
+                      {getGreeting()}, {prenom} 👋
+                    </h1>
+                    <p className={textSecondary}>
+                      Bienvenue sur Daily Post. Découvrez les derniers articles de vos amis.
+                    </p>
+                  </div>
 
 
-                {/* Recherche */}
                 {feedArticles.length > 0 && (
                   <div className="mb-6">
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">🔍</span>
                       <input
                         type="text"
                         value={searchQuery}
@@ -377,46 +381,48 @@ function Dashboard() {
                   </div>
                 )}
               </div>
-            )}
+              )}
 
             {/* ═══ PAGE : MES AMIS ═══ */}
-            {activePage === "amis" && <FriendsList />}
+              {activePage === "amis" && <FriendsList />}
 
             {/* ═══ PAGE : MES ARTICLES ═══ */}
-            {activePage === "articles" && (
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-                  <h2 className={`text-2xl font-bold ${textPrimary}`}>
-                    Mes articles <span className={`${textMuted} text-lg ml-2`}>({myArticles.length})</span>
-                  </h2>
-                  {!showForm && (
-                    <button onClick={() => { setArticleToEdit(null); setShowForm(true) }}
-                      className={`px-5 py-2.5 font-semibold rounded-lg transition ${primaryButton}`}>+ Nouvel article</button>
+              {activePage === "articles" && (
+                <div className="space-y-6">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <h2 className={`text-2xl font-bold ${textPrimary}`}>
+                      Mes articles <span className={`${textMuted} text-lg ml-2`}>({myArticles.length})</span>
+                    </h2>
+                    {!showForm && (
+                      <button onClick={() => { setArticleToEdit(null); setShowForm(true) }}
+                        className={`px-5 py-2.5 font-semibold rounded-lg transition ${primaryButton}`}>+ Nouvel article</button>
+                    )}
+                  </div>
+
+                  {showForm && (
+                    <div className="mb-2">
+                      <ArticleForm articleToEdit={articleToEdit} onCreate={handleCreateArticle} onUpdate={handleUpdateArticle} onDone={handleFormDone} />
+                    </div>
+                  )}
+
+                  {myArticles.length === 0 && !showForm ? (
+                    <div className="text-center py-16"><p className={textSecondary}>Vous n'avez pas encore d'articles</p></div>
+                  ) : (
+                    <div className="flex flex-col gap-4">
+                      {myArticles.map((article) => (
+                        <ArticleCard key={article._id || article.id} article={article} isOwner={true} onEdit={handleEdit} onDelete={handleDeleteArticle} onReload={loadArticles} />
+                      ))}
+                    </div>
                   )}
                 </div>
-
-                {showForm && (
-                  <div className="mb-8">
-                    <ArticleForm articleToEdit={articleToEdit} onCreate={handleCreateArticle} onUpdate={handleUpdateArticle} onDone={handleFormDone} />
-                  </div>
-                )}
-
-                {myArticles.length === 0 && !showForm ? (
-                  <div className="text-center py-16"><p className={textSecondary}>Vous n'avez pas encore d'articles</p></div>
-                ) : (
-                  myArticles.map((article) => (
-                    <ArticleCard key={article._id || article.id} article={article} isOwner={true} onEdit={handleEdit} onDelete={handleDeleteArticle} onReload={loadArticles} />
-                  ))
-                )}
-              </div>
-            )}
+              )}
 
             {/* ═══ PAGE : DEMANDES ═══ */}
-            {activePage === "demandes" && <FriendRequests />}
+              {activePage === "demandes" && <FriendRequests />}
 
             {/* ═══ PAGE : PROFIL ═══ */}
-            {activePage === "profil" && (
-              <div className="max-w-3xl">
+              {activePage === "profil" && (
+                <div className="max-w-3xl">
 
                 {/* Carte principale avec bannière */}
                 <div className={`border rounded-2xl overflow-hidden mb-6 ${cardBg}`}>
@@ -571,8 +577,9 @@ function Dashboard() {
                   </div>
                 </div>
 
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
         </main>
       </div>

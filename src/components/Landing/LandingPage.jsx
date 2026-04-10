@@ -60,7 +60,7 @@ function LandingPage() {
             </h1>
             <p className="text-sm md:text-base leading-relaxed mb-6 max-w-md mx-auto md:mx-0"
               style={{ color: "rgba(11,18,32,0.65)" }}>
-              Une interface nette, en bleu, gris, blanc et noir. Vous publiez, vos proches réagissent, tout simplement.
+              Vous publiez, vos proches réagissent, tout simplement.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
               <button onClick={() => navigate("/register")}
@@ -135,13 +135,13 @@ function LandingPage() {
           bg: c.gray,
           reverse: true,
           titre: "Connectez-vous avec vos amis",
-          desc: "Recherchez, ajoutez, bloquez si besoin. Les indicateurs restent bleus et gris.",
+          desc: "Recherchez, ajoutez, bloquez si besoin.",
           illus: (
             <div className="w-full max-w-sm bg-white rounded-2xl p-4"
               style={{ boxShadow: c.softShadow, border: `1px solid ${c.border}` }}>
               {[
                 { init: "RB", name: "Rokhaya Beye" },
-                { init: "IB", name: "Ibrahima Beye" },
+                { init: "PL", name: "Princesse Lyliane" },
                 { init: "AD", name: "Awa Diop" }
               ].map((u, i) => (
                 <div key={u.init} className={`flex items-center gap-3 p-3 rounded-xl ${i < 2 ? "mb-2" : ""}`}
@@ -165,7 +165,7 @@ function LandingPage() {
           bg: "#ffffff",
           reverse: false,
           titre: "Réagissez et commentez",
-          desc: "Les réactions restent lisibles : fond blanc, puces bleu clair. Répondez aux commentaires en temps réel.",
+          desc: "Répondez aux commentaires en temps réel.",
           illus: (
             <div className="w-full max-w-sm flex flex-col gap-3">
               <div className="rounded-xl p-4" style={{ background: c.blueSoft, border: `1px solid ${c.border}`, boxShadow: c.softShadow }}>
@@ -179,7 +179,7 @@ function LandingPage() {
                 </div>
               </div>
               <div className="rounded-xl p-3 ml-4 bg-white" style={{ border: `1px solid ${c.border}` }}>
-                <div className="text-xs mb-1" style={{ color: c.muted }}>Ibrahima Beye</div>
+                <div className="text-xs mb-1" style={{ color: c.muted }}>Princesse Lyliane</div>
                 <div className="text-sm" style={{ color: c.text }}>Super article !</div>
               </div>
             </div>
@@ -189,7 +189,7 @@ function LandingPage() {
           bg: c.gray,
           reverse: true,
           titre: "Découvrez le fil de vos amis",
-          desc: "Les cartes sont compactes et faciles à lire. Tout reste dans la même palette bleu/gris.",
+          desc: "Un flux pour suivre les publications de vos proches.",
           illus: (
             <div className="w-full max-w-sm flex flex-col gap-3">
               {[
@@ -246,9 +246,9 @@ function LandingPage() {
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold text-white"
             style={{ background: c.blue }}>B</div>
-          <span className="text-xs" style={{ color: "#cbd5e1" }}>MonBlog © 2026</span>
+          <span className="text-xs" style={{ color: "#cbd5e1" }}>MonBlog 2026</span>
         </div>
-        <span className="text-xs" style={{ color: "#94a3b8" }}>Projet ISI DSIA — Blog Personnel · React + Flask</span>
+        <span className="text-xs" style={{ color: "#94a3b8" }}>ISI DSIA</span>
       </footer>
 
     </div>
